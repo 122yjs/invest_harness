@@ -8,7 +8,7 @@
 - `_workspace/` 아래의 결정적 산출물 경로
 - Windows PowerShell 기반 구조 검증 스크립트
 
-따라서 opencode, Antigravity, Gemini 계열 IDE 에이전트, 일반 LLM 에이전트에서도 사용할 수 있습니다. 다만 `.agents/skills/*/SKILL.md`의 자동 발견 여부는 도구마다 다르므로, Codex가 아닌 환경에서는 사용할 역할 파일 경로를 프롬프트에 직접 명시하는 것이 가장 안정적입니다.
+따라서 opencode, Claude, Antigravity, Gemini 계열 IDE 에이전트, 일반 LLM 에이전트에서도 사용할 수 있습니다. 다만 `.agents/skills/*/SKILL.md`의 자동 발견 여부는 도구마다 다르므로, Codex가 아닌 환경에서는 사용할 역할 파일 경로를 프롬프트에 직접 명시하는 것이 가장 안정적입니다.
 
 ## 공통 진입 문서
 
@@ -19,6 +19,7 @@
 | `docs/harness/invest/runbook.md` | 실제 실행 순서 |
 | `docs/harness/invest/team-spec.md` | 역할 분담과 산출물 계약 |
 | `.agents/skills/<role>/SKILL.md` | 역할별 상세 작업 지침 |
+| `CLAUDE.md` | Claude / Claude Code 계열 진입점 |
 | `GEMINI.md` | Gemini/Antigravity 계열 진입점 |
 
 ## Codex에서 사용
@@ -50,6 +51,26 @@ Apple(AAPL, NASDAQ)에 대한 표준형 투자 리포트를 생성해줘.
 AGENTS.md를 따른다.
 .agents/skills/valuation-analyst/SKILL.md만 사용해서 AAPL 밸류에이션 findings를 작성한다.
 출력은 _workspace/03_valuation/findings.md에 저장한다.
+```
+
+## Claude / Claude Code에서 사용
+
+Claude 또는 Claude Code 계열 도구에서는 `AGENTS.md`와 `CLAUDE.md`를 진입점으로 둔다. 역할별 스킬 자동 발견은 환경 설정에 따라 달라질 수 있으므로, 필요한 역할 파일을 프롬프트에 명시한다.
+
+추천 프롬프트:
+
+```text
+CLAUDE.md, AGENTS.md, docs/harness/invest/runbook.md를 읽고 따른다.
+.agents/skills/invest-orchestrator/SKILL.md를 최상위 지침으로 사용한다.
+Apple(AAPL, NASDAQ)에 대한 표준형 투자 리포트를 생성하고 _workspace 산출물 계약을 지킨다.
+```
+
+부분 분석만 필요할 때:
+
+```text
+CLAUDE.md와 AGENTS.md를 따른다.
+.agents/skills/financial-analyst/SKILL.md를 사용해서 AAPL의 기업 개요와 재무 분석 findings를 작성한다.
+출력은 _workspace/01_financial/findings.md에 저장한다.
 ```
 
 ## Antigravity / Gemini 계열에서 사용
