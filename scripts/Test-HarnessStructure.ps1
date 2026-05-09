@@ -45,6 +45,8 @@ function Test-SkillFrontmatter {
 $requiredPaths = @(
     @{ Path = 'AGENTS.md'; Description = '저장소 지침' },
     @{ Path = 'README.md'; Description = '사용자 README' },
+    @{ Path = 'OPENCLAW.md'; Description = 'OpenClaw 진입점' },
+    @{ Path = 'HERMES.md'; Description = 'Hermes 진입점' },
     @{ Path = 'CLAUDE.md'; Description = 'Claude/Claude Code 진입점' },
     @{ Path = 'GEMINI.md'; Description = 'Gemini/Antigravity 진입점' },
     @{ Path = 'invest_prompt_v2.md'; Description = '핵심 투자 프롬프트' },

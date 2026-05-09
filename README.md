@@ -33,6 +33,8 @@ AGENTS.md와 docs/harness/invest/runbook.md를 따른다.
 | `docs/harness/invest/templates/` | 반복 실행용 산출물 템플릿 |
 | `scripts/Test-HarnessStructure.ps1` | Harness 구조 검증 스크립트 |
 | `docs/harness/invest/cross-tool-usage.md` | Codex, opencode, Antigravity 등 도구별 사용 방식 |
+| `OPENCLAW.md` | OpenClaw 계열 에이전트를 위한 얇은 진입점 |
+| `HERMES.md` | Hermes 계열 에이전트를 위한 얇은 진입점 |
 | `GEMINI.md` | Gemini/Antigravity 계열 에이전트를 위한 얇은 진입점 |
 | `CLAUDE.md` | Claude / Claude Code 계열 에이전트를 위한 얇은 진입점 |
 
@@ -115,6 +117,8 @@ git switch -c feat/<작업-이름>
 |---|---|---|
 | Codex | 가능 | `AGENTS.md`와 `.agents/skills/*/SKILL.md`를 직접 사용 |
 | opencode | 가능 | `AGENTS.md`를 프로젝트 지침으로 읽고, 필요한 역할 `SKILL.md` 파일 경로를 프롬프트에 명시 |
+| OpenClaw | 가능 | `AGENTS.md` 또는 `OPENCLAW.md`를 진입점으로 사용하고, 역할별 `SKILL.md`를 명시적으로 참조 |
+| Hermes | 가능 | `AGENTS.md` 또는 `HERMES.md`를 진입점으로 사용하고, 역할별 `SKILL.md`를 명시적으로 참조 |
 | Claude / Claude Code | 가능 | `AGENTS.md` 또는 `CLAUDE.md`를 진입점으로 사용하고, 역할별 `SKILL.md`를 명시적으로 참조 |
 | Antigravity / Gemini 계열 | 가능 | `AGENTS.md` 또는 `GEMINI.md`를 진입점으로 사용하고, 역할별 `SKILL.md`를 명시적으로 참조 |
 | 일반 LLM/IDE 에이전트 | 가능 | `README.md`, `team-spec.md`, `runbook.md`, 역할별 `SKILL.md`를 프롬프트에 첨부 또는 경로로 지시 |
