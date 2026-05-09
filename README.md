@@ -1,6 +1,6 @@
 # Invest Harness
 
-개별 상장기업 투자 리서치 리포트를 반복적으로 생성하기 위한 Codex Harness입니다. `invest_prompt_v2.md`의 분석 요구사항을 여러 전문가 스킬로 나누고, `_workspace/` 파일 핸드오프를 통해 초안, QA, 최종본까지 재현 가능하게 조립합니다.
+개별 상장기업 투자 리서치 리포트를 반복적으로 생성하기 위한 AI agent Harness입니다. `invest_prompt_v2.md`의 분석 요구사항을 여러 전문가 역할로 나누고, `_workspace/` 파일 핸드오프를 통해 초안, QA, 최종본까지 재현 가능하게 조립합니다.
 
 이 레포의 결과물은 정보 제공용 분석입니다. 개인화된 투자 자문이나 매매 권유로 사용하지 않습니다.
 
@@ -13,10 +13,11 @@ cd E:\invest_harness
 .\scripts\Test-HarnessStructure.ps1
 ```
 
-검증이 통과하면 Codex에 아래처럼 요청합니다.
+검증이 통과하면 사용하는 에이전트에 아래처럼 요청합니다.
 
 ```text
-invest-orchestrator를 사용해서 Apple(AAPL, NASDAQ)을 기준일 2026-05-10, 표준형, 혼합형 투자자 관점으로 분석해줘.
+AGENTS.md와 docs/harness/invest/runbook.md를 따른다.
+.agents/skills/invest-orchestrator/SKILL.md를 오케스트레이터 지침으로 사용해서 Apple(AAPL, NASDAQ)을 기준일 2026-05-10, 표준형, 혼합형 투자자 관점으로 분석해줘.
 ```
 
 ## 주요 파일
@@ -31,6 +32,8 @@ invest-orchestrator를 사용해서 Apple(AAPL, NASDAQ)을 기준일 2026-05-10,
 | `docs/harness/invest/runbook.md` | 실제 실행 순서 |
 | `docs/harness/invest/templates/` | 반복 실행용 산출물 템플릿 |
 | `scripts/Test-HarnessStructure.ps1` | Harness 구조 검증 스크립트 |
+| `docs/harness/invest/cross-tool-usage.md` | Codex, opencode, Antigravity 등 도구별 사용 방식 |
+| `GEMINI.md` | Gemini/Antigravity 계열 에이전트를 위한 얇은 진입점 |
 
 ## 리포트 생성 흐름
 
@@ -103,8 +106,22 @@ git switch -c feat/<작업-이름>
 .\scripts\Test-HarnessStructure.ps1
 ```
 
+## 도구 호환성
+
+이 Harness는 특정 에이전트 런타임에 의존하지 않도록 설계되어 있습니다. 핵심 계약은 모두 Markdown 파일과 `_workspace/` 산출물 경로로 표현됩니다.
+
+| 도구 | 사용 가능 여부 | 사용 방식 |
+|---|---|---|
+| Codex | 가능 | `AGENTS.md`와 `.agents/skills/*/SKILL.md`를 직접 사용 |
+| opencode | 가능 | `AGENTS.md`를 프로젝트 지침으로 읽고, 필요한 역할 `SKILL.md` 파일 경로를 프롬프트에 명시 |
+| Antigravity / Gemini 계열 | 가능 | `AGENTS.md` 또는 `GEMINI.md`를 진입점으로 사용하고, 역할별 `SKILL.md`를 명시적으로 참조 |
+| 일반 LLM/IDE 에이전트 | 가능 | `README.md`, `team-spec.md`, `runbook.md`, 역할별 `SKILL.md`를 프롬프트에 첨부 또는 경로로 지시 |
+
+자세한 내용은 `docs/harness/invest/cross-tool-usage.md`를 봅니다.
+
 ## 참고 문서
 
 - 전체 역할 구조: `docs/harness/invest/team-spec.md`
 - 실행 절차: `docs/harness/invest/runbook.md`
+- 도구별 사용법: `docs/harness/invest/cross-tool-usage.md`
 - 산출물 템플릿: `docs/harness/invest/templates/`

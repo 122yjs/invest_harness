@@ -44,9 +44,12 @@ function Test-SkillFrontmatter {
 
 $requiredPaths = @(
     @{ Path = 'AGENTS.md'; Description = '저장소 지침' },
+    @{ Path = 'README.md'; Description = '사용자 README' },
+    @{ Path = 'GEMINI.md'; Description = 'Gemini/Antigravity 진입점' },
     @{ Path = 'invest_prompt_v2.md'; Description = '핵심 투자 프롬프트' },
     @{ Path = 'docs\harness\invest\team-spec.md'; Description = '팀 명세' },
     @{ Path = 'docs\harness\invest\runbook.md'; Description = '실행 가이드' },
+    @{ Path = 'docs\harness\invest\cross-tool-usage.md'; Description = '도구별 사용 가이드' },
     @{ Path = 'docs\harness\invest\templates\request-summary.md'; Description = '요청 요약 템플릿' },
     @{ Path = 'docs\harness\invest\templates\findings-common.md'; Description = '공통 findings 템플릿' },
     @{ Path = 'docs\harness\invest\templates\conflicts.md'; Description = '충돌 기록 템플릿' },
