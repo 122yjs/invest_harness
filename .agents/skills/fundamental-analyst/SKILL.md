@@ -31,7 +31,58 @@ description: 산업 및 경쟁 환경(Part IV), 경영진 및 거버넌스(Part 
 
 입력값 일부가 없으면 합리적 기본값을 사용할 수 있으나, findings.md 첫머리에 가정값을 명시한다.
 
-## Workflow Steps
+## Workflow
+
+<!-- BEGIN YFINANCE_MCP_TOOLS -->
+### yfinance 활용 (전체 시장)
+
+`yfinance_get_ticker_info`로 산업 분류, 섹터, 사업 요약, 직원 수 등을 확인한다. `yfinance_search`로 경쟁사 검색이 가능하다.
+
+정성 분석 순서:
+1. `yfinance_get_ticker_info(symbol=...)` → sector, industry, longBusinessSummary, fullTimeEmployees, website
+2. `yfinance_search(query=..., search_type="quote")` → 유사 종목 검색
+3. `yfinance_get_holders(symbol=..., max_rows=20)` → 주요 주주, 기관 보유 현황 (지분 구조 분석용)
+<!-- END YFINANCE_MCP_TOOLS -->
+
+<!-- BEGIN KOREA_STOCK_MCP_TOOLS -->
+### 2.2 MCP 도구 우선 사용 (한국 상장기업 한정)
+
+korea-stock-mcp MCP 서버가 설치된 환경에서는 한국 상장기업 분석 시 아래 MCP 도구를 사용한다.
+
+| 도구 | 데이터 | 활용 |
+|---|---|---|
+| `get_corp_code` | 고유번호/종목코드 (부분 검색 지원) | 기업 식별 |
+| `get_disclosure_list` | 공시 유형별/회사별/날짜별 검색 | 최근 이벤트, M&A, 규제 확인 |
+| `get_disclosure` | 공시보고서 원문 파싱 | 사업개요, 경영진, 제품, 규제 리스크 원문 |
+| `get_stock_base_info` | 종목 기본정보 | 지분 구조, 상장 정보 |
+
+사용 순서:
+1. `get_corp_code`로 고유번호 획득 (한글명 부분 검색 지원)
+2. `get_disclosure_list`로 기간별/유형별 공시 검색 (경영진 변경, M&A, 규제, 신제품)
+3. `get_disclosure`로 사업보고서 섹션 조회 (1MB 초과 시 목차 → section_id로 세부 조회)
+4. `get_stock_base_info`로 상장주식수 확인
+
+MCP 도구로 확인할 수 없는 글로벌 피어 산업 분석이나 비공식 데이터는 웹 검색으로 보완한다.
+<!-- END KOREA_STOCK_MCP_TOOLS -->
+
+<!-- BEGIN INPUT_GATE_POLICY_INTEGRATED -->
+## 특정 이벤트 / 촉매 처리 규칙
+
+`이벤트 드리븐형`은 독립 분석 초점으로 사용하지 않는다. 사용자가 특정 이벤트를 제시하면 해당 이벤트를 `특정 이벤트 / 촉매`로 기록하고, 자신의 담당 분석 범위 안에서 이벤트 전후 변화를 확인한다.
+
+예시 이벤트:
+
+- 최근 실적 발표
+- 가이던스 상향 / 하향
+- M&A
+- 규제 / 소송
+- 신제품 발표
+- 관세 / 무역 규제
+- 고객사 수주
+- 공급망 이슈
+
+이벤트가 최근 분기 실적, 컨센서스 리비전, 센티먼트, 주가 반응에 미친 영향을 구분해 작성한다.
+<!-- END INPUT_GATE_POLICY_INTEGRATED --> Steps
 
 1. **분석 범위 고정**
    - 기업명, 티커, 산업 분류, 비교기업 수를 명시한다.

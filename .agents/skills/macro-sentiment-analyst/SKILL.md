@@ -24,7 +24,45 @@ description: Part X 뉴스·시장 센티먼트와 Part XI 거시경제·정책 
 
 입력값이 없으면 합리적 기본값을 적용하되, 첫머리에 가정으로 남긴다.
 
-## Workflow Steps
+## Workflow
+
+<!-- BEGIN YFINANCE_MCP_TOOLS -->
+### yfinance 활용 (전체 시장)
+
+`yfinance_get_ticker_news`로 최근 뉴스 기사를 조회한다. 실적 발표 전후 센티먼트 분석에 활용한다.
+
+뉴스/센티먼트 순서:
+1. `yfinance_get_ticker_news(symbol=...)` → 최근 뉴스 목록 (제목, 출처, 날짜, 요약)
+2. 한국 기업의 경우 korea-stock `get_disclosure_list`로 공식 공시를 먼저 확인하고, yfinance 뉴스로 보완
+<!-- END YFINANCE_MCP_TOOLS -->
+
+<!-- BEGIN KOREA_STOCK_MCP_TOOLS -->
+### 2.2 MCP 도구 우선 사용 (한국 상장기업 한정)
+
+korea-stock-mcp MCP 서버가 설치된 환경에서는 한국 상장기업 뉴스/센티먼트 분석 시 아래 MCP 도구를 사용한다.
+
+| 도구 | 데이터 | 활용 |
+|---|---|---|
+| `get_disclosure_list` | 공시 검색 | 최근 30/90일 이벤트, 실적 발표 확인 |
+| `get_disclosure` | 공시 원문 | 실적 발표, 어닝콜 원문 확인 |
+| `get_stock_trade_info` | 일별 주가/거래량 | 실적 발표 전후 D-5, D+1, D+5, D+20 반응 분석 |
+| `get_corp_code` | 종목코드 | KRX 도구용 식별자 획득 |
+
+뉴스 센티먼트, 애널리스트 의견, 소셜 데이터는 웹 검색으로 보완한다.
+<!-- END KOREA_STOCK_MCP_TOOLS -->
+
+<!-- BEGIN INPUT_GATE_POLICY_INTEGRATED -->
+## 최근 분기 실적·센티먼트 분석 추가 지시
+
+입력 요약의 `분석 초점`이 `최근 분기 실적·센티먼트 심층형` 또는 `혼합형`이면 다음을 필수로 분석한다.
+
+- 최근 30일 / 90일 뉴스 센티먼트
+- 실적 발표 전후 뉴스 톤 변화
+- 어닝콜 경영진 톤: 수요, 가격, 마진, 재고, CapEx, 가이던스
+- 애널리스트 EPS/목표가/투자의견 리비전
+- 기관 수급, 공매도, 옵션 시장 신호가 확인 가능한 경우
+- 실적 발표 또는 특정 이벤트 전후 D-5, D+1, D+5, D+20 주가·거래량 반응
+<!-- END INPUT_GATE_POLICY_INTEGRATED --> Steps
 
 1. **분석 범위 확정**
    - 조사 기간, 국가/지역, 통화, 산업 범위를 명시한다.

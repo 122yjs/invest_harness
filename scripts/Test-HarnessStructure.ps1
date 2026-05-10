@@ -53,11 +53,13 @@ $requiredPaths = @(
     @{ Path = 'docs\harness\invest\team-spec.md'; Description = '팀 명세' },
     @{ Path = 'docs\harness\invest\runbook.md'; Description = '실행 가이드' },
     @{ Path = 'docs\harness\invest\cross-tool-usage.md'; Description = '도구별 사용 가이드' },
+    @{ Path = 'docs\harness\invest\templates\input-intake.md'; Description = '입력 수집 게이트 템플릿' },
     @{ Path = 'docs\harness\invest\templates\request-summary.md'; Description = '요청 요약 템플릿' },
     @{ Path = 'docs\harness\invest\templates\findings-common.md'; Description = '공통 findings 템플릿' },
     @{ Path = 'docs\harness\invest\templates\conflicts.md'; Description = '충돌 기록 템플릿' },
     @{ Path = 'docs\harness\invest\templates\report.md'; Description = '보고서 템플릿' },
     @{ Path = 'docs\harness\invest\templates\qa-review.md'; Description = 'QA 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\quarterly-sentiment-deep-dive.md'; Description = '최근 분기·센티먼트 심층 비교 템플릿' },
     @{ Path = '.agents\skills\invest-orchestrator\SKILL.md'; Description = '오케스트레이터 스킬' },
     @{ Path = '.agents\skills\financial-analyst\SKILL.md'; Description = '재무 분석 스킬' },
     @{ Path = '.agents\skills\fundamental-analyst\SKILL.md'; Description = '정성 분석 스킬' },
@@ -88,6 +90,7 @@ foreach ($skillDir in $skillDirs) {
 }
 
 $handoffPaths = @(
+    '_workspace/00_input/input-intake.md',
     '_workspace/00_input/request-summary.md',
     '_workspace/01_financial/findings.md',
     '_workspace/02_fundamental/findings.md',

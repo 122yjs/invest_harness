@@ -49,7 +49,52 @@ description: Part VIII 밸류에이션 분석을 수행해 상대가치, DCF/간
   - 순부채
   - 희석 주식 수
 
-## Workflow Steps
+## Workflow
+
+<!-- BEGIN YFINANCE_MCP_TOOLS -->
+### yfinance 활용 (전체 시장)
+
+`yfinance_get_ticker_info`에서 밸류에이션 지표를 바로 추출할 수 있다. 동종업계 상대가치 비교에도 활용한다.
+
+밸류에이션 순서:
+1. `yfinance_get_ticker_info(symbol=...)` → currentPrice, targetMeanPrice, trailingPE, forwardPE, priceToBook, enterpriseToEbitda, priceToSalesTrailing12Months, dividendYield, freeCashflow, earningsPerShare
+2. 피어 비교: 대상 기업 symbol로 위 지표 획득 → 같은 방식으로 경쟁사 symbol들도 호출
+3. `yfinance_get_financials(symbol=..., frequency="annual")` → DCF 입력용 FCF 계산
+4. 경쟁사 검색: `yfinance_get_top(sector=..., top_type="top_companies", top_n=5)` → 섹터 내 주요 기업 목록
+<!-- END YFINANCE_MCP_TOOLS -->
+
+<!-- BEGIN KOREA_STOCK_MCP_TOOLS -->
+### 2.2 MCP 도구 우선 사용 (한국 상장기업 한정)
+
+korea-stock-mcp MCP 서버가 설치된 환경에서는 한국 상장기업 밸류에이션 시 아래 MCP 도구를 사용한다.
+
+| 도구 | 데이터 | 활용 |
+|---|---|---|
+| `get_financial_statement` | 연결/개별 XBRL 재무제표 | EPS, BPS, EBITDA 계산 |
+| `get_stock_base_info` | 상장주식수 | 시가총액 계산 |
+| `get_stock_trade_info` | 일별 종가 | PER, PBR, EV/EBITDA 계산 |
+
+사용 순서:
+1. `get_financial_statement`로 재무 데이터 획득
+2. `get_stock_base_info`로 상장주식수 확인
+3. `get_stock_trade_info`로 최근 거래일 종가 확인
+4. 획득 데이터로 PER, PBR, EV/EBITDA, FCF Yield 계산
+
+비교기업 피어 데이터는 웹 검색으로 보충한다.
+<!-- END KOREA_STOCK_MCP_TOOLS -->
+
+<!-- BEGIN INPUT_GATE_POLICY_INTEGRATED -->
+## 최근 분기 실적·센티먼트 분석 추가 지시
+
+입력 요약의 `분석 초점`이 `최근 분기 실적·센티먼트 심층형` 또는 `혼합형`이면 밸류에이션에서 다음을 별도 반영한다.
+
+- 최근 분기 실적 이후 Forward 매출, EPS, EBITDA, FCF 컨센서스 변화
+- 목표주가 및 투자의견 리비전
+- 최근 분기 반영 전/후 멀티플 변화
+- 피어의 최근 분기 실적 대비 밸류에이션 프리미엄/디스카운트
+- 특정 이벤트 / 촉매가 실적 추정과 멀티플에 미치는 영향
+- 다음 1~2개 분기 컨센서스 미스/비트에 따른 Bear/Base/Bull 민감도
+<!-- END INPUT_GATE_POLICY_INTEGRATED --> Steps
 1. **분석 범위 확정**
    - 분석 기준일, 통화, 회계기간(연간/최근 분기/TTM)을 명시한다.
    - 데이터 부족 항목은 추정하지 말고 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`로 표시한다.

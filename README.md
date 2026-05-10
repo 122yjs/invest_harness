@@ -6,6 +6,100 @@
 
 ## 빠른 시작
 
+<!-- BEGIN INPUT_GATE_USAGE_EXAMPLE_INTEGRATED -->
+예시 입력:
+
+```text
+CSTM 분석해줘.
+진행 방식: 일괄
+분석 초점: 혼합
+투자 기간: 전체
+비교기업 수: 5
+보고서 깊이: 심층
+특정 이벤트 / 촉매: 관세
+```
+
+최소 입력도 가능하다.
+
+```text
+AAPL 분석해줘. 나머지는 기본값.
+```
+
+이 경우 Harness는 AAPL을 기준으로 기업명, 거래소, 상장 통화, 회계 기준을 자동 확인하고, 선택 옵션은 기본값을 적용한다.
+<!-- END INPUT_GATE_USAGE_EXAMPLE_INTEGRATED -->
+
+<!-- BEGIN INPUT_GATE_POLICY_INTEGRATED -->
+## 통합 입력 게이트 및 분석 초점 정책
+
+### 1. 자동 식별
+
+- 사용자가 기업명 또는 티커 중 하나만 제공해도 오케스트레이터가 자동 식별을 시도한다.
+- 자동 식별 대상은 대상 기업명, 티커, 거래소/국가, 상장 통화, 회계 기준이다.
+- 처음부터 기업명, 티커, 거래소/국가 3개를 모두 요구하지 않는다.
+- 복수 후보, 티커 중복, ADR/보통주/우선주 구분, 상장폐지, 기업명-티커 충돌이 있으면 사용자 확인 전까지 전문가 분석을 시작하지 않는다.
+
+### 2. 사용자에게 되물을 옵션
+
+사용자에게 되물을 항목은 다섯 가지로 제한한다. 각 항목에는 간단 선택지 힌트를 함께 제공한다.
+
+| 항목 | 간단 선택지 | 전체 선택지 | 기본값 |
+|---|---|---|---|
+| 진행 방식 | `> 일괄 / 순차` | 전체 일괄 생성 / 순차 단계별 생성 | 일괄 |
+| 분석 초점 | `> 장기 / 분기 / 혼합` | 장기 기본형 / 최근 분기 실적·센티먼트 심층형 / 혼합형 | 혼합 |
+| 투자 기간 | `> 단기 / 중기 / 장기 / 전체` | 1~3개월 / 6~12개월 / 3~5년 / 전체 | 전체 |
+| 비교기업 수 | `> 3 / 5 / 10 / 직접` | 3개 / 5개 / 10개 / 직접 지정 | 5 |
+| 보고서 깊이 | `> 요약 / 표준 / 심층` | 요약형 / 표준형 / 심층형 | 심층 |
+
+선택 입력:
+
+| 항목 | 간단 선택지 | 처리 |
+|---|---|---|
+| 특정 이벤트 / 촉매 | `> 없음 / 실적 / 가이던스 / M&A / 규제 / 소송 / 신제품 / 관세 / 수주 / 공급망` | 최근 분기 실적·센티먼트 분석의 하위 축 |
+
+### 3. 자동 기본값
+
+| 항목 | 기본값 |
+|---|---|
+| 분석 기준일 | 작업 당일 |
+| 투자자 유형 | 혼합형 |
+| 기준 통화 | 상장 통화 |
+| 회계 기준 | 회사 공시 기준 |
+| 기술적 분석 포함 여부 | 포함하되 장기 리포트에서는 보조 신호로 제한 |
+| 최종 의견 형식 | 점수형 + 시나리오별 전략 |
+
+### 4. 분석 초점 구성
+
+상위 `분석 초점` 선택지는 세 개만 둔다.
+
+| 분석 초점 | 의미 |
+|---|---|
+| 장기 기본형 | 최근 3~5년 연간 재무, 산업, 해자, 밸류에이션 중심 |
+| 최근 분기 실적·센티먼트 심층형 | 최근 4~8개 분기 실적, 컨센서스, 어닝콜, 뉴스·수급·애널리스트 리비전 중심 |
+| 혼합형 | 장기 구조 분석 + 최근 분기 실적·센티먼트 심층 비교 |
+
+`이벤트 드리븐형`은 상위 분석 초점에서 제외한다. 이벤트는 독립 옵션이 아니라 `특정 이벤트 / 촉매` 선택 입력으로 처리한다.
+
+이벤트가 입력되면 다음 방식으로 반영한다.
+
+- `최근 분기 실적·센티먼트 심층형`: 이벤트 전후 실적, 뉴스, 리비전, 주가·거래량 반응을 심층 분석
+- `혼합형`: 장기 논지에 이벤트가 미치는 영향을 별도 하위 섹션으로 분석
+- `장기 기본형`: 이벤트가 장기 투자 논지를 훼손하거나 강화하는 경우에만 리스크 또는 촉매로 반영
+
+## 간단 선택지 표기 규칙
+
+입력 게이트에서 각 문구에는 짧은 선택지 힌트를 함께 제공한다.
+
+| 항목 | 간단 선택지 | 전체 의미 |
+|---|---|---|
+| 진행 방식 | `> 일괄 / 순차` | 전체 일괄 생성 / 순차 단계별 생성 |
+| 분석 초점 | `> 장기 / 분기 / 혼합` | 장기 기본형 / 최근 분기 실적·센티먼트 심층형 / 혼합형 |
+| 투자 기간 | `> 단기 / 중기 / 장기 / 전체` | 1~3개월 / 6~12개월 / 3~5년 / 전체 |
+| 비교기업 수 | `> 3 / 5 / 10 / 직접` | 피어 수 자동 선정 또는 직접 지정 |
+| 보고서 깊이 | `> 요약 / 표준 / 심층` | 요약형 / 표준형 / 심층형 |
+| 특정 이벤트 / 촉매 | `> 없음 / 실적 / 가이던스 / M&A / 규제 / 소송 / 신제품 / 관세 / 수주 / 공급망` | 선택 입력 |
+
+<!-- END INPUT_GATE_POLICY_INTEGRATED -->
+
 Windows PowerShell에서 레포 구조를 먼저 검증합니다.
 
 ```powershell
@@ -83,6 +177,40 @@ AGENTS.md와 docs/harness/invest/runbook.md를 따른다.
 | `qa-reviewer` | 출처, 수치, 구조, 논리, 문체, 투자 자문 경계 검토 |
 
 ## 품질 기준
+
+<!-- BEGIN MCP_README -->
+<!-- BEGIN YFINANCE_README -->
+### yfinance-mcp 통합 (글로벌)
+
+`yfinance-mcp` MCP 서버를 통해 Yahoo Finance 데이터를 API 키 없이 바로 조회할 수 있다. 미국/글로벌 기업 분석의 주력 데이터 소스이며, 한국 기업 분석 시에도 korea-stock-mcp와 함께 보조로 사용한다.
+
+| MCP 도구 | 데이터 | 사용 역할 |
+|---|---|---|
+| `yfinance_get_ticker_info` | 기업 정보, 재무, 밸류에이션 | all roles |
+| `yfinance_get_financials` | 재무제표 (연간/분기) | financial-analyst, valuation-analyst |
+| `yfinance_get_price_history` | OHLCV + 차트 생성 | technical-analyst |
+| `yfinance_get_ticker_news` | 최근 뉴스 | macro-sentiment-analyst |
+| `yfinance_get_holders` | 주요 주주, 기관 보유 | fundamental-analyst |
+| `yfinance_get_option_chain` | 옵션 체인 데이터 | technical-analyst, risk-scenario-analyst |
+| `yfinance_search` | 종목/ETF 검색 | orchestrator |
+| `yfinance_get_top` | 섹터별 상위 종목 | fundamental-analyst |
+
+사용 규칙은 각 역할별 SKILL.md의 MCP 도구 사용 규칙 섹션을 참조한다.
+<!-- END YFINANCE_README -->
+### MCP 도구 통합
+
+korea-stock-mcp MCP 서버가 설치된 환경에서는 한국 상장기업 분석 시 DART/KRX 공식 API를 직접 호출할 수 있다.
+
+| MCP 도구 | 데이터 출처 | 사용 역할 |
+|---|---|---|
+| `get_financial_statement` | DART XBRL 재무제표 | financial-analyst, valuation-analyst |
+| `get_stock_trade_info` | KRX 일별 주가/거래량 | technical-analyst, macro-sentiment-analyst |
+| `get_disclosure_list` / `get_disclosure` | DART 공시 원문 | fundamental-analyst, macro-sentiment-analyst |
+| `get_stock_base_info` | KRX 종목 기본정보 | financial-analyst, fundamental-analyst |
+| `get_corp_code` | DART 고유번호/종목코드 | orchestrator (기업 식별) |
+
+자세한 사용 규칙은 각 역할별 SKILL.md의 MCP 도구 사용 규칙 섹션을 참조한다.
+<!-- END MCP_README -->
 
 - 모든 핵심 수치에는 출처, 기준일, 회계기간, 통화, 산식을 남깁니다.
 - 최신 연간, 최근 분기, TTM 데이터를 구분합니다.

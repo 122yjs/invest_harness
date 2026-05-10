@@ -35,7 +35,60 @@ description: Part IX 기술적 분석을 수행해 가격 흐름, 이동평균, 
   - 거래량 이동평균
   - OBV
 
-## Workflow Steps
+## Workflow
+
+<!-- BEGIN YFINANCE_MCP_TOOLS -->
+### yfinance 활용 (전체 시장)
+
+`yfinance_get_price_history`가 주력 도구로, OHLCV 데이터 + 기술적 차트(WebP)를 제공한다.
+
+기술적 분석 순서:
+1. `yfinance_get_price_history(symbol=..., period="1y", interval="1d")` → 일봉 데이터
+2. `yfinance_get_price_history(symbol=..., period="1mo", interval="1h")` → 단기 시뇰
+3. `yfinance_get_price_history(symbol=..., period="1y", interval="1d", chart_type="candle")` → 캔들 차트 이미지
+4. `yfinance_get_price_history(symbol=..., period="1y", interval="1d", chart_type="vwap")` → VWAP 차트
+
+획득한 OHLCV 데이터로 이동평균(20/60/120/200일), RSI(14), MACD(12,26,9) 등을 계산한다.
+
+한국 기업은 korea-stock `get_stock_trade_info`로 KRX 공식 데이터를 1순위로 사용하고, yfinance는 차트 생성용으로 보조 사용한다.
+<!-- END YFINANCE_MCP_TOOLS -->
+
+<!-- BEGIN KOREA_STOCK_MCP_TOOLS -->
+### 2.2 MCP 도구 우선 사용 (한국 상장기업 한정)
+
+korea-stock-mcp MCP 서버가 설치된 환경에서는 한국 상장기업 기술적 분석 시 아래 MCP 도구를 사용한다.
+
+| 도구 | 데이터 | 활용 |
+|---|---|---|
+| `get_corp_code` | 종목코드 획득 | 6자리 코드로 KRX 도구에 전달 |
+| `get_stock_trade_info` | 일별 종가, 등락률, 시고저, 거래량, 시총 | 추세, 지표 계산 |
+
+사용 순서:
+1. `get_corp_code`로 6자리 종목코드 획득
+2. `get_stock_trade_info`로 기간별 주가 데이터 조회 (`basDd`: YYYYMMDD)
+3. 복수 `basDd` 호출로 일별 데이터 누적 → 이동평균, RSI, MACD 계산
+
+해외 주식의 경우 웹 검색으로 데이터를 수집한다.
+<!-- END KOREA_STOCK_MCP_TOOLS -->
+
+<!-- BEGIN INPUT_GATE_POLICY_INTEGRATED -->
+## 특정 이벤트 / 촉매 처리 규칙
+
+`이벤트 드리븐형`은 독립 분석 초점으로 사용하지 않는다. 사용자가 특정 이벤트를 제시하면 해당 이벤트를 `특정 이벤트 / 촉매`로 기록하고, 자신의 담당 분석 범위 안에서 이벤트 전후 변화를 확인한다.
+
+예시 이벤트:
+
+- 최근 실적 발표
+- 가이던스 상향 / 하향
+- M&A
+- 규제 / 소송
+- 신제품 발표
+- 관세 / 무역 규제
+- 고객사 수주
+- 공급망 이슈
+
+이벤트가 최근 분기 실적, 컨센서스 리비전, 센티먼트, 주가 반응에 미친 영향을 구분해 작성한다.
+<!-- END INPUT_GATE_POLICY_INTEGRATED --> Steps
 1. **분석 범위 확정**
    - 기준일, 사용 차트 주기(일봉/주봉), 데이터 기간, 가격 출처를 명시한다.
    - 장기 투자 맥락이면 기술적 분석은 보조 요소임을 분명히 적는다.

@@ -30,7 +30,63 @@ description: 기업 개요(Part II)와 재무제표·재무비율 분석(Part II
 
 입력값 일부가 없으면 합리적 기본값을 사용할 수 있으나, findings.md 첫머리에 가정값을 명시한다.
 
-## Workflow Steps
+## Workflow
+
+<!-- BEGIN YFINANCE_MCP_TOOLS -->
+### yfinance 활용 (전체 시장)
+
+`yfinance_get_ticker_info`로 재무 지표를 빠르게 확인하고, `yfinance_get_financials`로 손익/재무상태/현금흐름을 조회한다.
+
+재무 분석 순서:
+1. `yfinance_get_ticker_info(symbol=...)` → marketCap, enterpriseValue, revenueGrowth, grossMargins, operatingMargins, returnOnEquity 등
+2. `yfinance_get_financials(symbol=..., frequency="annual")` → 연간 재무제표 (3~5년)
+3. `yfinance_get_financials(symbol=..., frequency="quarterly")` → 분기 재무제표 (최근 4~8분기)
+
+한국 기업의 경우 korea-stock `get_financial_statement`를 1순위로 사용하고, yfinance는 글로벌 피어 비교나 빠른 확인용으로 보조 사용한다.
+<!-- END YFINANCE_MCP_TOOLS -->
+
+<!-- BEGIN KOREA_STOCK_MCP_TOOLS -->
+### 2.2 MCP 도구 우선 사용 (한국 상장기업 한정)
+
+korea-stock-mcp MCP 서버가 설치된 환경에서는 한국 상장기업 분석 시 DART/KRX 공식 API를 직접 호출할 수 있다. MCP 도구가 공식 API를 통해 데이터를 제공하므로, 웹 검색보다 MCP 도구를 먼저 사용한다.
+
+사용 가능한 MCP 도구:
+
+| 도구 | 데이터 | 활용 |
+|---|---|---|
+| `get_corp_code` | DART 고유번호/종목코드 조회 | 기업 식별 |
+| `get_stock_base_info` | KRX 종목 기본정보 (상장일, 액면가, 상장주식수) | 기업 개요 |
+| `get_financial_statement` | DART XBRL 재무제표 (연간/분기) | 재무 분석 |
+| `get_disclosure_list` / `get_disclosure` | DART 공시 원문 | 최근 이벤트 확인 |
+| `get_stock_trade_info` | KRX 일별 주가/거래량 | 주가 데이터 |
+| `get_today_date` | KST/UTC 현재 날짜 | 기준일 확인 |
+
+사용 순서:
+1. 한국 기업이면 `get_corp_code`로 고유번호(`corp_code`)와 종목코드(`stock_code`, 6자리) 획득
+2. `get_financial_statement`로 XBRL 재무제표 조회 (`bsns_year`: 연도, `reprt_code`: 11011=사업보고서, `fs_div`: CFO=연결)
+3. `get_stock_base_info`로 상장 기본정보 확인
+4. `get_disclosure_list` + `get_disclosure`로 공시 원문 확인
+5. MCP 도구로 부족한 데이터는 웹 검색으로 보완 (글로벌 피어 비교, 컨센서스 등)
+
+해외 기업은 MCP 도구를 사용할 수 없으며 웹 검색을 통해 데이터를 수집한다.
+<!-- END KOREA_STOCK_MCP_TOOLS -->
+
+<!-- BEGIN INPUT_GATE_POLICY_INTEGRATED -->
+## 최근 분기 실적·센티먼트 분석 추가 지시
+
+입력 요약의 `분석 초점`이 `최근 분기 실적·센티먼트 심층형` 또는 `혼합형`이면 연간 재무 분석 외에 다음을 반드시 작성한다.
+
+- 최근 4~8개 분기 매출, 영업이익, 영업이익률, EPS, FCF
+- YoY, QoQ 변화율
+- 실제치 vs 컨센서스 Beat/Miss/In-line
+- 가이던스 상향/하향/유지
+- 세그먼트·지역·고객군별 성장률 변화
+- 재고, 매출채권, 운전자본, 일회성 손익 등 실적 품질
+- 특정 이벤트 / 촉매가 있으면 이벤트 전후 분기 변화
+- 최근 분기 데이터가 기존 장기 논지를 강화/유지/약화하는지 평가
+
+권장 출력은 `docs/harness/invest/templates/quarterly-sentiment-deep-dive.md`의 분기 실적 관련 섹션을 따른다.
+<!-- END INPUT_GATE_POLICY_INTEGRATED --> Steps
 
 1. **분석 범위 고정**
    - 기업명, 티커, 거래소, 회계 기준, 기준 통화를 명시한다.

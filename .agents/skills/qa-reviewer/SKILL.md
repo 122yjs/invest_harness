@@ -36,7 +36,81 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 | 문체 | 한국어 투자 리포트 문체이며 과도한 확신 표현이 없는가? |
 | 자문 경계 | 개인화된 투자 자문처럼 보이는 표현이 없는가? |
 
-## Workflow Steps
+## Workflow
+
+<!-- BEGIN YFINANCE_MCP_TOOLS -->
+## 사용 가능한 MCP 도구 (글로벌: yfinance-mcp)
+
+`yfinance` MCP 서버는 **전 세계 상장기업**의 금융 데이터를 API 키 없이 제공한다. 모든 시장(미국, 한국, 유럽, 일본 등)의 종목을 커버하며, 한국 기업 분석 시에도 korea-stock-mcp와 함께 보조로 사용한다.
+
+사용 규칙:
+- **무조건 1순위**: 웹 검색보다 yfinance MCP 도구를 먼저 호출한다 (키 불필요, 속도 빠름)
+- 기업 식별은 `yfinance_search`로 종목코드/회사명 검색 후 획득한 `symbol`을 다른 도구에 전달
+- 한국 기업은 `korea-stock` MCP 서버를 1순위로 사용하고, yfinance는 보충 데이터용으로 사용
+- yfinance 데이터는 비공식 출처이므로 정확한 재무 수치는 공시(DART/EDGAR)와 교차 검증 필요
+
+| 도구 | 설명 | 1순위 사용처 |
+|---|---|---|
+| `yfinance_get_ticker_info` | 종목 기본정보, 재무 지표, 밸류에이션, 배당, 거래 데이터 | 기업 개요, 밸류에이션 |
+| `yfinance_get_financials` | 손익계산서, 재무상태표, 현금흐름표 (연간/분기) | 재무 분석 |
+| `yfinance_get_price_history` | OHLCV 과거 데이터 + 기술적 차트 생성(WebP) | 기술적 분석 |
+| `yfinance_get_ticker_news` | 최근 뉴스 기사 | 뉴스/센티먼트 |
+| `yfinance_get_holders` | 주요 주주, 기관, 뮤추얼펀드, 내부자 거래 | 경영진/거버넌스 |
+| `yfinance_get_option_chain` | 옵션 체인 (콜/풋, 행사가, 내재변동성) | 기술적 분석, 리스크 |
+| `yfinance_get_option_dates` | 옵션 만기일 | 기술적 분석 |
+| `yfinance_search` | Yahoo Finance 검색 (종목, ETF, 뉴스) | 기업 식별 |
+| `yfinance_get_top` | 섹터별 상위 종목/ETF/성장/실적 | 산업/경쟁 환경 |
+
+사용 흐름:
+1. 기업 식별이 필요한 경우 `yfinance_search(query="Apple")` 또는 `yfinance_search(query="AAPL", search_type="quote")`
+2. 식별된 `symbol`로 나머지 도구 호출 (예: symbol="AAPL", symbol="005930.KS")
+3. 자세한 재무/정보는 `yfinance_get_ticker_info` → `yfinance_get_financials`
+4. 주가 데이터는 `yfinance_get_price_history` (차트 포함 가능)
+5. 뉴스는 `yfinance_get_ticker_news`
+
+<!-- END YFINANCE_MCP_TOOLS -->
+
+<!-- BEGIN KOREA_STOCK_MCP_TOOLS -->
+## 사용 가능한 MCP 도구 (korea-stock-mcp)
+
+이 스킬은 아래 MCP 서버 도구를 직접 호출할 수 있다. MCP 도구가 공식 API를 통해 데이터를 제공하므로, 웹 검색보다 우선 사용한다.
+
+| MCP 서버 | 도구 | 설명 | 1순위 사용처 |
+|---|---|---|---|
+| `korea-stock` | `get_corp_code` | DART 고유번호, 회사명, 종목코드 조회 (한글/영문 부분 검색, 비상장사 포함) | 모든 분석 전 기업 식별 |
+| `korea-stock` | `get_disclosure_list` | 공시 유형별/회사별/날짜별 검색 | 최근 공시, 이벤트, M&A, 규제 확인 |
+| `korea-stock` | `get_disclosure` | 공시보고서 원문 파싱 (1MB 초과 시 section 단위 조회) | 사업보고서, 분기보고서 원문 확인 |
+| `korea-stock` | `get_financial_statement` | XBRL 재무제표 (연간/분기, IFRS/GAAP) | 재무 분석 Part III |
+| `korea-stock` | `get_stock_base_info` | KRX 종목 기본정보 (종목명, 상장일, 액면가, 상장주식수) | 기업 개요 Part II |
+| `korea-stock` | `get_stock_trade_info` | KRX 일별 매매정보 (종가, 등락률, 시고저, 거래량, 시총) | 기술적 분석, 주가 데이터 |
+| `korea-stock` | `get_market_type` | 상장시장 정보 (Y=유가, K=코스닥, N=코넥스) | 기업 식별 확인 |
+| `korea-stock` | `get_today_date` | 오늘 날짜 KST/UTC YYYYMMDD | 분석 기준일 확인 |
+
+사용 규칙:
+
+1. **1순위**: MCP 도구로 조회 가능한 데이터는 웹 검색보다 MCP 도구를 먼저 호출한다.
+2. **식별 순서**: 한국 기업 분석 시 `get_corp_code`로 고유번호를 먼저 조회한 후, 획득한 `corp_code`를 다른 DART 도구에 전달한다.
+3. **종목코드**: KRX 도구(`get_stock_base_info`, `get_stock_trade_info`)는 6자리 종목코드가 필요하다. `get_corp_code`의 `stock_code` 필드로 확인 가능하다.
+4. **공시 원문**: `get_disclosure`는 문서가 클 경우 목차를 반환한다. 목차가 반환되면 필요한 section_id로 세부 조회한다.
+5. **날짜 형식**: KRX 도구의 `basDd`와 DART 도구의 `bgn_de`/`end_de`는 `YYYYMMDD` 형식이다.
+
+한국 기업이 아닌 경우 이 MCP 도구를 사용할 수 없으며, 웹 검색(`web_search`/`web_fetch`/`browser`)으로 데이터를 수집한다.
+
+<!-- END KOREA_STOCK_MCP_TOOLS -->
+
+<!-- BEGIN INPUT_GATE_POLICY_INTEGRATED -->
+## 최근 분기 실적·센티먼트 QA 항목
+
+입력 요약의 `분석 초점`이 `최근 분기 실적·센티먼트 심층형` 또는 `혼합형`이면 다음을 추가 검수한다.
+
+- 최근 분기 표에 YoY, QoQ, 컨센서스 대비가 빠지지 않았는가?
+- 실적 발표일, 기준일, 출처가 명시되어 있는가?
+- 어닝콜 톤 판단에 근거가 있는가?
+- 애널리스트 리비전과 뉴스 센티먼트가 루머와 구분되어 있는가?
+- 최근 분기 데이터와 연간 장기 논지가 충돌할 때 이를 명시했는가?
+- 주가 반응을 실적 자체와 센티먼트 변화로 구분했는가?
+- 특정 이벤트 / 촉매를 독립 모드처럼 처리하지 않고 하위 분석 축으로 처리했는가?
+<!-- END INPUT_GATE_POLICY_INTEGRATED --> Steps
 
 1. **필수 파일 확인**
    - 모든 입력 파일의 존재 여부를 확인한다.
