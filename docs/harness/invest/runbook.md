@@ -76,6 +76,16 @@
 
 이 문서는 `invest_prompt_v2.md`와 `.agents/skills/*`를 반복적으로 사용해 개별 주식 투자 리포트를 생성하는 절차를 정의한다. 실행 환경은 Windows PowerShell을 기준으로 한다.
 
+## 반복 실행 workspace 보존
+
+1. 현재 실행의 작업 디렉터리를 `ACTIVE_WORKSPACE`로 정한다. 기본값은 저장소 또는 런타임의 `_workspace` 절대 경로다.
+2. 새 리서치를 시작하기 전에 `ACTIVE_WORKSPACE`에 기존 산출물이 있는지 확인한다.
+3. 기존 산출물이 있으면 삭제하거나 덮어쓰지 말고 `_workspace_runs/<YYYY-MM-DD>-<ticker-or-slug>/`로 먼저 이동한다.
+4. 같은 archive 경로가 이미 있으면 `-HHMMSS` 또는 `-2`처럼 충돌 없는 suffix를 붙인다.
+5. 기본 동작은 move다. 권한 또는 런타임 제약 때문에 move가 불가능할 때만 copy를 사용하고, copy 결과를 확인하기 전에는 기존 파일을 비우지 않는다.
+6. archive가 끝난 뒤 새 `_workspace/`를 만들고, 모든 하위 역할에 같은 `ACTIVE_WORKSPACE` 절대 경로를 전달한다.
+7. `_workspace/`는 현재 실행 전용이고, `_workspace_runs/`는 이전 실행의 감사/재현 archive다.
+
 ## 0. 진입 입력 수집 게이트
 
 1. 사용자 원문 요청을 그대로 보존한다.
@@ -263,4 +273,4 @@
 - 최신 데이터가 필요한 실제 종목 분석에서는 반드시 현재 기준으로 웹 또는 공식 공시를 확인한다.
 - 기술적 분석과 소셜 센티먼트는 보조 신호로만 사용한다.
 - 최종 보고서는 정보 제공용 분석이며 개인화된 투자 자문이 아니다.
-- `_workspace/` 산출물은 감사와 재현을 위해 보존한다.
+- `_workspace/`의 기존 산출물은 새 실행 전 `_workspace_runs/`로 archive하여 감사와 재현을 위해 보존한다.

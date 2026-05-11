@@ -211,7 +211,16 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 
 <!-- END INPUT_GATE_POLICY_INTEGRATED -->
 
-### 0. 입력 수집 게이트
+### 0. 실행 workspace 준비
+
+1. 현재 실행의 작업 디렉터리를 `ACTIVE_WORKSPACE`로 정한다. 기본값은 저장소 또는 런타임의 `_workspace` 절대 경로다.
+2. 새 리서치를 시작하기 전에 `ACTIVE_WORKSPACE`에 기존 산출물이 있는지 확인한다.
+3. 기존 산출물이 있으면 삭제하거나 그대로 덮어쓰지 않는다. 먼저 `_workspace_runs/<YYYY-MM-DD>-<ticker-or-slug>/`로 이동해 보존한다.
+4. archive 경로가 이미 있으면 `-HHMMSS` 또는 `-2`처럼 충돌 없는 suffix를 붙인다.
+5. 기본 동작은 move다. 권한 또는 런타임 제약 때문에 move할 수 없을 때만 copy를 사용하고, copy 결과를 확인하기 전에는 기존 파일을 비우지 않는다.
+6. archive가 끝난 뒤 새 `ACTIVE_WORKSPACE`를 만들고, 모든 하위 역할과 후속 읽기 단계에 같은 절대 경로를 전달한다.
+
+### 1. 입력 수집 게이트
 
 1. 사용자 원문 요청을 보존한다.
 2. 원문에서 기업명 또는 티커를 파싱한다.
@@ -234,7 +243,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 - 보고서 깊이 기본값은 `심층형`이고, 분석 초점 기본값은 `혼합형`이다.
 - `ready`가 아닌 상태에서는 전문가 분석을 시작하지 않는다.
 
-### 1. 입력 정규화
+### 2. 입력 정규화
 
 1. 입력 수집 게이트가 `ready`인지 확인한다.
 2. 사용자 원문 요청과 게이트 결과를 보존한다.
@@ -251,7 +260,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 - 특정 이벤트 / 촉매가 있으면 별도 행으로 남아 있다.
 - 분석 제외 범위와 기술적 분석 포함 여부가 명시되어 있다.
 
-### 2. 전문가 분석 분배
+### 3. 전문가 분석 분배
 
 아래 역할은 같은 입력 스냅샷을 사용한다. 특정 산출물이 다른 역할의 전제에 필요하면 해당 파일을 명시적으로 함께 전달한다.
 
@@ -267,14 +276,14 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 분배 규칙:
 
 - 각 역할에는 자신의 출력 계약과 공통 입력 파일만 전달한다.
-- **delegate_task 사용 시 절대 경로 명시:** 서브에이전트는 자신의 기본 워크스페이스에 파일을 저장한다. `write_file`과 `read_file` 경로를 `~/.hermes/workspace/_workspace/<path>`로 통일하여 명시하고, 후속 단계에서도 동일한 절대 경로를 사용한다.
+- **delegate_task 사용 시 절대 경로 명시:** 서브에이전트는 자신의 기본 워크스페이스에 파일을 저장할 수 있으므로, 현재 실행의 `_workspace` 절대 경로를 `ACTIVE_WORKSPACE`로 전달한다. `write_file`과 `read_file` 경로는 `${ACTIVE_WORKSPACE}/01_financial/findings.md`처럼 통일하고, 후속 단계에서도 동일한 절대 경로를 사용한다. `~/.hermes/workspace/_workspace/`는 Hermes 기본 active workspace일 수 있지만 모든 실행에 고정하지 않는다.
 - 핵심 수치에는 출처, 기준일, 회계기간, 통화, 산식이 필요하다고 명시한다.
 - 데이터가 부족한 경우 추정하지 않고 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`를 사용하게 한다.
 - 기술적 분석 제외 요청이 있으면 `technical-analyst`는 생략 사유와 보조 신호 부재의 한계만 기록한다.
 
 > **Pitfall — Group 2 내부 순환 오류:** `technical-analyst`, `macro-sentiment-analyst`, `risk-scenario-analyst`를 동일한 `delegate_task`의 같은 `tasks` 배열에 담으면 서브에이전트 간 순환 의존성이 발생한다. `risk-scenario-analyst`가 `04_technical`과 `05_macro_sentiment`을 읽으려고 할 때 파일이 아직 생성되지 않은 채로 판단할 수 있다. `risk-scenario-analyst`는 선행 산출물(01~05)이 모두 존재하는 것을 확인한 후에 독립적으로 실행하거나, 혹은 단일 `delegate_task`에서 모든 6개 역할을 한 번에 담으면 순환을 방지할 수 있다.
 
-### 3. 중간 산출물 점검
+### 4. 중간 산출물 점검
 
 1. `_workspace/01_financial/findings.md`부터 `_workspace/06_risk_scenario/findings.md`까지 존재 여부를 확인한다.
 2. 각 파일의 분석 전제, 출처 목록, 요약, 데이터 한계 섹션을 확인한다.
@@ -289,7 +298,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 | 판단 충돌 | 어떤 전제 차이가 결론 차이를 만들었는지 적는다. |
 | 데이터 신선도 충돌 | 최신 자료 우선순위를 적용하되, 오래된 자료 사용 한계를 남긴다. |
 
-### 4. 초안 합성
+### 5. 초안 합성
 
 `report-synthesizer`가 아래 입력을 읽고 `_workspace/07_draft/report.md`를 작성한다.
 
@@ -304,7 +313,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 
 초안은 `invest_prompt_v2.md`의 최종 출력 템플릿 18개 섹션 순서를 따른다.
 
-### 5. QA
+### 6. QA
 
 `qa-reviewer`가 `_workspace/07_draft/report.md`와 원천 findings 전체를 검토하고 `_workspace/09_qa/review.md`를 작성한다.
 
@@ -316,7 +325,7 @@ QA 판정:
 | 수정 후 승인 | 제한적 결함 있음 | 오케스트레이터가 수정 후 최종본 확정 |
 | 재검토 필요 | 출처, 구조, 결론 정합성에 치명적 결함 있음 | 관련 역할 보강 후 초안 재작성 |
 
-### 6. 최종본 확정
+### 7. 최종본 확정
 
 1. QA 지적을 반영한다.
 2. 최종 보고서를 `_workspace/08_final/report.md`에 저장한다.

@@ -142,6 +142,13 @@
 - 상위 역할은 하위 역할 산출물을 덮어쓰지 않고, 수정이 필요하면 QA 또는 orchestrator 메모로 지시한다.
 - `report-synthesizer`는 원본 findings를 재해석하되, 출처 없는 신규 수치를 추가하지 않는다.
 
+### 반복 실행 workspace 규약
+- `_workspace/`는 현재 실행의 active workspace다.
+- 새 리서치 시작 전 `_workspace/`에 기존 산출물이 있으면 삭제하거나 덮어쓰지 않고 `_workspace_runs/<YYYY-MM-DD>-<ticker-or-slug>/`로 먼저 archive한다.
+- archive 경로가 이미 있으면 `-HHMMSS` 또는 `-2`처럼 충돌 없는 suffix를 붙인다.
+- archive는 move를 기본으로 한다. move가 불가능한 런타임에서만 copy를 사용하고, copy 검증 전에는 기존 파일을 비우지 않는다.
+- 하위 역할과 합성/QA 단계는 같은 `ACTIVE_WORKSPACE` 절대 경로를 공유한다. 논리적 산출물 이름은 `_workspace/...`로 유지하되, 절대 경로가 필요할 때는 `${ACTIVE_WORKSPACE}/01_financial/findings.md`처럼 작성한다.
+
 ## 7. 반복 실행 템플릿
 
 | 템플릿 | 용도 |
