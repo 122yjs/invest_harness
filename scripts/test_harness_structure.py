@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import json
 from pathlib import Path
 
 from sync_invest_skills import REPO_ROOT, repo_relative
@@ -19,6 +20,8 @@ REQUIRED_PATHS = [
     ("docs/harness/invest/team-spec.md", "team spec"),
     ("docs/harness/invest/runbook.md", "runbook"),
     ("docs/harness/invest/cross-tool-usage.md", "cross-tool usage"),
+    ("docs/harness/invest/data-source-policy.md", "data source policy docs"),
+    ("docs/harness/invest/mcp-routing.md", "MCP routing docs"),
     ("docs/harness/invest/templates/input-intake.md", "input intake template"),
     ("docs/harness/invest/templates/request-summary.md", "request summary template"),
     ("docs/harness/invest/templates/findings-common.md", "findings template"),
@@ -37,6 +40,13 @@ REQUIRED_PATHS = [
     ("docs/harness/invest/templates/comps.md", "comps template"),
     ("docs/harness/invest/templates/dcf.md", "DCF template"),
     ("docs/harness/invest/templates/earnings-update.md", "earnings update template"),
+    ("docs/harness/invest/templates/earnings-preview.md", "earnings preview template"),
+    ("docs/harness/invest/templates/sector.md", "sector report template"),
+    ("docs/harness/invest/templates/thesis-update.md", "thesis update template"),
+    ("docs/harness/invest/templates/catalysts.md", "catalyst calendar template"),
+    ("docs/harness/invest/templates/html-report.md", "HTML report template"),
+    ("docs/harness/invest/templates/morning-note.md", "morning note template"),
+    ("docs/harness/invest/templates/update-plan.md", "report update plan template"),
     ("docs/harness/invest/templates/qa-fix-list.md", "QA fix list template"),
     ("docs/harness/invest/templates/qa-final-check.md", "QA final check template"),
     ("plugins/vertical-plugins/invest-research", "vertical source plugin"),
@@ -48,11 +58,15 @@ REQUIRED_PATHS = [
     ("scripts/Test-SkillDrift.ps1", "PowerShell drift script"),
     ("scripts/Test-WorkspaceSafety.ps1", "PowerShell workspace safety script"),
     ("scripts/Test-HarnessStructure.ps1", "PowerShell structure script"),
+    ("scripts/Test-CommandRuntime.ps1", "PowerShell command runtime smoke script"),
     ("scripts/sync_invest_skills.py", "Python sync script"),
     ("scripts/test_skill_drift.py", "Python drift script"),
     ("scripts/test_workspace_safety.py", "Python workspace safety script"),
     ("scripts/test_harness_structure.py", "Python structure script"),
+    ("scripts/invest_command_runtime.py", "Python command runtime parser"),
+    ("scripts/test_command_runtime.py", "Python command runtime smoke tests"),
     ("scripts/verify_invest_harness.py", "Python aggregate verifier"),
+    (".mcp.institutional.json", "optional institutional MCP catalog"),
 ]
 
 REQUIRED_SKILLS = [
@@ -67,9 +81,30 @@ REQUIRED_SKILLS = [
     "qa-reviewer",
     "idea-screener",
     "earnings-update",
+    "earnings-preview",
+    "sector-analyst",
+    "thesis-tracker",
+    "catalyst-tracker",
+    "html-report-synthesizer",
+    "morning-note",
+    "report-updater",
 ]
 
-REQUIRED_COMMANDS = ["analyze", "screen", "comps", "dcf", "earnings", "qa"]
+REQUIRED_COMMANDS = [
+    "analyze",
+    "screen",
+    "comps",
+    "dcf",
+    "earnings",
+    "qa",
+    "preview",
+    "sector",
+    "thesis",
+    "catalysts",
+    "report-html",
+    "morning-note",
+    "update",
+]
 
 REQUIRED_POLICIES = [
     "workspace-safety.md",
@@ -84,6 +119,8 @@ HANDOFF_PATHS = [
     "${ACTIVE_WORKSPACE}/00_input/request-summary.md",
     "${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md",
     "${ACTIVE_WORKSPACE}/00_input/earnings-update.md",
+    "${ACTIVE_WORKSPACE}/00_input/earnings-preview.md",
+    "${ACTIVE_WORKSPACE}/00_input/update-plan.md",
     "${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md",
     "${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md",
     "${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md",
@@ -95,10 +132,14 @@ HANDOFF_PATHS = [
     "${ACTIVE_WORKSPACE}/03_valuation/dcf.md",
     "${ACTIVE_WORKSPACE}/04_technical/findings.md",
     "${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md",
+    "${ACTIVE_WORKSPACE}/05_macro_sentiment/thesis-update.md",
+    "${ACTIVE_WORKSPACE}/05_macro_sentiment/catalysts.md",
+    "${ACTIVE_WORKSPACE}/05_macro_sentiment/morning-note.md",
     "${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md",
     "${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md",
     "${ACTIVE_WORKSPACE}/07_draft/report.md",
     "${ACTIVE_WORKSPACE}/08_final/report.md",
+    "${ACTIVE_WORKSPACE}/08_final/report.html",
     "${ACTIVE_WORKSPACE}/08_final/executive-summary.md",
     "${ACTIVE_WORKSPACE}/09_qa/review.md",
     "${ACTIVE_WORKSPACE}/09_qa/fix-list.md",
@@ -168,6 +209,14 @@ def collect_failures() -> list[str]:
             failures.append(f"team-spec handoff path missing: {handoff_path}")
         if handoff_path not in orchestrator:
             failures.append(f"orchestrator handoff path missing: {handoff_path}")
+
+    institutional_mcp_path = REPO_ROOT / ".mcp.institutional.json"
+    if institutional_mcp_path.is_file():
+        institutional_config = json.loads(institutional_mcp_path.read_text(encoding="utf-8"))
+        if institutional_config.get("enabled") is not False:
+            failures.append(".mcp.institutional.json must be disabled by default")
+        if institutional_config.get("mcpServers") not in ({}, None):
+            failures.append(".mcp.institutional.json must not enable paid MCP servers by default")
 
     return failures
 

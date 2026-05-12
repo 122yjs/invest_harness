@@ -126,6 +126,8 @@
 | 00b | `${ACTIVE_WORKSPACE}/00_input/request-summary.md` | invest-orchestrator | 정규화 입력값, 기본 가정, 분석 범위, 제외 범위 |
 | 00c | `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` | invest-orchestrator / valuation-analyst | 기준 주가, 기준일, 가격 출처, 주식 수, 시장지표 계산 입력 |
 | 00d | `${ACTIVE_WORKSPACE}/00_input/earnings-update.md` | earnings-update | 최신 또는 지정 분기 실적, 컨센서스 대비, 가이던스, Rating/Price Target 영향 |
+| 00e | `${ACTIVE_WORKSPACE}/00_input/earnings-preview.md` | earnings-preview | 예정 실적 핵심 지표, 기대치, Beat/Miss 시나리오, 발표 후 업데이트 항목 |
+| 00u | `${ACTIVE_WORKSPACE}/00_input/update-plan.md` | report-updater | 기존 리포트 갱신 범위, 재실행 command/skill, Rating/Price Target 재검증 필요 여부 |
 | 00s1 | `${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md` | idea-screener | 스크리닝 원문, 포함/제외 기준, 데이터 소스 계획 |
 | 00s2 | `${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md` | idea-screener | 후보군, 식별자, 포함/제외 사유 |
 | 00s3 | `${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md` | idea-screener | 후보별 점수표, 예비 Rating, 주요 리스크 |
@@ -137,10 +139,14 @@
 | 03b | `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` | valuation-analyst | DCF 가정, Bear/Base/Bull 결과, comps/역사적 밴드 교차검증 |
 | 04 | `${ACTIVE_WORKSPACE}/04_technical/findings.md` | technical-analyst | 추세, 지표, 지지·저항, 기술적 리스크 |
 | 05 | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` | macro-sentiment-analyst | 뉴스, 센티먼트, 거시·정책 영향 |
+| 05a | `${ACTIVE_WORKSPACE}/05_macro_sentiment/thesis-update.md` | thesis-tracker | 기존 투자 논지 대비 새 데이터, 강화/약화 증거, 다음 추적 지표 |
+| 05b | `${ACTIVE_WORKSPACE}/05_macro_sentiment/catalysts.md` | catalyst-tracker | 촉매 이벤트 캘린더, 확인 지표, 후속 작업 |
+| 05c | `${ACTIVE_WORKSPACE}/05_macro_sentiment/morning-note.md` | morning-note | 관심종목/테마 일일 점검, 우선순위, 후속 command |
 | 06 | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` | risk-scenario-analyst | 리스크 등록부, 시나리오 표, 촉발 요인 |
 | 06a | `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md` | invest-orchestrator / risk-scenario-analyst | 출처 충돌, 수치 충돌, 해석 충돌, 재확인 요청 |
 | 07 | `${ACTIVE_WORKSPACE}/07_draft/report.md` | report-synthesizer | 통합 초안 전체 |
 | 08 | `${ACTIVE_WORKSPACE}/08_final/report.md` | invest-orchestrator | QA 반영 완료 최종본 |
+| 08h | `${ACTIVE_WORKSPACE}/08_final/report.html` | html-report-synthesizer | Markdown 최종 리포트의 정적 HTML 출력 |
 | 08a | `${ACTIVE_WORKSPACE}/08_final/executive-summary.md` | invest-orchestrator | 선택적 사용자 요약본 |
 | 09 | `${ACTIVE_WORKSPACE}/09_qa/review.md` | qa-reviewer | 결함 목록, 수정 요청, 승인 여부 |
 | 09a | `${ACTIVE_WORKSPACE}/09_qa/fix-list.md` | qa-reviewer | 수정 작업 목록, 담당 산출물, 완료 여부 |
@@ -168,6 +174,13 @@
 | `docs/harness/invest/templates/conflicts.md` | `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md` 작성 기준 |
 | `docs/harness/invest/templates/report.md` | `${ACTIVE_WORKSPACE}/07_draft/report.md` 및 `${ACTIVE_WORKSPACE}/08_final/report.md` 작성 기준 |
 | `docs/harness/invest/templates/qa-review.md` | `${ACTIVE_WORKSPACE}/09_qa/review.md` 작성 기준 |
+| `docs/harness/invest/templates/earnings-preview.md` | `${ACTIVE_WORKSPACE}/00_input/earnings-preview.md` 작성 기준 |
+| `docs/harness/invest/templates/sector.md` | `${ACTIVE_WORKSPACE}/02_fundamental/sector.md` 작성 기준 |
+| `docs/harness/invest/templates/thesis-update.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/thesis-update.md` 작성 기준 |
+| `docs/harness/invest/templates/catalysts.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/catalysts.md` 작성 기준 |
+| `docs/harness/invest/templates/html-report.md` | `${ACTIVE_WORKSPACE}/08_final/report.html` 작성 기준 |
+| `docs/harness/invest/templates/morning-note.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/morning-note.md` 작성 기준 |
+| `docs/harness/invest/templates/update-plan.md` | `${ACTIVE_WORKSPACE}/00_input/update-plan.md` 작성 기준 |
 
 ## 8. 실패 및 재시도 정책
 
