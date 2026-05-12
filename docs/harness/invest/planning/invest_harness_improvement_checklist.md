@@ -7,13 +7,13 @@
 ## MVP 진행 상태 (2026-05-13)
 
 - ✅ 완료 기준: source layer 계약, generated layer sync, workspace safety, MVP command/skill contract, Rating/Price Target 리포트 구조, screen/comps/dcf/earnings/qa 산출물 계약.
-- 🔲 후속 기준: 실제 `/screen`, `/earnings`, `/dcf`, `/comps`, `/qa` CLI/runtime 파서와 실행 엔진은 별도 goal로 남긴다.
+- ✅ 후속 기준: 실제 `/screen`, `/earnings`, `/dcf`, `/comps`, `/qa` CLI/runtime 파서와 dispatch 실행 엔진을 추가했다.
 
 ### 후속 Runtime-Code Goal
 
-- [ ] Command 입력을 실제 CLI/runtime에서 파싱하고 각 thin command stub으로 dispatch하는 실행 엔진 구현
-- [ ] `/screen`, `/earnings`, `/comps`, `/dcf`, `/qa`에 대한 end-to-end command smoke test 추가
-- [ ] command runtime이 `${ACTIVE_WORKSPACE}`를 생성/전달하고 source skill 계약의 산출물 경로를 보존하는지 검증
+- [x] Command 입력을 실제 CLI/runtime에서 파싱하고 각 thin command stub으로 dispatch하는 실행 엔진 구현
+- [x] `/screen`, `/earnings`, `/comps`, `/dcf`, `/qa`에 대한 end-to-end command smoke test 추가
+- [x] command runtime이 `${ACTIVE_WORKSPACE}`를 생성/전달하고 source skill 계약의 산출물 경로를 보존하는지 검증
 
 ---
 
@@ -178,13 +178,13 @@
 
 **2차 (확장):**
 
-- [ ] `/preview` 구현
-- [ ] `/sector` 구현
-- [ ] `/thesis` 구현
-- [ ] `/catalysts` 구현
-- [ ] `/report-html` 구현
-- [ ] `/morning-note` 구현
-- [ ] `/update` 구현
+- [x] `/preview` 구현
+- [x] `/sector` 구현
+- [x] `/thesis` 구현
+- [x] `/catalysts` 구현
+- [x] `/report-html` 구현
+- [x] `/morning-note` 구현
+- [x] `/update` 구현
 
 ---
 
@@ -198,12 +198,12 @@
 
 ### Goal 17. `/screen` 명령어 추가
 
-- [ ] `/screen` 명령어 파서 구현 → 후속 runtime-code goal로 분리
-- [ ] 입력 예시 지원 확인:
+- [x] `/screen` 명령어 파서 구현
+- [x] 입력 예시 지원 확인:
   - [x] `/screen AI 전력 인프라 2차 수혜주`
   - [x] `/screen 저평가 고ROIC 미국 중형주`
   - [x] `/screen 한국 화장품 ODM 수혜주`
-- [ ] 출력 항목 구현:
+- [x] 출력 항목 구현:
   - [x] 후보군
   - [x] 점수표
   - [x] 투자 논지
@@ -280,14 +280,14 @@
 
 ### Goal 23. `/preview` 추가
 
-- [ ] `/preview` 명령어 구현
-- [ ] 입력 형식 지원: `/preview NVDA`, `/preview 삼성전자`
-- [ ] 출력 항목 구현:
-  - [ ] 이번 실적에서 봐야 할 핵심 지표
-  - [ ] 시장 기대치
-  - [ ] Beat 시나리오
-  - [ ] Miss 시나리오
-  - [ ] 발표 후 업데이트할 항목
+- [x] `/preview` 명령어 구현
+- [x] 입력 형식 지원: `/preview NVDA`, `/preview 삼성전자`
+- [x] 출력 항목 구현:
+  - [x] 이번 실적에서 봐야 할 핵심 지표
+  - [x] 시장 기대치
+  - [x] Beat 시나리오
+  - [x] Miss 시나리오
+  - [x] 발표 후 업데이트할 항목
 
 ---
 
@@ -295,41 +295,41 @@
 
 ### Goal 24. `/thesis` 추가
 
-- [ ] `/thesis` 명령어 구현
-- [ ] 입력 형식 지원: `/thesis CSTM`, `/thesis 파마리서치`
-- [ ] 출력 항목 구현:
-  - [ ] 기존 투자 논지
-  - [ ] 새로운 데이터
-  - [ ] 논지를 강화하는 증거
-  - [ ] 논지를 약화하는 증거
-  - [ ] Rating 변화 가능성
-  - [ ] 다음 추적 지표
+- [x] `/thesis` 명령어 구현
+- [x] 입력 형식 지원: `/thesis CSTM`, `/thesis 파마리서치`
+- [x] 출력 항목 구현:
+  - [x] 기존 투자 논지
+  - [x] 새로운 데이터
+  - [x] 논지를 강화하는 증거
+  - [x] 논지를 약화하는 증거
+  - [x] Rating 변화 가능성
+  - [x] 다음 추적 지표
 
 ### Goal 25. `/catalysts` 추가
 
-- [ ] `/catalysts` 명령어 구현
-- [ ] 입력 형식 지원:
-  - [ ] `/catalysts AI 전력 인프라 next 3 months`
-  - [ ] `/catalysts 파마리서치 2026Q2`
-- [ ] 촉매 이벤트 캘린더 출력
+- [x] `/catalysts` 명령어 구현
+- [x] 입력 형식 지원:
+  - [x] `/catalysts AI 전력 인프라 next 3 months`
+  - [x] `/catalysts 파마리서치 2026Q2`
+- [x] 촉매 이벤트 캘린더 출력
 
 ### Goal 26. `/sector` 추가
 
-- [ ] `/sector` 명령어 구현
-- [ ] 입력 형식 지원:
-  - [ ] `/sector 한국 화장품 ODM`
-  - [ ] `/sector AI 전력 인프라`
-  - [ ] `/sector 폐기물 관리 산업`
-- [ ] 섹터/산업 리포트 생성
+- [x] `/sector` 명령어 구현
+- [x] 입력 형식 지원:
+  - [x] `/sector 한국 화장품 ODM`
+  - [x] `/sector AI 전력 인프라`
+  - [x] `/sector 폐기물 관리 산업`
+- [x] 섹터/산업 리포트 생성
 
 ### Goal 27. Watchlist / Morning Note 검토
 
-- [ ] `/morning-note` 명령어 설계 (향후 확장)
-- [ ] 입력 형식 검토:
-  - [ ] `/morning-note`
-  - [ ] `/morning-note AI 반도체`
-  - [ ] `/morning-note 내 관심종목`
-- [ ] 관심종목 기반 일일 점검 워크플로우 설계
+- [x] `/morning-note` 명령어 설계
+- [x] 입력 형식 검토:
+  - [x] `/morning-note`
+  - [x] `/morning-note AI 반도체`
+  - [x] `/morning-note 내 관심종목`
+- [x] 관심종목 기반 일일 점검 워크플로우 설계
 
 ---
 
@@ -337,43 +337,44 @@
 
 ### Goal 28. 데이터 소스 정책 분리
 
-- [ ] `plugins/vertical-plugins/invest-research/policies/data-source-policy.md` 작성
-- [ ] `docs/harness/invest/data-source-policy.md` 작성 (또는 동기화)
-- [ ] 시장별 기본 원칙 문서화:
-  - [ ] 한국: DART / KRX 우선
-  - [ ] 미국: SEC EDGAR / yfinance 우선
-  - [ ] 글로벌: yfinance / 공식 IR / 거래소 우선
+- [x] `plugins/vertical-plugins/invest-research/policies/data-source-policy.md` 작성
+- [x] `docs/harness/invest/data-source-policy.md` 작성 (또는 동기화)
+- [x] 시장별 기본 원칙 문서화:
+  - [x] 한국: DART / KRX 우선
+  - [x] 미국: SEC EDGAR / yfinance 우선
+  - [x] 글로벌: yfinance / 공식 IR / 거래소 우선
 
 ### Goal 29. 개인 접근 가능한 무료 · 저가 데이터 우선
 
-- [ ] 기본 데이터 레이어 목록 확정 및 연결 확인:
-  - [ ] korea-stock
-  - [ ] yfinance
-  - [ ] SEC EDGAR
-  - [ ] FRED
-  - [ ] Alpha Vantage
-  - [ ] Financial Modeling Prep
-  - [ ] 공식 IR
-  - [ ] 웹 검색
-- [ ] 각 데이터 소스별 접근 방법 · API 키 관리 가이드
+- [x] 기본 데이터 레이어 목록 확정:
+  - [x] korea-stock
+  - [x] yfinance
+  - [x] SEC EDGAR
+  - [x] FRED
+  - [x] Alpha Vantage
+  - [x] Financial Modeling Prep
+  - [x] 공식 IR
+  - [x] 웹 검색
+- [x] 각 데이터 소스별 접근 방법 · API 키 관리 가이드
+- [ ] 실제 외부 데이터 연결 상태 확인
 
 ### Goal 30. 기관용 MCP는 Optional Layer로 분리
 
-- [ ] `.mcp.institutional.json` 구조 설계
-- [ ] Optional 대상 목록:
-  - [ ] Daloopa
-  - [ ] Morningstar
-  - [ ] S&P Global
-  - [ ] FactSet
-  - [ ] Moody's
-  - [ ] MT Newswires
-  - [ ] Aiera
-  - [ ] LSEG
-  - [ ] PitchBook
-  - [ ] Chronograph
-  - [ ] Egnyte
-- [ ] **핵심 원칙 검증:** 기관 MCP 없이도 기본 분석이 실패하지 않는지 확인
-- [ ] 기관 MCP 존재 시 보조 데이터로 활용하는 로직
+- [x] `.mcp.institutional.json` 구조 설계
+- [x] Optional 대상 목록:
+  - [x] Daloopa
+  - [x] Morningstar
+  - [x] S&P Global
+  - [x] FactSet
+  - [x] Moody's
+  - [x] MT Newswires
+  - [x] Aiera
+  - [x] LSEG
+  - [x] PitchBook
+  - [x] Chronograph
+  - [x] Egnyte
+- [x] **핵심 원칙 검증:** 기관 MCP 없이도 기본 분석이 실패하지 않는지 확인
+- [x] 기관 MCP 존재 시 보조 데이터로 활용하는 정책
 
 ---
 
@@ -410,27 +411,27 @@
 
 ### Goal 34. HTML 리포트 추가
 
-- [ ] `/report-html` 명령어 구현
-- [ ] 입력 형식 지원:
-  - [ ] `/report-html 파마리서치`
-  - [ ] `/report-html AAPL`
+- [x] `/report-html` 명령어 구현
+- [x] 입력 형식 지원:
+  - [x] `/report-html 파마리서치`
+  - [x] `/report-html AAPL`
 
 ### Goal 35. `html-report-synthesizer` 추가
 
-- [ ] 원본 Skill 생성: `plugins/vertical-plugins/invest-research/skills/html-report-synthesizer/SKILL.md`
-- [ ] 실행 Skill 생성: `.agents/skills/html-report-synthesizer/SKILL.md`
-- [ ] HTML 포함 요소 구현:
-  - [ ] 핵심 요약 카드
-  - [ ] Rating / Price Target
-  - [ ] 기준 주가
-  - [ ] Upside / Downside
-  - [ ] 재무 추이 차트
-  - [ ] 피어 비교 테이블
-  - [ ] DCF / 역사적 밴드
-  - [ ] Bear/Base/Bull 시나리오
-  - [ ] 리스크 매트릭스
-  - [ ] QA 상태
-  - [ ] 출처 목록
+- [x] 원본 Skill 생성: `plugins/vertical-plugins/invest-research/skills/html-report-synthesizer/SKILL.md`
+- [x] 실행 Skill 생성: `.agents/skills/html-report-synthesizer/SKILL.md`
+- [x] HTML 포함 요소 구현:
+  - [x] 핵심 요약 카드
+  - [x] Rating / Price Target
+  - [x] 기준 주가
+  - [x] Upside / Downside
+  - [x] 재무 추이 차트
+  - [x] 피어 비교 테이블
+  - [x] DCF / 역사적 밴드
+  - [x] Bear/Base/Bull 시나리오
+  - [x] 리스크 매트릭스
+  - [x] QA 상태
+  - [x] 출처 목록
 
 ---
 
@@ -438,22 +439,22 @@
 
 ### Goal 36. 구조 검증 스크립트 업데이트
 
-- [ ] `scripts/Test-HarnessStructure.ps1` 수정
-- [ ] 기존 legacy workspace 고정 경로 → 동적 Workspace 기준으로 변경
-- [ ] 새로운 디렉토리 구조 반영
+- [x] `scripts/Test-HarnessStructure.ps1` 수정
+- [x] 기존 legacy workspace 고정 경로 → 동적 Workspace 기준으로 변경
+- [x] 새로운 디렉토리 구조 반영
 
 ### Goal 37. 신규 검증 스크립트 추가
 
-- [ ] `scripts/Test-WorkspaceSafety.ps1` 작성 완료 확인
-- [ ] `scripts/Test-SkillDrift.ps1` 작성 완료 확인
-- [ ] `scripts/Sync-InvestSkills.ps1` 작성 완료 확인
-- [ ] 모든 검증 스크립트 통합 실행 및 CI 연동 검토
+- [x] `scripts/Test-WorkspaceSafety.ps1` 작성 완료 확인
+- [x] `scripts/Test-SkillDrift.ps1` 작성 완료 확인
+- [x] `scripts/Sync-InvestSkills.ps1` 작성 완료 확인
+- [x] 모든 검증 스크립트 통합 실행 및 CI 연동 검토
 
 ---
 
 ## 14. 최종 권장 폴더 구조
 
-- [ ] 아래 구조 반영 완료 확인:
+- [x] 아래 구조 반영 완료 확인:
 
 ```
 invest_harness/
@@ -481,11 +482,16 @@ invest_harness/
         cross-tool-usage.md
         data-source-policy.md
         mcp-routing.md
+        data-source-policy.md
   scripts/
     Sync-InvestSkills.ps1
     Test-SkillDrift.ps1
     Test-WorkspaceSafety.ps1
+    Test-CommandRuntime.ps1
     Test-HarnessStructure.ps1
+    invest_command_runtime.py
+    test_command_runtime.py
+    verify_invest_harness.py
 ```
 
 ---
