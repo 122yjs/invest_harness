@@ -4,6 +4,19 @@
 
 ---
 
+## MVP 진행 상태 (2026-05-13)
+
+- ✅ 완료 기준: source layer 계약, generated layer sync, workspace safety, MVP command/skill contract, Rating/Price Target 리포트 구조, screen/comps/dcf/earnings/qa 산출물 계약.
+- 🔲 후속 기준: 실제 `/screen`, `/earnings`, `/dcf`, `/comps`, `/qa` CLI/runtime 파서와 실행 엔진은 별도 goal로 남긴다.
+
+### 후속 Runtime-Code Goal
+
+- [ ] Command 입력을 실제 CLI/runtime에서 파싱하고 각 thin command stub으로 dispatch하는 실행 엔진 구현
+- [ ] `/screen`, `/earnings`, `/comps`, `/dcf`, `/qa`에 대한 end-to-end command smoke test 추가
+- [ ] command runtime이 `${ACTIVE_WORKSPACE}`를 생성/전달하고 source skill 계약의 산출물 경로를 보존하는지 검증
+
+---
+
 ## 0. 최종 방향
 
 | 구분 | 설명 |
@@ -17,29 +30,29 @@
 
 ### Goal 1. 스킬을 원본 계층과 실행 계층으로 분리
 
-- [ ] 원본 계층 디렉토리 생성: `plugins/vertical-plugins/invest-research/skills/`
-- [ ] 실행 계층 디렉토리 생성: `plugins/agent-plugins/invest-harness/skills/`
-- [ ] 실행 계층 디렉토리 생성: `.agents/skills/`
-- [ ] 기존 Skill을 원본 계층으로 이동/복사
-- [ ] 실행용 Skill은 자동 생성 방식으로 전환
-- [ ] 복수 실행 환경(Claude, Codex, OpenClaw, Gemini 등) 대응 확인
+- [x] 원본 계층 디렉토리 생성: `plugins/vertical-plugins/invest-research/skills/`
+- [x] 실행 계층 디렉토리 생성: `plugins/agent-plugins/invest-harness/skills/`
+- [x] 실행 계층 디렉토리 생성: `.agents/skills/`
+- [x] 기존 Skill을 원본 계층으로 이동/복사
+- [x] 실행용 Skill은 자동 생성 방식으로 전환
+- [x] 복수 실행 환경(Claude, Codex, OpenClaw, Gemini 등) 대응 확인
 
 ### Goal 2. 공통 정책 계층 추가
 
-- [ ] 정책 디렉토리 생성: `plugins/vertical-plugins/invest-research/policies/`
-- [ ] `workspace-safety.md` 작성
-- [ ] `market-price-anchor.md` 작성
-- [ ] `data-source-policy.md` 작성
-- [ ] `qa-recalculation-policy.md` 작성
-- [ ] `rating-price-target-policy.md` 작성
+- [x] 정책 디렉토리 생성: `plugins/vertical-plugins/invest-research/policies/`
+- [x] `workspace-safety.md` 작성
+- [x] `market-price-anchor.md` 작성
+- [x] `data-source-policy.md` 작성
+- [x] `qa-recalculation-policy.md` 작성
+- [x] `rating-price-target-policy.md` 작성
 - [ ] ~~`investment-advice-boundary.md`~~ → **만들지 않음** (확정)
 
 ### Goal 3. Skill Sync 시스템 추가
 
-- [ ] `scripts/Sync-InvestSkills.ps1` 작성 (원본 + 정책 → 실행용 Skill 자동 생성)
-- [ ] `scripts/Test-SkillDrift.ps1` 작성 (원본 ↔ 실행용 불일치 감지)
-- [ ] Skill drift 감지 시 경고/실패 처리 로직 구현
-- [ ] 실행용 Skill 직접 수정 방지 가이드 문서화
+- [x] `scripts/Sync-InvestSkills.ps1` 작성 (원본 + 정책 → 실행용 Skill 자동 생성)
+- [x] `scripts/Test-SkillDrift.ps1` 작성 (원본 ↔ 실행용 불일치 감지)
+- [x] Skill drift 감지 시 경고/실패 처리 로직 구현
+- [x] 실행용 Skill 직접 수정 방지 가이드 문서화
 
 ---
 
@@ -47,27 +60,27 @@
 
 ### Goal 4. plain legacy workspace 직접 저장 금지
 
-- [ ] 기존 Skill/문서에서 legacy workspace 직접 경로 사용 부분 전수 조사
-- [ ] 모든 경로를 동적 Workspace 패턴으로 변경
-- [ ] 금지 규칙 문서화
+- [x] 기존 Skill/문서에서 legacy workspace 직접 경로 사용 부분 전수 조사
+- [x] 모든 경로를 동적 Workspace 패턴으로 변경
+- [x] 금지 규칙 문서화
   - ❌ `/03_valuation/findings.md` 또는 동적 workspace 없이 쓰는 고정 경로
   - ✅ `_workspace_AAPL_20260512/03_valuation/findings.md`
 
 ### Goal 5. 동적 Workspace 도입
 
-- [ ] 동적 Workspace 네이밍 규칙 확정: `_workspace_{TICKER_OR_SLUG}_{YYYYMMDD}/`
-- [ ] 한국 종목 지원: `_workspace_005930KS_20260512/`
-- [ ] 미국 종목 지원: `_workspace_AAPL_20260512/`
-- [ ] 동일 폴더 존재 시 시각 접미사 로직 구현: `_workspace_AAPL_20260512_143022/`
-- [ ] `${ACTIVE_WORKSPACE}` 변수 바인딩 메커니즘 구현
+- [x] 동적 Workspace 네이밍 규칙 확정: `_workspace_{TICKER_OR_SLUG}_{YYYYMMDD}/`
+- [x] 한국 종목 지원: `_workspace_005930KS_20260512/`
+- [x] 미국 종목 지원: `_workspace_AAPL_20260512/`
+- [x] 동일 폴더 존재 시 시각 접미사 로직 구현: `_workspace_AAPL_20260512_143022/`
+- [x] `${ACTIVE_WORKSPACE}` 변수 바인딩 메커니즘 구현
 
 ### Goal 6. Workspace Safety 검증 스크립트 추가
 
-- [ ] `scripts/Test-WorkspaceSafety.ps1` 작성
-- [ ] 검사: 문서/Skill에 legacy workspace 직접 경로 잔존 여부
-- [ ] 검사: `${ACTIVE_WORKSPACE}` 사용 여부
-- [ ] 검사: plain legacy workspace 저장 지시 → 실패 처리
-- [ ] 기존 구조 검증 스크립트를 동적 Workspace 기준으로 수정
+- [x] `scripts/Test-WorkspaceSafety.ps1` 작성
+- [x] 검사: 문서/Skill에 legacy workspace 직접 경로 잔존 여부
+- [x] 검사: `${ACTIVE_WORKSPACE}` 사용 여부
+- [x] 검사: plain legacy workspace 저장 지시 → 실패 처리
+- [x] 기존 구조 검증 스크립트를 동적 Workspace 기준으로 수정
 
 ---
 
@@ -75,28 +88,28 @@
 
 ### Goal 7. Market Price Snapshot 추가
 
-- [ ] `market-price-snapshot.md` 템플릿 작성
-- [ ] 저장 위치: `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`
-- [ ] PER, PBR, 시가총액, EV, EV/EBITDA, DCF 괴리율 계산용 기준 주가 단일화
+- [x] `market-price-snapshot.md` 템플릿 작성
+- [x] 저장 위치: `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`
+- [x] PER, PBR, 시가총액, EV, EV/EBITDA, DCF 괴리율 계산용 기준 주가 단일화
 
 ### Goal 8. 시장지표는 실제 시장 종가 기준으로 계산
 
-- [ ] 강제 규칙 문서화: DART 과거 보고서 기준가 ❌ → 실제 시장 종가 ✅
-- [ ] 한국 시장: KRX 최근 거래일 종가 (1순위) / yfinance (보조)
-- [ ] 미국 시장: yfinance 최근 거래일 종가 (1순위) / 거래소·IR (보조)
-- [ ] 글로벌 시장: yfinance 최근 거래일 종가 (1순위) / 거래소·IR (보조)
-- [ ] 기준 주가 조회 실패 시 fallback 로직 정의
+- [x] 강제 규칙 문서화: DART 과거 보고서 기준가 ❌ → 실제 시장 종가 ✅
+- [x] 한국 시장: KRX 최근 거래일 종가 (1순위) / yfinance (보조)
+- [x] 미국 시장: yfinance 최근 거래일 종가 (1순위) / 거래소·IR (보조)
+- [x] 글로벌 시장: yfinance 최근 거래일 종가 (1순위) / 거래소·IR (보조)
+- [x] 기준 주가 조회 실패 시 fallback 로직 정의
 
 ### Goal 9. QA에서 시장지표 직접 재계산
 
-- [ ] 재계산 로직 구현: `시가총액 = 기준 주가 × 상장주식수`
-- [ ] 재계산 로직 구현: `PER = 기준 주가 ÷ EPS`
-- [ ] 재계산 로직 구현: `PBR = 기준 주가 ÷ BPS`
-- [ ] 재계산 로직 구현: `EV = 시가총액 + 순부채`
-- [ ] 재계산 로직 구현: `EV/EBITDA = EV ÷ EBITDA`
-- [ ] 재계산 로직 구현: `FCF Yield = FCF ÷ 시가총액`
-- [ ] 재계산 로직 구현: `DCF 괴리율 = DCF 주당가치 ÷ 기준 주가 - 1`
-- [ ] 재계산 결과와 리포트 값 불일치 시 경고/실패 처리
+- [x] 재계산 로직 구현: `시가총액 = 기준 주가 × 상장주식수`
+- [x] 재계산 로직 구현: `PER = 기준 주가 ÷ EPS`
+- [x] 재계산 로직 구현: `PBR = 기준 주가 ÷ BPS`
+- [x] 재계산 로직 구현: `EV = 시가총액 + 순부채`
+- [x] 재계산 로직 구현: `EV/EBITDA = EV ÷ EBITDA`
+- [x] 재계산 로직 구현: `FCF Yield = FCF ÷ 시가총액`
+- [x] 재계산 로직 구현: `DCF 괴리율 = DCF 주당가치 ÷ 기준 주가 - 1`
+- [x] 재계산 결과와 리포트 값 불일치 시 경고/실패 처리
 
 ---
 
@@ -104,30 +117,30 @@
 
 ### Goal 10. Rating과 Price Target 허용
 
-- [ ] 기존 "투자 자문 표현 방지" 정책 폐기
-- [ ] 허용 표현 목록 확정 및 문서화:
-  - [ ] Buy / Outperform / Neutral / Hold / Underperform / Sell
-  - [ ] Price Target / Target Price
-  - [ ] Implied Upside / Implied Downside
-  - [ ] Bear / Base / Bull
-  - [ ] Risk-Reward
+- [x] 기존 "투자 자문 표현 방지" 정책 폐기
+- [x] 허용 표현 목록 확정 및 문서화:
+  - [x] Buy / Outperform / Neutral / Hold / Underperform / Sell
+  - [x] Price Target / Target Price
+  - [x] Implied Upside / Implied Downside
+  - [x] Bear / Base / Bull
+  - [x] Risk-Reward
 
 ### Goal 11. `rating-price-target-policy.md` 추가
 
-- [ ] 파일 생성: `plugins/vertical-plugins/invest-research/policies/rating-price-target-policy.md`
-- [ ] Rating 체계 정의
-- [ ] Price Target 산출 원칙 정의
-- [ ] 기준 주가 사용 규칙 정의
-- [ ] Upside/Downside 계산 방식 정의
-- [ ] Bear/Base/Bull 시나리오와 Rating 정합성 규칙 정의
-- [ ] QA 검증 항목 정의
+- [x] 파일 생성: `plugins/vertical-plugins/invest-research/policies/rating-price-target-policy.md`
+- [x] Rating 체계 정의
+- [x] Price Target 산출 원칙 정의
+- [x] 기준 주가 사용 규칙 정의
+- [x] Upside/Downside 계산 방식 정의
+- [x] Bear/Base/Bull 시나리오와 Rating 정합성 규칙 정의
+- [x] QA 검증 항목 정의
 
 ### Goal 12. 최종 리포트 구조 변경
 
-- [ ] 기존 섹션 15 변경: ~~종합 점수 및 최종 의견~~ → **Rating, Price Target 및 투자 의견**
-- [ ] 기존 섹션 16 변경: ~~투자 기간별 전략~~ → **투자 기간별 전략과 Risk-Reward**
-- [ ] 리포트 템플릿 업데이트
-- [ ] 관련 Skill의 리포트 구조 참조 업데이트
+- [x] 기존 섹션 15 변경: ~~종합 점수 및 최종 의견~~ → **Rating, Price Target 및 투자 의견**
+- [x] 기존 섹션 16 변경: ~~투자 기간별 전략~~ → **투자 기간별 전략과 Risk-Reward**
+- [x] 리포트 템플릿 업데이트
+- [x] 관련 Skill의 리포트 구조 참조 업데이트
 
 ---
 
@@ -135,33 +148,33 @@
 
 ### Goal 13. `/command` 기반 UX 도입
 
-- [ ] Command 실행 프레임워크 설계
-- [ ] Command 디렉토리 구조 생성:
-  - [ ] `plugins/vertical-plugins/invest-research/commands/`
-  - [ ] `plugins/agent-plugins/invest-harness/commands/`
-  - [ ] `.agents/commands/`
+- [x] Command 실행 프레임워크 설계
+- [x] Command 디렉토리 구조 생성:
+  - [x] `plugins/vertical-plugins/invest-research/commands/`
+  - [x] `plugins/agent-plugins/invest-harness/commands/`
+  - [x] `.agents/commands/`
 
 ### Goal 14. Command는 얇게, 실제 분석은 Skill이 수행
 
-- [ ] Command → Skill 매핑 구조 설계
+- [x] Command → Skill 매핑 구조 설계
   - Command = 버튼 (진입점)
   - Skill = 실제 업무 매뉴얼
   - Workspace = 결과 저장소
-- [ ] `/screen` → `idea-screener` 매핑
-- [ ] `/dcf` → `valuation-analyst` 매핑
-- [ ] `/earnings` → `earnings update workflow` 매핑
-- [ ] 기타 Command → Skill 매핑 정의
+- [x] `/screen` → `idea-screener` 매핑
+- [x] `/dcf` → `valuation-analyst` 매핑
+- [x] `/earnings` → `earnings update workflow` 매핑
+- [x] 기타 Command → Skill 매핑 정의
 
 ### Goal 15. 우선 구현 Command (MVP)
 
 **1차 (MVP):**
 
-- [ ] `/analyze` 구현
-- [ ] `/screen` 구현
-- [ ] `/comps` 구현
-- [ ] `/dcf` 구현
-- [ ] `/earnings` 구현
-- [ ] `/qa` 구현
+- [x] `/analyze` 구현
+- [x] `/screen` 구현
+- [x] `/comps` 구현
+- [x] `/dcf` 구현
+- [x] `/earnings` 구현
+- [x] `/qa` 구현
 
 **2차 (확장):**
 
@@ -179,32 +192,32 @@
 
 ### Goal 16. `idea-screener` Skill 추가
 
-- [ ] 원본 Skill 생성: `plugins/vertical-plugins/invest-research/skills/idea-screener/SKILL.md`
-- [ ] 실행 Skill 생성: `.agents/skills/idea-screener/SKILL.md`
-- [ ] 종목 미정 상태에서의 분석 시작 워크플로우 설계
+- [x] 원본 Skill 생성: `plugins/vertical-plugins/invest-research/skills/idea-screener/SKILL.md`
+- [x] 실행 Skill 생성: `.agents/skills/idea-screener/SKILL.md`
+- [x] 종목 미정 상태에서의 분석 시작 워크플로우 설계
 
 ### Goal 17. `/screen` 명령어 추가
 
-- [ ] `/screen` 명령어 파서 구현
+- [ ] `/screen` 명령어 파서 구현 → 후속 runtime-code goal로 분리
 - [ ] 입력 예시 지원 확인:
-  - [ ] `/screen AI 전력 인프라 2차 수혜주`
-  - [ ] `/screen 저평가 고ROIC 미국 중형주`
-  - [ ] `/screen 한국 화장품 ODM 수혜주`
+  - [x] `/screen AI 전력 인프라 2차 수혜주`
+  - [x] `/screen 저평가 고ROIC 미국 중형주`
+  - [x] `/screen 한국 화장품 ODM 수혜주`
 - [ ] 출력 항목 구현:
-  - [ ] 후보군
-  - [ ] 점수표
-  - [ ] 투자 논지
-  - [ ] 예비 Rating
-  - [ ] 주요 리스크
-  - [ ] 다음 단계
+  - [x] 후보군
+  - [x] 점수표
+  - [x] 투자 논지
+  - [x] 예비 Rating
+  - [x] 주요 리스크
+  - [x] 다음 단계
 
 ### Goal 18. `00_screen` Workspace 추가
 
-- [ ] `${ACTIVE_WORKSPACE}/00_screen/` 디렉토리 구조 정의
-- [ ] `screen-criteria.md` 템플릿 작성
-- [ ] `candidate-universe.md` 템플릿 작성
-- [ ] `idea-scorecard.md` 템플릿 작성
-- [ ] `shortlist.md` 템플릿 작성
+- [x] `${ACTIVE_WORKSPACE}/00_screen/` 디렉토리 구조 정의
+- [x] `screen-criteria.md` 템플릿 작성
+- [x] `candidate-universe.md` 템플릿 작성
+- [x] `idea-scorecard.md` 템플릿 작성
+- [x] `shortlist.md` 템플릿 작성
 
 ---
 
@@ -212,39 +225,39 @@
 
 ### Goal 19. `/comps` 추가
 
-- [ ] `/comps` 명령어 구현
-- [ ] 필수 비교 항목 구현:
-  - [ ] PER
-  - [ ] Forward PER
-  - [ ] PBR
-  - [ ] PSR
-  - [ ] EV/EBITDA
-  - [ ] EV/Sales
-  - [ ] FCF Yield
-  - [ ] 매출 성장률
-  - [ ] 영업이익률
-- [ ] 피어 그룹 자동/수동 선정 로직
+- [x] `/comps` 명령어 구현
+- [x] 필수 비교 항목 구현:
+  - [x] PER
+  - [x] Forward PER
+  - [x] PBR
+  - [x] PSR
+  - [x] EV/EBITDA
+  - [x] EV/Sales
+  - [x] FCF Yield
+  - [x] 매출 성장률
+  - [x] 영업이익률
+- [x] 피어 그룹 자동/수동 선정 로직
 
 ### Goal 20. `/dcf` 추가
 
-- [ ] `/dcf` 명령어 구현
-- [ ] Comps 선행 확인 로직 구현
-- [ ] DCF 워크플로우:
-  - [ ] `/comps` 결과 반영
-  - [ ] DCF 가정 설정
-  - [ ] DCF 결과 산출
-  - [ ] 피어 멀티플과 교차검증
-  - [ ] 역사적 PER 밴드와 교차검증
+- [x] `/dcf` 명령어 구현
+- [x] Comps 선행 확인 로직 구현
+- [x] DCF 워크플로우:
+  - [x] `/comps` 결과 반영
+  - [x] DCF 가정 설정
+  - [x] DCF 결과 산출
+  - [x] 피어 멀티플과 교차검증
+  - [x] 역사적 PER 밴드와 교차검증
 
 ### Goal 21. DCF · Comps · 역사적 밴드 교차검증
 
-- [ ] 교차검증 항목 구현:
-  - [ ] DCF implied EV/EBITDA
-  - [ ] 피어 EV/EBITDA
-  - [ ] 역사적 PER 밴드
-  - [ ] 현재 Forward PER
-  - [ ] FCF Yield
-- [ ] 단순 "DCF상 저평가" 결론 방지 규칙 적용
+- [x] 교차검증 항목 구현:
+  - [x] DCF implied EV/EBITDA
+  - [x] 피어 EV/EBITDA
+  - [x] 역사적 PER 밴드
+  - [x] 현재 Forward PER
+  - [x] FCF Yield
+- [x] 단순 "DCF상 저평가" 결론 방지 규칙 적용
 
 ---
 
@@ -252,18 +265,18 @@
 
 ### Goal 22. `/earnings` 추가
 
-- [ ] `/earnings` 명령어 구현
-- [ ] 입력 형식 지원:
-  - [ ] `/earnings 케이엔제이 latest`
-  - [ ] `/earnings TSLA Q1 2026`
-  - [ ] `/earnings 005930.KS latest`
-- [ ] 기능 구현:
-  - [ ] 최신 실적 발표일 확인
-  - [ ] 공식 공시 우선 확인
-  - [ ] 매출, 영업이익, EPS, 마진 변화 확인
-  - [ ] 컨센서스 대비 Beat/Miss 확인
-  - [ ] 가이던스 상향/유지/하향 확인
-  - [ ] Rating / Price Target 변화 판단
+- [x] `/earnings` 명령어 구현
+- [x] 입력 형식 지원:
+  - [x] `/earnings 케이엔제이 latest`
+  - [x] `/earnings TSLA Q1 2026`
+  - [x] `/earnings 005930.KS latest`
+- [x] 기능 구현:
+  - [x] 최신 실적 발표일 확인
+  - [x] 공식 공시 우선 확인
+  - [x] 매출, 영업이익, EPS, 마진 변화 확인
+  - [x] 컨센서스 대비 Beat/Miss 확인
+  - [x] 가이던스 상향/유지/하향 확인
+  - [x] Rating / Price Target 변화 판단
 
 ### Goal 23. `/preview` 추가
 
@@ -368,28 +381,28 @@
 
 ### Goal 31. `/qa` 명령어 추가
 
-- [ ] `/qa` 명령어 구현
-- [ ] 입력 형식 지원:
-  - [ ] `/qa report.md`
-  - [ ] `/qa AAPL latest`
+- [x] `/qa` 명령어 구현
+- [x] 입력 형식 지원:
+  - [x] `/qa report.md`
+  - [x] `/qa AAPL latest`
 
 ### Goal 32. QA 기준 변경
 
-- [ ] 기존 방향 폐기: ~~투자 자문처럼 보이는 표현 방지~~
-- [ ] 새 방향 적용: **Rating과 Price Target의 근거 검증**
-- [ ] QA 검사 항목 구현:
-  - [ ] Rating이 근거와 일치하는가?
-  - [ ] Price Target 산출 방식이 명시되어 있는가?
-  - [ ] 기준 주가가 `market-price-snapshot.md`와 일치하는가?
-  - [ ] Upside/Downside 계산이 맞는가?
-  - [ ] Bear/Base/Bull 시나리오와 Rating이 모순되지 않는가?
-  - [ ] PER/PBR/시총/DCF 계산이 직접 재계산 가능한가?
+- [x] 기존 방향 폐기: ~~투자 자문처럼 보이는 표현 방지~~
+- [x] 새 방향 적용: **Rating과 Price Target의 근거 검증**
+- [x] QA 검사 항목 구현:
+  - [x] Rating이 근거와 일치하는가?
+  - [x] Price Target 산출 방식이 명시되어 있는가?
+  - [x] 기준 주가가 `market-price-snapshot.md`와 일치하는가?
+  - [x] Upside/Downside 계산이 맞는가?
+  - [x] Bear/Base/Bull 시나리오와 Rating이 모순되지 않는가?
+  - [x] PER/PBR/시총/DCF 계산이 직접 재계산 가능한가?
 
 ### Goal 33. QA 산출물 확장
 
-- [ ] `${ACTIVE_WORKSPACE}/09_qa/review.md` 템플릿 작성
-- [ ] `${ACTIVE_WORKSPACE}/09_qa/fix-list.md` 템플릿 작성
-- [ ] `${ACTIVE_WORKSPACE}/09_qa/final-check.md` 템플릿 작성
+- [x] `${ACTIVE_WORKSPACE}/09_qa/review.md` 템플릿 작성
+- [x] `${ACTIVE_WORKSPACE}/09_qa/fix-list.md` 템플릿 작성
+- [x] `${ACTIVE_WORKSPACE}/09_qa/final-check.md` 템플릿 작성
 
 ---
 
@@ -484,23 +497,23 @@ invest_harness/
 
 | # | 항목 | 상태 |
 |---|------|------|
-| 1 | `plugins/vertical-plugins/invest-research/` 구조 생성 | ⬜ |
-| 2 | 기존 Skill을 원본 계층으로 복사 | ⬜ |
-| 3-a | 공통 정책: `workspace-safety.md` | ⬜ |
-| 3-b | 공통 정책: `market-price-anchor.md` | ⬜ |
-| 3-c | 공통 정책: `data-source-policy.md` | ⬜ |
-| 3-d | 공통 정책: `qa-recalculation-policy.md` | ⬜ |
-| 3-e | 공통 정책: `rating-price-target-policy.md` | ⬜ |
-| 4 | `Sync-InvestSkills.ps1` 작성 | ⬜ |
-| 5 | `Test-SkillDrift.ps1` 작성 | ⬜ |
-| 6 | `Test-WorkspaceSafety.ps1` 작성 | ⬜ |
-| 7 | `market-price-snapshot.md` 템플릿 추가 | ⬜ |
-| 8 | `/analyze` 추가 | ⬜ |
-| 9 | `/screen` + `idea-screener` 추가 | ⬜ |
-| 10 | `/comps` 추가 | ⬜ |
-| 11 | `/dcf` 추가 | ⬜ |
-| 12 | `/earnings` 추가 | ⬜ |
-| 13 | `/qa` 추가 | ⬜ |
+| 1 | `plugins/vertical-plugins/invest-research/` 구조 생성 | ✅ |
+| 2 | 기존 Skill을 원본 계층으로 복사 | ✅ |
+| 3-a | 공통 정책: `workspace-safety.md` | ✅ |
+| 3-b | 공통 정책: `market-price-anchor.md` | ✅ |
+| 3-c | 공통 정책: `data-source-policy.md` | ✅ |
+| 3-d | 공통 정책: `qa-recalculation-policy.md` | ✅ |
+| 3-e | 공통 정책: `rating-price-target-policy.md` | ✅ |
+| 4 | `Sync-InvestSkills.ps1` 작성 | ✅ |
+| 5 | `Test-SkillDrift.ps1` 작성 | ✅ |
+| 6 | `Test-WorkspaceSafety.ps1` 작성 | ✅ |
+| 7 | `market-price-snapshot.md` 템플릿 추가 | ✅ |
+| 8 | `/analyze` 추가 | ✅ |
+| 9 | `/screen` + `idea-screener` 추가 | ✅ |
+| 10 | `/comps` 추가 | ✅ |
+| 11 | `/dcf` 추가 | ✅ |
+| 12 | `/earnings` 추가 | ✅ |
+| 13 | `/qa` 추가 | ✅ |
 
 ---
 
