@@ -13,6 +13,7 @@ COMMANDS = [
     ("Sync generated layers", [sys.executable, "scripts/sync_invest_skills.py"]),
     ("Check generated-layer drift", [sys.executable, "scripts/test_skill_drift.py"]),
     ("Check workspace safety", [sys.executable, "scripts/test_workspace_safety.py"]),
+    ("Check command runtime smoke tests", [sys.executable, "scripts/test_command_runtime.py"]),
     ("Check harness structure", [sys.executable, "scripts/test_harness_structure.py"]),
 ]
 

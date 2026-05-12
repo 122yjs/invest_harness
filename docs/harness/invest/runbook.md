@@ -260,7 +260,21 @@
 4. 최종본은 `${ACTIVE_WORKSPACE}/08_final/report.md`에 저장한다.
 5. 사용자 전달용 짧은 요약이 필요하면 `${ACTIVE_WORKSPACE}/08_final/executive-summary.md`를 작성한다.
 
-## 5. 구조 검증
+## 5. Command runtime smoke
+
+Slash command 런타임은 command stub을 실행 로직으로 확장하지 않는다. 역할은 입력 파싱, thin wrapper 메타데이터 검증, `${ACTIVE_WORKSPACE}` 생성, mapped skill로 넘길 dispatch handoff 기록까지다.
+
+예시:
+
+```bash
+python3 scripts/invest_command_runtime.py "/screen AI 전력 인프라 2차 수혜주"
+python3 scripts/invest_command_runtime.py "/earnings TSLA Q1 2026"
+python3 scripts/invest_command_runtime.py "/dcf AAPL base"
+```
+
+각 실행은 `${ACTIVE_WORKSPACE}/00_input/command-dispatch.json`을 만들고, 실제 분석 산출물은 mapped skill이 작성해야 할 `expected_outputs`로만 기록한다.
+
+## 6. 구조 검증
 
 macOS/Linux에서는 Python 검증 경로를 기본으로 사용한다. 이 경로는 전역 PowerShell 설치가 없어도 동작해야 한다.
 
@@ -271,15 +285,16 @@ python3 scripts/verify_invest_harness.py
 Windows에서는 기존 PowerShell 검증 경로를 사용한다.
 
 ```powershell
-pwsh ./scripts/Test-HarnessStructure.ps1
 pwsh ./scripts/Sync-InvestSkills.ps1
 pwsh ./scripts/Test-SkillDrift.ps1
+pwsh ./scripts/Test-CommandRuntime.ps1
 pwsh ./scripts/Test-WorkspaceSafety.ps1
+pwsh ./scripts/Test-HarnessStructure.ps1
 ```
 
 검증이 실패하면 메시지에 나온 경로, frontmatter, sync drift, 또는 workspace safety 위반을 수정한 뒤 다시 실행한다.
 
-## 6. 운영 원칙
+## 7. 운영 원칙
 
 - 최신 데이터가 필요한 실제 종목 분석에서는 반드시 현재 기준으로 웹 또는 공식 공시를 확인한다.
 - 기술적 분석과 소셜 센티먼트는 보조 신호로만 사용한다.
