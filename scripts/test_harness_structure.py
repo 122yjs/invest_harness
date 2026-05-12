@@ -30,6 +30,15 @@ REQUIRED_PATHS = [
         "quarterly sentiment template",
     ),
     ("docs/harness/invest/templates/market-price-snapshot.md", "market price snapshot template"),
+    ("docs/harness/invest/templates/screen-criteria.md", "screen criteria template"),
+    ("docs/harness/invest/templates/candidate-universe.md", "candidate universe template"),
+    ("docs/harness/invest/templates/idea-scorecard.md", "idea scorecard template"),
+    ("docs/harness/invest/templates/shortlist.md", "shortlist template"),
+    ("docs/harness/invest/templates/comps.md", "comps template"),
+    ("docs/harness/invest/templates/dcf.md", "DCF template"),
+    ("docs/harness/invest/templates/earnings-update.md", "earnings update template"),
+    ("docs/harness/invest/templates/qa-fix-list.md", "QA fix list template"),
+    ("docs/harness/invest/templates/qa-final-check.md", "QA final check template"),
     ("plugins/vertical-plugins/invest-research", "vertical source plugin"),
     ("plugins/agent-plugins/invest-harness", "agent plugin generated layer"),
     (".agents/skills", "generated agent skills"),
@@ -73,9 +82,17 @@ REQUIRED_POLICIES = [
 HANDOFF_PATHS = [
     "${ACTIVE_WORKSPACE}/00_input/input-intake.md",
     "${ACTIVE_WORKSPACE}/00_input/request-summary.md",
+    "${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md",
+    "${ACTIVE_WORKSPACE}/00_input/earnings-update.md",
+    "${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md",
+    "${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md",
+    "${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md",
+    "${ACTIVE_WORKSPACE}/00_screen/shortlist.md",
     "${ACTIVE_WORKSPACE}/01_financial/findings.md",
     "${ACTIVE_WORKSPACE}/02_fundamental/findings.md",
     "${ACTIVE_WORKSPACE}/03_valuation/findings.md",
+    "${ACTIVE_WORKSPACE}/03_valuation/comps.md",
+    "${ACTIVE_WORKSPACE}/03_valuation/dcf.md",
     "${ACTIVE_WORKSPACE}/04_technical/findings.md",
     "${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md",
     "${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md",
@@ -84,6 +101,8 @@ HANDOFF_PATHS = [
     "${ACTIVE_WORKSPACE}/08_final/report.md",
     "${ACTIVE_WORKSPACE}/08_final/executive-summary.md",
     "${ACTIVE_WORKSPACE}/09_qa/review.md",
+    "${ACTIVE_WORKSPACE}/09_qa/fix-list.md",
+    "${ACTIVE_WORKSPACE}/09_qa/final-check.md",
 ]
 
 
@@ -170,4 +189,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -60,6 +60,16 @@ $requiredPaths = @(
     @{ Path = 'docs\harness\invest\templates\report.md'; Description = '보고서 템플릿' },
     @{ Path = 'docs\harness\invest\templates\qa-review.md'; Description = 'QA 템플릿' },
     @{ Path = 'docs\harness\invest\templates\quarterly-sentiment-deep-dive.md'; Description = '최근 분기·센티먼트 심층 비교 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\market-price-snapshot.md'; Description = '기준 주가 snapshot 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\screen-criteria.md'; Description = '스크리닝 기준 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\candidate-universe.md'; Description = '후보군 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\idea-scorecard.md'; Description = '아이디어 점수표 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\shortlist.md'; Description = 'shortlist 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\comps.md'; Description = 'comps 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\dcf.md'; Description = 'DCF 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\earnings-update.md'; Description = '실적 업데이트 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\qa-fix-list.md'; Description = 'QA fix-list 템플릿' },
+    @{ Path = 'docs\harness\invest\templates\qa-final-check.md'; Description = 'QA final-check 템플릿' },
     @{ Path = '.agents\skills\invest-orchestrator\SKILL.md'; Description = '오케스트레이터 스킬' },
     @{ Path = '.agents\skills\financial-analyst\SKILL.md'; Description = '재무 분석 스킬' },
     @{ Path = '.agents\skills\fundamental-analyst\SKILL.md'; Description = '정성 분석 스킬' },
@@ -92,9 +102,17 @@ foreach ($skillDir in $skillDirs) {
 $handoffPaths = @(
     '${ACTIVE_WORKSPACE}/00_input/input-intake.md',
     '${ACTIVE_WORKSPACE}/00_input/request-summary.md',
+    '${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md',
+    '${ACTIVE_WORKSPACE}/00_input/earnings-update.md',
+    '${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md',
+    '${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md',
+    '${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md',
+    '${ACTIVE_WORKSPACE}/00_screen/shortlist.md',
     '${ACTIVE_WORKSPACE}/01_financial/findings.md',
     '${ACTIVE_WORKSPACE}/02_fundamental/findings.md',
     '${ACTIVE_WORKSPACE}/03_valuation/findings.md',
+    '${ACTIVE_WORKSPACE}/03_valuation/comps.md',
+    '${ACTIVE_WORKSPACE}/03_valuation/dcf.md',
     '${ACTIVE_WORKSPACE}/04_technical/findings.md',
     '${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md',
     '${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md',
@@ -102,7 +120,9 @@ $handoffPaths = @(
     '${ACTIVE_WORKSPACE}/07_draft/report.md',
     '${ACTIVE_WORKSPACE}/08_final/report.md',
     '${ACTIVE_WORKSPACE}/08_final/executive-summary.md',
-    '${ACTIVE_WORKSPACE}/09_qa/review.md'
+    '${ACTIVE_WORKSPACE}/09_qa/review.md',
+    '${ACTIVE_WORKSPACE}/09_qa/fix-list.md',
+    '${ACTIVE_WORKSPACE}/09_qa/final-check.md'
 )
 
 $teamSpec = Get-Content -LiteralPath (Join-Path $repoRoot 'docs\harness\invest\team-spec.md') -Raw
