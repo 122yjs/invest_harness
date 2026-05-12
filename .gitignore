@@ -2,6 +2,7 @@
 # Legacy / generated workspace outputs
 _workspace/
 _workspace_*/
+.worktrees/
 
 # Python validation cache
 __pycache__/
