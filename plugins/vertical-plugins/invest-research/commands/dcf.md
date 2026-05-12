@@ -13,9 +13,9 @@ Thin command stub for DCF workflow entry.
 
 - Resolve `${ACTIVE_WORKSPACE}`.
 - Pass the target, requested scenario scope, and `${ACTIVE_WORKSPACE}` to `valuation-analyst`.
-- Let the skill check whether comps or market-price snapshot inputs exist.
+- Let the skill check whether `${ACTIVE_WORKSPACE}/03_valuation/comps.md` and `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` exist.
+- Require the skill to write DCF output to `${ACTIVE_WORKSPACE}/03_valuation/dcf.md`.
 
 ## Prohibited
 
 - Do not calculate DCF values, discount rates, terminal values, or price targets inside this command.
-

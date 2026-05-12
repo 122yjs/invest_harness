@@ -21,9 +21,8 @@ Thin command stub for comparable-company analysis.
 
 - Resolve `${ACTIVE_WORKSPACE}`.
 - Pass the company identifier, peer hints, and `${ACTIVE_WORKSPACE}` to `valuation-analyst`.
-- Require the skill to write any future comps output under `${ACTIVE_WORKSPACE}`.
+- Require the skill to write comparable-company output to `${ACTIVE_WORKSPACE}/03_valuation/comps.md`.
 
 ## Prohibited
 
 - Do not select peers, compute multiples, or draw valuation conclusions inside this command.
-
