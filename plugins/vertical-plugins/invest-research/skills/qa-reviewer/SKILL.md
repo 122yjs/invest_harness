@@ -9,11 +9,12 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 
 - `${ACTIVE_WORKSPACE}/07_draft/report.md` 초안이 최종본으로 확정 가능한지 검토할 때 사용한다.
 - 출처 누락, 기준일 누락, 수치 충돌, 섹션 누락, 결론-근거 불일치를 찾아야 할 때 사용한다.
-- 투자 자문처럼 보이는 표현이나 과도한 확신 표현을 제거해야 할 때 사용한다.
+- Rating, Price Target, implied upside/downside, Bear/Base/Bull 시나리오, 시장지표 재계산 가능성을 검증해야 할 때 사용한다.
 
 ## Required Inputs
 
 - `${ACTIVE_WORKSPACE}/00_input/request-summary.md`
+- `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`
 - `${ACTIVE_WORKSPACE}/01_financial/findings.md`
 - `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`
 - `${ACTIVE_WORKSPACE}/03_valuation/findings.md`
@@ -22,6 +23,9 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 - `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`
 - `${ACTIVE_WORKSPACE}/07_draft/report.md`
 - 선택 입력: `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`
+- 선택 입력: `${ACTIVE_WORKSPACE}/03_valuation/comps.md`
+- 선택 입력: `${ACTIVE_WORKSPACE}/03_valuation/dcf.md`
+- 선택 입력: `${ACTIVE_WORKSPACE}/00_input/earnings-update.md`
 - 기준 문서: `invest_prompt_v2.md`
 
 ## Review Scope
@@ -31,7 +35,9 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 | 구조 | 최종 출력 18개 섹션이 모두 존재하는가? |
 | 출처 | 핵심 수치와 사실에 출처, 기준일, 회계기간, 통화가 붙어 있는가? |
 | 수치 | findings와 초안의 수치가 일치하는가? 충돌이 설명되었는가? |
-| 논리 | 투자 의견, 점수, 시나리오, 리스크가 서로 모순되지 않는가? |
+| 시장지표 | 기준 주가, 시가총액, PER/PBR/EV/FCF Yield가 snapshot과 재계산 결과에 맞는가? |
+| Rating / Price Target | Rating, Price Target, implied upside/downside가 근거와 산식에 맞는가? |
+| 논리 | 투자 의견, 시나리오, 리스크, Risk-Reward가 서로 모순되지 않는가? |
 | 불확실성 | 데이터 부족과 공식 자료 미확인 항목이 명시되었는가? |
 | 문체 | 한국어 투자 리포트 문체이며 과도한 확신 표현이 없는가? |
 | 자문 경계 | 개인화된 투자 자문처럼 보이는 표현이 없는가? |
@@ -128,17 +134,32 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
    - 초안의 핵심 수치를 원천 findings와 대조한다.
    - 수치가 다르면 충돌로 기록하고 수정 요청을 작성한다.
 
-5. **결론 정합성 검토**
-   - 종합 점수, 최종 의견, 투자 기간별 전략, 리스크, 시나리오가 같은 방향으로 설명되는지 확인한다.
+5. **시장지표 재계산**
+   - 시가총액 = 기준 주가 x 희석 주식 수
+   - PER = 기준 주가 / EPS
+   - PBR = 기준 주가 / BPS
+   - EV = 시가총액 + 순부채
+   - EV/EBITDA = EV / EBITDA
+   - FCF Yield = FCF / 시가총액
+   - DCF 괴리율 = DCF 주당가치 / 기준 주가 - 1
+   - Implied Upside / Downside = Price Target / 기준 주가 - 1
+   - 입력이 부족하면 `재계산 불가`와 누락 입력을 기록한다.
+
+6. **Rating / Price Target 정합성 검토**
+   - Rating, Price Target 및 투자 의견, 투자 기간별 전략과 Risk-Reward, 리스크, 시나리오가 같은 방향으로 설명되는지 확인한다.
+   - Bear/Base/Bull 시나리오와 stated Rating이 모순되지 않는지 확인한다.
+   - Price Target 산출 방식과 기준 주가가 명시되어 있는지 확인한다.
    - 기술적 분석과 소셜 센티먼트가 보조 신호로만 쓰였는지 확인한다.
 
-6. **문체 및 경계 검토**
+7. **문체 및 경계 검토**
    - `반드시 상승`, `확실한 매수`, `무조건 매도` 같은 표현을 결함으로 기록한다.
    - 정보 제공용 분석이라는 한계 문구가 있는지 확인한다.
 
-7. **판정 작성**
+8. **판정 작성**
    - 결함을 심각도별로 정리하고 최종 판정을 내린다.
    - 결과를 `${ACTIVE_WORKSPACE}/09_qa/review.md`에 저장한다.
+   - 실행 가능한 수정 목록을 `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`에 저장한다.
+   - 최종 승인 전 확인표를 `${ACTIVE_WORKSPACE}/09_qa/final-check.md`에 저장한다.
 
 ## Output Format
 
@@ -176,8 +197,8 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 | 12. 거시경제 및 정책 환경 |  |  |
 | 13. 리스크 분석 |  |  |
 | 14. 시나리오 분석 |  |  |
-| 15. 종합 점수 및 최종 의견 |  |  |
-| 16. 투자 기간별 전략 |  |  |
+| 15. Rating, Price Target 및 투자 의견 |  |  |
+| 16. 투자 기간별 전략과 Risk-Reward |  |  |
 | 17. 모니터링 체크리스트 |  |  |
 | 18. 한계 및 추가 확인 필요 사항 |  |  |
 
@@ -186,18 +207,34 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 |---|---|---|
 | 핵심 재무 수치 출처 |  |  |
 | 밸류에이션 수치 출처 |  |  |
+| market-price snapshot 일치 |  |  |
+| PER/PBR/EV/FCF Yield 재계산 |  |  |
+| DCF 괴리율 재계산 |  |  |
+| Implied Upside / Downside 재계산 |  |  |
 | 뉴스 기준일 |  |  |
 | 거시 지표 기준일 |  |  |
 | 통화 / 회계기간 표기 |  |  |
 | 충돌 수치 처리 |  |  |
 
-## 5. 결론 정합성 검토
-- 점수와 최종 의견:
-- 시나리오와 전략:
+## 5. Rating / Price Target 정합성 검토
+- Rating과 투자 의견:
+- Price Target 산출 방식:
+- 기준 주가와 implied upside/downside:
+- Bear/Base/Bull과 전략:
 - 리스크와 모니터링:
 - 보조 신호 사용 경계:
 
-## 6. 최종 권고
+## 6. Fix List 요약
+- `${ACTIVE_WORKSPACE}/09_qa/fix-list.md` 작성 여부:
+- 치명 결함:
+- 중요 결함:
+- 경미 결함:
+
+## 7. Final Check
+- `${ACTIVE_WORKSPACE}/09_qa/final-check.md` 작성 여부:
+- 최종본 확정 가능 여부:
+
+## 8. 최종 권고
 - 승인 가능 여부:
 - 최종본 확정 전 필수 수정:
 - 남은 한계:
@@ -208,4 +245,5 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 - QA는 새로운 분석을 추가하지 않고 결함과 수정 방향만 제시한다.
 - 치명적 결함이 있으면 `승인` 판정을 내리지 않는다.
 - 수치 충돌은 원천 findings와 초안의 위치를 함께 적는다.
+- Rating / Price Target 검증은 market-price snapshot, valuation findings, scenario assumptions를 기준으로 수행한다.
 - 경미한 문체 수정과 치명적 근거 누락을 구분한다.

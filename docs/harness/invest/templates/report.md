@@ -28,9 +28,18 @@
 
 ## 14. 시나리오 분석
 
-## 15. 종합 점수 및 최종 의견
+## 15. Rating, Price Target 및 투자 의견
 
-## 16. 투자 기간별 전략
+## 16. 투자 기간별 전략과 Risk-Reward
+
+### Rating / Price Target 계산 근거
+
+| 항목 | 값 | 산식 / 근거 | 출처 |
+|---|---:|---|---|
+| 기준 주가 |  | `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` |  |
+| Price Target |  |  |  |
+| Implied Upside / Downside |  | Price Target / 기준 주가 - 1 |  |
+| Rating |  | Buy / Outperform / Neutral / Hold / Underperform / Sell |  |
 
 ## 17. 모니터링 체크리스트
 

@@ -39,7 +39,7 @@
 | 기준 통화 | 상장 통화 |
 | 회계 기준 | 회사 공시 기준 |
 | 기술적 분석 포함 여부 | 포함하되 장기 리포트에서는 보조 신호로 제한 |
-| 최종 의견 형식 | 점수형 + 시나리오별 전략 |
+| 최종 의견 형식 | Rating + Price Target + 시나리오별 전략 |
 
 ### 4. 분석 초점 구성
 
@@ -74,7 +74,7 @@
 
 <!-- END INPUT_GATE_POLICY_INTEGRATED -->
 
-이 문서는 `invest_prompt_v2.md`와 `.agents/skills/*`를 반복적으로 사용해 개별 주식 투자 리포트를 생성하는 절차를 정의한다. 실행 환경은 Windows PowerShell을 기준으로 한다.
+이 문서는 `invest_prompt_v2.md`와 `.agents/skills/*`를 반복적으로 사용해 개별 주식 투자 리포트를 생성하는 절차를 정의한다. macOS/Linux는 Python 검증 경로를 기본으로 사용하고, Windows는 PowerShell 검증 경로를 사용한다.
 
 ## 반복 실행 workspace 보존
 
@@ -122,7 +122,7 @@
 | 기준 통화 | 상장 통화 |
 | 회계 기준 | 회사 공시 기준 |
 | 기술적 분석 포함 여부 | 포함 |
-| 최종 의견 형식 | 점수형 + 시나리오별 전략 |
+| 최종 의견 형식 | Rating + Price Target + 시나리오별 전략 |
 
 필수 보완 입력 폼:
 
@@ -175,7 +175,7 @@
 - 기준 통화: 상장 통화
 - 회계 기준: 회사 공시 기준
 - 기술적 분석 포함 여부: 포함
-- 최종 의견 형식: 점수형 + 시나리오별 전략
+- 최종 의견 형식: Rating + Price Target + 시나리오별 전략
 ```
 
 
@@ -195,10 +195,12 @@
 4. 특정 이벤트 / 촉매가 있으면 선택 입력으로 기록한다.
 5. 미지정 선택 옵션은 기본값을 적용한다.
 6. `docs/harness/invest/templates/request-summary.md`를 기준으로 `${ACTIVE_WORKSPACE}/00_input/request-summary.md`를 작성한다.
+7. `docs/harness/invest/templates/market-price-snapshot.md`를 기준으로 `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`를 작성한다.
 
 필수 확인:
 
 - `${ACTIVE_WORKSPACE}/00_input/input-intake.md`에 게이트 결과가 남아 있는지 확인한다.
+- `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`에 기준 주가, 기준일, 출처, 주식 수, 주요 시장지표 계산 입력이 남아 있는지 확인한다.
 - 자동 식별 결과와 사용자 원문이 충돌하지 않는지 확인한다.
 - 분석 초점 선택지는 세 가지로 제한한다.
 - 이벤트 드리븐은 독립 모드가 아니라 선택 촉매로 처리한다.
@@ -214,7 +216,7 @@
 |---|---|
 | `financial-analyst` | `${ACTIVE_WORKSPACE}/01_financial/findings.md` |
 | `fundamental-analyst` | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` |
-| `valuation-analyst` | `${ACTIVE_WORKSPACE}/03_valuation/findings.md` |
+| `valuation-analyst` | `${ACTIVE_WORKSPACE}/03_valuation/findings.md`, 선택 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`, `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` |
 | `technical-analyst` | `${ACTIVE_WORKSPACE}/04_technical/findings.md` |
 | `macro-sentiment-analyst` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` |
 | `risk-scenario-analyst` | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` |
@@ -245,16 +247,16 @@
 12. 거시경제 및 정책 환경
 13. 리스크 분석
 14. 시나리오 분석
-15. 종합 점수 및 최종 의견
-16. 투자 기간별 전략
+15. Rating, Price Target 및 투자 의견
+16. 투자 기간별 전략과 Risk-Reward
 17. 모니터링 체크리스트
 18. 한계 및 추가 확인 필요 사항
 
 ## 4. QA 및 최종본
 
-1. `qa-reviewer`로 `${ACTIVE_WORKSPACE}/09_qa/review.md`를 작성한다.
+1. `qa-reviewer`로 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
 2. QA 판정이 `승인` 또는 `수정 후 승인`인지 확인한다.
-3. 치명적 결함이 있으면 관련 findings를 보강하고 초안 합성을 다시 실행한다.
+3. 치명적 결함이 있으면 `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`를 기준으로 관련 findings를 보강하고 초안 합성을 다시 실행한다.
 4. 최종본은 `${ACTIVE_WORKSPACE}/08_final/report.md`에 저장한다.
 5. 사용자 전달용 짧은 요약이 필요하면 `${ACTIVE_WORKSPACE}/08_final/executive-summary.md`를 작성한다.
 

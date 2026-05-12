@@ -42,7 +42,7 @@
 | 기준 통화 | 상장 통화 |
 | 회계 기준 | 회사 공시 기준 |
 | 기술적 분석 포함 여부 | 포함하되 장기 리포트에서는 보조 신호로 제한 |
-| 최종 의견 형식 | 점수형 + 시나리오별 전략 |
+| 최종 의견 형식 | Rating + Price Target + 시나리오별 전략 |
 
 ### 4. 분석 초점 구성
 
@@ -88,7 +88,7 @@
 | 단계 | 담당 | 주요 작업 | 산출물 |
 |---|---|---|---|
 | 0 | invest-orchestrator | 입력 수집 게이트, 기업명/티커 기반 자동 식별, 선택 옵션 확인 | `${ACTIVE_WORKSPACE}/00_input/input-intake.md` |
-| 1 | invest-orchestrator | 사용자 입력 정규화, 가정 명시, 작업 범위 확정 | `${ACTIVE_WORKSPACE}/00_input/request-summary.md` |
+| 1 | invest-orchestrator | 사용자 입력 정규화, 가정 명시, 작업 범위 확정, 기준 주가 snapshot 작성 | `${ACTIVE_WORKSPACE}/00_input/request-summary.md`, `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` |
 | 2 | 분석 역할 6종 | 파트별 병렬 조사 및 근거 표준화 | `01`~`06` findings, 필요 시 `06a` conflicts |
 | 3 | report-synthesizer | 병렬 결과를 리포트 구조에 맞춰 초안 조립 | `${ACTIVE_WORKSPACE}/07_draft/report.md` |
 | 4 | qa-reviewer | 출처, 수치, 일관성, 누락, 문체 검토 | `${ACTIVE_WORKSPACE}/09_qa/review.md` |
@@ -101,12 +101,12 @@
 | invest-orchestrator | 전체 조율 | 사용자 요청, `invest_prompt_v2.md` | 요청 요약, 작업 지시, 최종 리포트 | 필수 입력·가정·분석 기준일·투자 기간이 정리되고 최종본이 QA 반영 상태임 |
 | financial-analyst | Part II, III | 요청 요약, 기업 식별 정보 | `${ACTIVE_WORKSPACE}/01_financial/findings.md` | 기업 개요, 사업 구조, 최근 이벤트, 재무제표·비율·종합평가가 출처와 기준일과 함께 정리됨 |
 | fundamental-analyst | Part IV, V, VI, VII | 요청 요약, 기업 식별 정보 | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` | 산업/경쟁, 경영진/거버넌스, 해자, 제품·서비스가 표와 서술로 정리됨 |
-| valuation-analyst | Part VIII | 요청 요약, 재무 결과, 비교기업 가정 | `${ACTIVE_WORKSPACE}/03_valuation/findings.md` | 상대가치와 DCF 또는 대체 평가, Bear/Base/Bull 가치 범위가 명시됨 |
+| valuation-analyst | Part VIII | 요청 요약, market-price snapshot, 재무 결과, 비교기업 가정 | `${ACTIVE_WORKSPACE}/03_valuation/findings.md`, `${ACTIVE_WORKSPACE}/03_valuation/comps.md`, `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` | 상대가치와 DCF 또는 대체 평가, Bear/Base/Bull 가치 범위, Rating/Price Target 입력값이 명시됨 |
 | technical-analyst | Part IX | 요청 요약, 가격 데이터 사용 범위 | `${ACTIVE_WORKSPACE}/04_technical/findings.md` | 추세, 지지·저항, 이평선, RSI/MACD 등 기술 신호와 한계가 정리됨 |
 | macro-sentiment-analyst | Part X, XI | 요청 요약, 국가/통화/기간 정보 | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` | 뉴스, 센티먼트, 애널리스트 의견, 거시·정책 영향 경로가 정리됨 |
 | risk-scenario-analyst | Part XII, XIII | 요청 요약, 선행 분석 결과 | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` | 리스크 표와 Bear/Base/Bull 시나리오가 모니터링 지표와 함께 정리됨 |
-| report-synthesizer | Part I, XIV, XV, XVI | `01`~`06` findings 전체 | `${ACTIVE_WORKSPACE}/07_draft/report.md` | Executive Summary, 종합 점수, 최종 의견, 체크리스트, 한계가 전체 파트와 일관됨 |
-| qa-reviewer | 최종 QA | 초안 리포트, 원천 findings 전체 | `${ACTIVE_WORKSPACE}/09_qa/review.md` | 출처 누락, 수치 충돌, 논리 비약, 문체 문제, 미완성 표가 체크리스트 형태로 보고됨 |
+| report-synthesizer | Part I, XIV, XV, XVI | `00`~`06` 산출물 전체 | `${ACTIVE_WORKSPACE}/07_draft/report.md` | Executive Summary, Rating, Price Target, Risk-Reward, 체크리스트, 한계가 전체 파트와 일관됨 |
+| qa-reviewer | 최종 QA | 초안 리포트, 원천 findings, market-price snapshot | `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md` | 출처 누락, 수치 충돌, Rating/Price Target 근거, 재계산 항목, 문체 문제가 체크리스트 형태로 보고됨 |
 
 ## 5. 공통 작성 규칙
 
@@ -124,9 +124,17 @@
 |---|---|---|---|
 | 00a | `${ACTIVE_WORKSPACE}/00_input/input-intake.md` | invest-orchestrator | 원문 요청, 자동 식별 결과, 선택 옵션, 특정 이벤트 / 촉매, 게이트 상태 |
 | 00b | `${ACTIVE_WORKSPACE}/00_input/request-summary.md` | invest-orchestrator | 정규화 입력값, 기본 가정, 분석 범위, 제외 범위 |
+| 00c | `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` | invest-orchestrator / valuation-analyst | 기준 주가, 기준일, 가격 출처, 주식 수, 시장지표 계산 입력 |
+| 00d | `${ACTIVE_WORKSPACE}/00_input/earnings-update.md` | earnings-update | 최신 또는 지정 분기 실적, 컨센서스 대비, 가이던스, Rating/Price Target 영향 |
+| 00s1 | `${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md` | idea-screener | 스크리닝 원문, 포함/제외 기준, 데이터 소스 계획 |
+| 00s2 | `${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md` | idea-screener | 후보군, 식별자, 포함/제외 사유 |
+| 00s3 | `${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md` | idea-screener | 후보별 점수표, 예비 Rating, 주요 리스크 |
+| 00s4 | `${ACTIVE_WORKSPACE}/00_screen/shortlist.md` | idea-screener | 최종 후보, 투자 논지, 다음 단계 |
 | 01 | `${ACTIVE_WORKSPACE}/01_financial/findings.md` | financial-analyst | 기업 개요, 재무표, 비율, 최근 이벤트 |
 | 02 | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` | fundamental-analyst | 산업/경쟁, 경영진, 해자, 제품·서비스 |
 | 03 | `${ACTIVE_WORKSPACE}/03_valuation/findings.md` | valuation-analyst | 멀티플 비교, DCF 가정, 시나리오별 가치 |
+| 03a | `${ACTIVE_WORKSPACE}/03_valuation/comps.md` | valuation-analyst | 피어 그룹, 멀티플 비교, 프리미엄/디스카운트 해석 |
+| 03b | `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` | valuation-analyst | DCF 가정, Bear/Base/Bull 결과, comps/역사적 밴드 교차검증 |
 | 04 | `${ACTIVE_WORKSPACE}/04_technical/findings.md` | technical-analyst | 추세, 지표, 지지·저항, 기술적 리스크 |
 | 05 | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` | macro-sentiment-analyst | 뉴스, 센티먼트, 거시·정책 영향 |
 | 06 | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` | risk-scenario-analyst | 리스크 등록부, 시나리오 표, 촉발 요인 |
@@ -134,7 +142,9 @@
 | 07 | `${ACTIVE_WORKSPACE}/07_draft/report.md` | report-synthesizer | 통합 초안 전체 |
 | 08 | `${ACTIVE_WORKSPACE}/08_final/report.md` | invest-orchestrator | QA 반영 완료 최종본 |
 | 08a | `${ACTIVE_WORKSPACE}/08_final/executive-summary.md` | invest-orchestrator | 선택적 사용자 요약본 |
-| 09 | `${ACTIVE_WORKSPACE}/09_qa/review.md` | qa-reviewer | 결함 목록, 수정 요청, 승인 여부
+| 09 | `${ACTIVE_WORKSPACE}/09_qa/review.md` | qa-reviewer | 결함 목록, 수정 요청, 승인 여부 |
+| 09a | `${ACTIVE_WORKSPACE}/09_qa/fix-list.md` | qa-reviewer | 수정 작업 목록, 담당 산출물, 완료 여부 |
+| 09b | `${ACTIVE_WORKSPACE}/09_qa/final-check.md` | qa-reviewer | 최종 승인 전 확인표 |
 
 ### 핸드오프 규약
 - 각 `findings.md` 첫머리에 **범위, 사용 데이터 기준일, 핵심 가정, 출처 목록**을 둔다.
@@ -175,5 +185,6 @@
 - 초안과 최종본의 섹션 순서가 `invest_prompt_v2.md` 요구 구조와 일치한다.
 - 핵심 수치에는 출처와 기준일이 붙어 있다.
 - 최종 의견은 점수, 시나리오, 리스크, 모니터링 체크리스트와 상호 일관된다.
+- Rating, Price Target, Implied Upside / Downside는 `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` 기준 주가와 재계산 가능하다.
 - `qa-reviewer`가 치명적 누락 없음으로 마감했을 때만 `${ACTIVE_WORKSPACE}/08_final/report.md`를 확정한다.
 - Windows PowerShell에서 `.\scripts\Test-HarnessStructure.ps1` 검증이 통과한다.

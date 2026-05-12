@@ -21,9 +21,8 @@ Thin command stub for QA review.
 
 - Resolve `${ACTIVE_WORKSPACE}` or accept an explicit report path.
 - Pass the report path, source workspace, and `${ACTIVE_WORKSPACE}` to `qa-reviewer`.
-- Let `qa-reviewer` own recalculation checks and final review output.
+- Let `qa-reviewer` own recalculation checks, rating consistency checks, and QA outputs under `${ACTIVE_WORKSPACE}/09_qa/`.
 
 ## Prohibited
 
 - Do not perform recalculation, source validation, or rating consistency review inside this command.
-

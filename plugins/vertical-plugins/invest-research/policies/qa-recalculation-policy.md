@@ -30,5 +30,10 @@ If the report value differs from the recalculated value beyond the stated tolera
 
 ## Output
 
-QA findings belong under `${ACTIVE_WORKSPACE}/09_qa/`. The first-pass infrastructure only defines this contract; detailed product QA logic is deferred.
+QA findings belong under `${ACTIVE_WORKSPACE}/09_qa/`:
 
+- `${ACTIVE_WORKSPACE}/09_qa/review.md`
+- `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`
+- `${ACTIVE_WORKSPACE}/09_qa/final-check.md`
+
+QA must explicitly state whether each recalculation passed, failed, or could not run because required inputs were missing.

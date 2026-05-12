@@ -20,7 +20,7 @@ Every invest-harness run must write into one explicit active workspace. New work
 
 ## Legacy Sample Artifacts
 
-Existing sample outputs in the repository-level legacy workspace are preserved as historical examples. The first-pass infrastructure freeze must not delete, move, rename, or reinterpret those files.
+Existing sample outputs in the repository-level legacy workspace are preserved as historical examples. Harness maintenance must not delete, move, rename, or reinterpret those files unless a user explicitly requests cleanup.
 
 ## Prohibited New Instructions
 
@@ -29,4 +29,3 @@ Do not instruct a skill, command, script, or template to write to a fixed legacy
 ## Verification
 
 `scripts/Test-WorkspaceSafety.ps1` must fail when docs, skills, commands, scripts, or templates contain a fixed legacy workspace storage instruction outside the preserved sample artifact folder.
-

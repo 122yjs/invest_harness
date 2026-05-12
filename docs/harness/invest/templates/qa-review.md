@@ -34,8 +34,8 @@
 | 12. 거시경제 및 정책 환경 |  |  |
 | 13. 리스크 분석 |  |  |
 | 14. 시나리오 분석 |  |  |
-| 15. 종합 점수 및 최종 의견 |  |  |
-| 16. 투자 기간별 전략 |  |  |
+| 15. Rating, Price Target 및 투자 의견 |  |  |
+| 16. 투자 기간별 전략과 Risk-Reward |  |  |
 | 17. 모니터링 체크리스트 |  |  |
 | 18. 한계 및 추가 확인 필요 사항 |  |  |
 
@@ -45,19 +45,37 @@
 |---|---|---|
 | 핵심 재무 수치 출처 |  |  |
 | 밸류에이션 수치 출처 |  |  |
+| market-price snapshot 일치 |  |  |
+| PER/PBR/EV/FCF Yield 재계산 |  |  |
+| DCF 괴리율 재계산 |  |  |
+| Implied Upside / Downside 재계산 |  |  |
 | 뉴스 기준일 |  |  |
 | 거시 지표 기준일 |  |  |
 | 통화 / 회계기간 표기 |  |  |
 | 충돌 수치 처리 |  |  |
 
-## 5. 결론 정합성 검토
+## 5. Rating / Price Target 정합성 검토
 
-- 점수와 최종 의견:
-- 시나리오와 전략:
+- Rating과 투자 의견:
+- Price Target 산출 방식:
+- 기준 주가와 implied upside/downside:
+- Bear/Base/Bull과 전략:
 - 리스크와 모니터링:
 - 보조 신호 사용 경계:
 
-## 6. 최종 권고
+## 6. Fix List 요약
+
+- `${ACTIVE_WORKSPACE}/09_qa/fix-list.md` 작성 여부:
+- 치명 결함:
+- 중요 결함:
+- 경미 결함:
+
+## 7. Final Check
+
+- `${ACTIVE_WORKSPACE}/09_qa/final-check.md` 작성 여부:
+- 최종본 확정 가능 여부:
+
+## 8. 최종 권고
 
 - 승인 가능 여부:
 - 최종본 확정 전 필수 수정:

@@ -70,7 +70,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 | 기준 통화 | 상장 통화 |
 | 회계 기준 | 회사 공시 기준 |
 | 기술적 분석 포함 여부 | 포함하되 장기 리포트에서는 보조 신호로 제한 |
-| 최종 의견 형식 | 점수형 + 시나리오별 전략 |
+| 최종 의견 형식 | Rating + Price Target + 시나리오별 전략 |
 
 ### 사용자 보완 질문 폼
 
@@ -123,7 +123,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 - 기준 통화: 상장 통화
 - 회계 기준: 회사 공시 기준
 - 기술적 분석 포함 여부: 포함
-- 최종 의견 형식: 점수형 + 시나리오별 전략
+- 최종 의견 형식: Rating + Price Target + 시나리오별 전략
 ```
 
 ## Required Inputs
@@ -147,7 +147,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 | 회계 기준 | 회사 공시 기준 우선 |
 | 비교기업 수 | 사용자에게 확인. 기본값은 5 |
 | 기술적 분석 포함 여부 | 기본값은 포함 |
-| 최종 의견 형식 | 기본값은 점수형 + 시나리오별 전략 
+| 최종 의견 형식 | 기본값은 Rating + Price Target + 시나리오별 전략 |
 
 ## Architecture
 
@@ -214,7 +214,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 - 기준 통화: 상장 통화
 - 회계 기준: 회사 공시 기준
 - 기술적 분석 포함 여부: 포함
-- 최종 의견 형식: 점수형 + 시나리오별 전략
+- 최종 의견 형식: Rating + Price Target + 시나리오별 전략
 ```
 
 <!-- END INPUT_GATE_POLICY_INTEGRATED -->
@@ -258,11 +258,13 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 3. 자동 식별 결과와 선택 옵션, 선택 이벤트를 정리한다.
 4. 기본값, 해석한 가정, 제외 범위를 분리한다.
 5. `docs/harness/invest/templates/request-summary.md` 형식으로 `${ACTIVE_WORKSPACE}/00_input/request-summary.md`를 작성한다.
+6. `docs/harness/invest/templates/market-price-snapshot.md` 형식으로 `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`를 작성한다.
 
 완료 기준:
 
 - 기업명 또는 티커 기반 자동 식별이 완료되어 있다.
 - `${ACTIVE_WORKSPACE}/00_input/input-intake.md`의 게이트 결과가 요약되어 있다.
+- `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`에 기준 주가, 기준일, 출처, 주식 수, 주요 시장지표 계산 입력이 남아 있다.
 - 기본값을 적용한 항목이 별도 표에 남아 있다.
 - 분석 초점과 진행 방식이 명시되어 있다.
 - 특정 이벤트 / 촉매가 있으면 별도 행으로 남아 있다.
@@ -276,7 +278,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 |---|---|---|---|
 | financial-analyst | Part II, III | `.agents/skills/financial-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/01_financial/findings.md` |
 | fundamental-analyst | Part IV, V, VI, VII | `.agents/skills/fundamental-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` |
-| valuation-analyst | Part VIII | `.agents/skills/valuation-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/03_valuation/findings.md` |
+| valuation-analyst | Part VIII | `.agents/skills/valuation-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/03_valuation/findings.md`, 선택 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`, `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` |
 | technical-analyst | Part IX | `.agents/skills/technical-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/04_technical/findings.md` |
 | macro-sentiment-analyst | Part X, XI | `.agents/skills/macro-sentiment-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` |
 | risk-scenario-analyst | Part XII, XIII | `.agents/skills/risk-scenario-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` |
@@ -294,9 +296,10 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 ### 4. 중간 산출물 점검
 
 1. `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`까지 존재 여부를 확인한다.
-2. 각 파일의 분석 전제, 출처 목록, 요약, 데이터 한계 섹션을 확인한다.
-3. 수치나 판단이 충돌하면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 기록한다.
-4. 누락이 치명적이면 해당 역할에 보강을 요청한다.
+2. `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`가 valuation과 QA의 기준 주가로 사용되는지 확인한다.
+3. 각 파일의 분석 전제, 출처 목록, 요약, 데이터 한계 섹션을 확인한다.
+4. 수치나 판단이 충돌하면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 기록한다.
+5. 누락이 치명적이면 해당 역할에 보강을 요청한다.
 
 충돌 기록 기준:
 
@@ -311,6 +314,7 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 `report-synthesizer`가 아래 입력을 읽고 `${ACTIVE_WORKSPACE}/07_draft/report.md`를 작성한다.
 
 - `${ACTIVE_WORKSPACE}/00_input/request-summary.md`
+- `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`
 - `${ACTIVE_WORKSPACE}/01_financial/findings.md`
 - `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`
 - `${ACTIVE_WORKSPACE}/03_valuation/findings.md`
@@ -318,12 +322,15 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 - `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md`
 - `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`
+- 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`
+- 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/dcf.md`
+- 필요 시 `${ACTIVE_WORKSPACE}/00_input/earnings-update.md`
 
 초안은 `invest_prompt_v2.md`의 최종 출력 템플릿 18개 섹션 순서를 따른다.
 
 ### 6. QA
 
-`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`와 원천 findings 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`를 작성한다.
+`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`와 원천 findings 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
 
 QA 판정:
 
@@ -409,9 +416,17 @@ korea-stock-mcp MCP 서버가 설치되어 있으면 한국 상장기업 분석 
 |---|---|---|---|
 | 00a | `${ACTIVE_WORKSPACE}/00_input/input-intake.md` | invest-orchestrator | 원문 요청, 자동 식별 결과, 선택 옵션, 특정 이벤트 / 촉매, 게이트 상태 |
 | 00b | `${ACTIVE_WORKSPACE}/00_input/request-summary.md` | invest-orchestrator | 정규화 입력값, 기본 가정, 분석 범위, 제외 범위 |
+| 00c | `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` | invest-orchestrator / valuation-analyst | 기준 주가, 기준일, 가격 출처, 주식 수, 시장지표 계산 입력 |
+| 00d | `${ACTIVE_WORKSPACE}/00_input/earnings-update.md` | earnings-update | 최신 또는 지정 분기 실적, 컨센서스 대비, 가이던스, Rating/Price Target 영향 |
+| 00s1 | `${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md` | idea-screener | 스크리닝 원문, 포함/제외 기준, 데이터 소스 계획 |
+| 00s2 | `${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md` | idea-screener | 후보군, 식별자, 포함/제외 사유 |
+| 00s3 | `${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md` | idea-screener | 후보별 점수표, 예비 Rating, 주요 리스크 |
+| 00s4 | `${ACTIVE_WORKSPACE}/00_screen/shortlist.md` | idea-screener | 최종 후보, 투자 논지, 다음 단계 |
 | 01 | `${ACTIVE_WORKSPACE}/01_financial/findings.md` | financial-analyst | 기업 개요, 재무제표, 비율, 최근 이벤트 |
 | 02 | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` | fundamental-analyst | 산업/경쟁, 경영진, 해자, 제품·서비스 |
 | 03 | `${ACTIVE_WORKSPACE}/03_valuation/findings.md` | valuation-analyst | 멀티플 비교, DCF 가정, 시나리오별 가치 |
+| 03a | `${ACTIVE_WORKSPACE}/03_valuation/comps.md` | valuation-analyst | 피어 그룹, 멀티플 비교, 프리미엄/디스카운트 해석 |
+| 03b | `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` | valuation-analyst | DCF 가정, Bear/Base/Bull 결과, comps/역사적 밴드 교차검증 |
 | 04 | `${ACTIVE_WORKSPACE}/04_technical/findings.md` | technical-analyst | 추세, 지표, 지지·저항, 기술적 리스크 |
 | 05 | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` | macro-sentiment-analyst | 뉴스, 센티먼트, 거시·정책 영향 |
 | 06 | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` | risk-scenario-analyst | 리스크 등록부, 시나리오 표, 촉발 요인 |
@@ -419,7 +434,9 @@ korea-stock-mcp MCP 서버가 설치되어 있으면 한국 상장기업 분석 
 | 07 | `${ACTIVE_WORKSPACE}/07_draft/report.md` | report-synthesizer | 통합 초안 전체 |
 | 08 | `${ACTIVE_WORKSPACE}/08_final/report.md` | invest-orchestrator | QA 반영 완료 최종본 |
 | 08a | `${ACTIVE_WORKSPACE}/08_final/executive-summary.md` | invest-orchestrator | 선택적 사용자 요약본 |
-| 09 | `${ACTIVE_WORKSPACE}/09_qa/review.md` | qa-reviewer | 결함 목록, 수정 요청, 승인 여부
+| 09 | `${ACTIVE_WORKSPACE}/09_qa/review.md` | qa-reviewer | 결함 목록, 수정 요청, 승인 여부 |
+| 09a | `${ACTIVE_WORKSPACE}/09_qa/fix-list.md` | qa-reviewer | 수정 작업 목록, 담당 산출물, 완료 여부 |
+| 09b | `${ACTIVE_WORKSPACE}/09_qa/final-check.md` | qa-reviewer | 최종 승인 전 확인표 |
 
 ## Failure Policy
 
