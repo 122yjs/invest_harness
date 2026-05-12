@@ -30,6 +30,37 @@ For global listed companies:
 
 Institutional MCPs and paid datasets are optional. Their absence must not make the basic workflow fail. When present, they are supporting sources rather than replacements for the run's primary public source trail.
 
+The disabled catalog lives at `.mcp.institutional.json`. Keep `mcpServers` empty by default so local validation and public-source workflows do not depend on paid credentials.
+
+Optional sources currently tracked:
+
+- Daloopa
+- Morningstar
+- S&P Global
+- FactSet
+- Moody's
+- MT Newswires
+- Aiera
+- LSEG
+- PitchBook
+- Chronograph
+- Egnyte
+
+## Free And Low-Cost Layer
+
+Use personally accessible sources first:
+
+| Source | Access | Credential |
+|---|---|---|
+| `korea-stock` | DART/KRX official data | `DART_API_KEY` / `KRX_API_KEY` when required |
+| `yfinance` | Global public market data | None |
+| SEC EDGAR | Official US filings | None for basic access |
+| FRED | Macro indicators | Optional API key |
+| Alpha Vantage | Market/fundamental data | `ALPHA_VANTAGE_API_KEY` |
+| Financial Modeling Prep | Financial data and estimates | `FMP_API_KEY` |
+| Company IR | Official company disclosures | None |
+| Web search | Source discovery and context | None |
+
 ## Source Recording
 
 Each finding must separate:
@@ -40,4 +71,3 @@ Each finding must separate:
 - currency
 - accounting basis
 - whether a number is reported, calculated, or inferred
-

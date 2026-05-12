@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "enabled": false,
+  "principle": "Institutional MCPs are optional supporting sources. The default invest harness must pass validation and run public-source workflows without these servers.",
+  "mcpServers": {},
+  "institutionalCatalog": {
+    "daloopa": {
+      "status": "optional",
+      "credentialEnv": "DALOOPA_API_KEY",
+      "use": "modelled financial statement cross-checks"
+    },
+    "morningstar": {
+      "status": "optional",
+      "credentialEnv": "MORNINGSTAR_API_KEY",
+      "use": "fundamental and fund ownership cross-checks"
+    },
+    "sp-global": {
+      "status": "optional",
+      "credentialEnv": "SP_GLOBAL_API_KEY",
+      "use": "ratings, estimates, and industry datasets"
+    },
+    "factset": {
+      "status": "optional",
+      "credentialEnv": "FACTSET_API_KEY",
+      "use": "institutional estimates and ownership data"
+    },
+    "moodys": {
+      "status": "optional",
+      "credentialEnv": "MOODYS_API_KEY",
+      "use": "credit ratings and issuer research"
+    },
+    "mt-newswires": {
+      "status": "optional",
+      "credentialEnv": "MT_NEWSWIRES_API_KEY",
+      "use": "market news cross-checks"
+    },
+    "aiera": {
+      "status": "optional",
+      "credentialEnv": "AIERA_API_KEY",
+      "use": "earnings call transcript and event monitoring"
+    },
+    "lseg": {
+      "status": "optional",
+      "credentialEnv": "LSEG_API_KEY",
+      "use": "market data and estimates"
+    },
+    "pitchbook": {
+      "status": "optional",
+      "credentialEnv": "PITCHBOOK_API_KEY",
+      "use": "private-market and transaction context"
+    },
+    "chronograph": {
+      "status": "optional",
+      "credentialEnv": "CHRONOGRAPH_API_KEY",
+      "use": "portfolio company operating metrics"
+    },
+    "egnyte": {
+      "status": "optional",
+      "credentialEnv": "EGNYTE_API_KEY",
+      "use": "document repository access"
+    }
+  }
+}
