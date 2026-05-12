@@ -8,7 +8,7 @@
 | 사용자 제공 식별자 |  |
 | 자동 식별 성공 여부 | 예 / 아니오 / 복수 후보 |
 | 사용자 보완 입력 여부 | 예 / 아니오 |
-| 참조 파일 | `_workspace/00_input/input-intake.md` |
+| 참조 파일 | `${ACTIVE_WORKSPACE}/00_input/input-intake.md` |
 
 ## 1. 사용자 원문
 

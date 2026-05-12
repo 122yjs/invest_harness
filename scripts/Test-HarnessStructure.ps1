@@ -90,19 +90,19 @@ foreach ($skillDir in $skillDirs) {
 }
 
 $handoffPaths = @(
-    '_workspace/00_input/input-intake.md',
-    '_workspace/00_input/request-summary.md',
-    '_workspace/01_financial/findings.md',
-    '_workspace/02_fundamental/findings.md',
-    '_workspace/03_valuation/findings.md',
-    '_workspace/04_technical/findings.md',
-    '_workspace/05_macro_sentiment/findings.md',
-    '_workspace/06_risk_scenario/findings.md',
-    '_workspace/06_risk_scenario/conflicts.md',
-    '_workspace/07_draft/report.md',
-    '_workspace/08_final/report.md',
-    '_workspace/08_final/executive-summary.md',
-    '_workspace/09_qa/review.md'
+    '${ACTIVE_WORKSPACE}/00_input/input-intake.md',
+    '${ACTIVE_WORKSPACE}/00_input/request-summary.md',
+    '${ACTIVE_WORKSPACE}/01_financial/findings.md',
+    '${ACTIVE_WORKSPACE}/02_fundamental/findings.md',
+    '${ACTIVE_WORKSPACE}/03_valuation/findings.md',
+    '${ACTIVE_WORKSPACE}/04_technical/findings.md',
+    '${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md',
+    '${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md',
+    '${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md',
+    '${ACTIVE_WORKSPACE}/07_draft/report.md',
+    '${ACTIVE_WORKSPACE}/08_final/report.md',
+    '${ACTIVE_WORKSPACE}/08_final/executive-summary.md',
+    '${ACTIVE_WORKSPACE}/09_qa/review.md'
 )
 
 $teamSpec = Get-Content -LiteralPath (Join-Path $repoRoot 'docs\harness\invest\team-spec.md') -Raw

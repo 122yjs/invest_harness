@@ -1,0 +1,8 @@
+
+# Legacy / generated workspace outputs
+_workspace/
+_workspace_*/
+
+# Python validation cache
+__pycache__/
+*.py[cod]

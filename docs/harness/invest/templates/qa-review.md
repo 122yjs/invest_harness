@@ -6,7 +6,7 @@
 |---|---|
 | 판정 | 승인 / 수정 후 승인 / 재검토 필요 |
 | 검토 기준일 |  |
-| 검토 대상 초안 | `_workspace/07_draft/report.md` |
+| 검토 대상 초안 | `${ACTIVE_WORKSPACE}/07_draft/report.md` |
 | 치명적 결함 수 |  |
 | 주요 수정 필요 항목 |  |
 
