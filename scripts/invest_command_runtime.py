@@ -45,6 +45,20 @@ OUTPUT_CONTRACTS = {
     "report-html": ["${ACTIVE_WORKSPACE}/08_final/report.html"],
     "morning-note": ["${ACTIVE_WORKSPACE}/05_macro_sentiment/morning-note.md"],
     "update": ["${ACTIVE_WORKSPACE}/00_input/update-plan.md"],
+    "evidence": [
+        "${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md",
+        "${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md",
+    ],
+    "market-intel": [
+        "${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md",
+        "${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md",
+        "${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md",
+    ],
+    "source-audit": [
+        "${ACTIVE_WORKSPACE}/00_evidence/source-validation.md",
+        "${ACTIVE_WORKSPACE}/09_qa/review.md",
+        "${ACTIVE_WORKSPACE}/09_qa/fix-list.md",
+    ],
     "qa": [
         "${ACTIVE_WORKSPACE}/09_qa/review.md",
         "${ACTIVE_WORKSPACE}/09_qa/fix-list.md",

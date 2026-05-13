@@ -270,7 +270,33 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 - 특정 이벤트 / 촉매가 있으면 별도 행으로 남아 있다.
 - 분석 제외 범위와 기술적 분석 포함 여부가 명시되어 있다.
 
-### 3. 전문가 분석 분배
+### 3. Evidence planning / source routing
+
+기존 전문가 fan-out 전에 `${ACTIVE_WORKSPACE}/00_evidence/`를 준비한다. 이 단계는 분석 역할을 대체하지 않고, 어떤 근거가 필요한지와 어떤 소스가 그 근거를 제공할 수 있는지 먼저 정리한다.
+
+| 역할 | 스킬 | 산출물 |
+|---|---|---|
+| evidence-planner | `.agents/skills/evidence-planner/SKILL.md` | `${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md`, `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` |
+| source-router | `.agents/skills/source-router/SKILL.md` | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`, `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` |
+| signal-analyst | `.agents/skills/signal-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md` |
+
+Evidence layer 규칙:
+
+- 사용자 원문에서 open-ended `subjects`를 보존한다.
+- 고정 상품 taxonomy, hardcoded use-case classifier, `use_case:` 기반 라우팅을 만들지 않는다.
+- source selection은 evidence type, source capability, validation gate, claim boundary를 기준으로 한다.
+- API key 저장, runtime API client, database 구현은 이 단계에서 수행하지 않는다.
+- Google Trends/Naver DataLab 같은 relative index는 시장 규모나 매출로 해석하지 않는다.
+- customs trade, procurement, KOTRA context, macro series는 기업 매출이나 투자 결론으로 과잉 전환하지 않는다.
+
+완료 기준:
+
+- `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md`에 required evidence types와 signal primitives needed가 있다.
+- `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`에 candidate source, fallback source, limitations가 있다.
+- `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md` 또는 `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` 중 하나 이상에 실제 근거 상태가 남아 있다.
+- `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`가 claim boundary 위반 여부를 기록한다.
+
+### 4. 전문가 분석 분배
 
 아래 역할은 같은 입력 스냅샷을 사용한다. 특정 산출물이 다른 역할의 전제에 필요하면 해당 파일을 명시적으로 함께 전달한다.
 
@@ -290,16 +316,19 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 - 핵심 수치에는 출처, 기준일, 회계기간, 통화, 산식이 필요하다고 명시한다.
 - 데이터가 부족한 경우 추정하지 않고 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`를 사용하게 한다.
 - 기술적 분석 제외 요청이 있으면 `technical-analyst`는 생략 사유와 보조 신호 부재의 한계만 기록한다.
+- `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`와 `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`가 있으면 모든 analyst에게 claim boundary와 caveat 입력으로 전달한다.
 
 > **Pitfall — Group 2 내부 순환 오류:** `technical-analyst`, `macro-sentiment-analyst`, `risk-scenario-analyst`를 동일한 `delegate_task`의 같은 `tasks` 배열에 담으면 서브에이전트 간 순환 의존성이 발생한다. `risk-scenario-analyst`가 `04_technical`과 `05_macro_sentiment`을 읽으려고 할 때 파일이 아직 생성되지 않은 채로 판단할 수 있다. `risk-scenario-analyst`는 선행 산출물(01~05)이 모두 존재하는 것을 확인한 후에 독립적으로 실행하거나, 혹은 단일 `delegate_task`에서 모든 6개 역할을 한 번에 담으면 순환을 방지할 수 있다.
 
-### 4. 중간 산출물 점검
+### 5. 중간 산출물 점검
 
-1. `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`까지 존재 여부를 확인한다.
-2. `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`가 valuation과 QA의 기준 주가로 사용되는지 확인한다.
-3. 각 파일의 분석 전제, 출처 목록, 요약, 데이터 한계 섹션을 확인한다.
-4. 수치나 판단이 충돌하면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 기록한다.
-5. 누락이 치명적이면 해당 역할에 보강을 요청한다.
+1. `${ACTIVE_WORKSPACE}/00_evidence/`의 evidence plan, source call plan, evidence ledger, source validation 존재 여부를 확인한다.
+2. `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`까지 존재 여부를 확인한다.
+3. `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`가 valuation과 QA의 기준 주가로 사용되는지 확인한다.
+4. 각 파일의 분석 전제, 출처 목록, 요약, 데이터 한계 섹션을 확인한다.
+5. 수치나 판단이 충돌하면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 기록한다.
+6. source/claim boundary 위반이 있으면 `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`와 QA fix-list에 남긴다.
+7. 누락이 치명적이면 해당 역할에 보강을 요청한다.
 
 충돌 기록 기준:
 
@@ -309,12 +338,16 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 | 판단 충돌 | 어떤 전제 차이가 결론 차이를 만들었는지 적는다. |
 | 데이터 신선도 충돌 | 최신 자료 우선순위를 적용하되, 오래된 자료 사용 한계를 남긴다. |
 
-### 5. 초안 합성
+### 6. 초안 합성
 
 `report-synthesizer`가 아래 입력을 읽고 `${ACTIVE_WORKSPACE}/07_draft/report.md`를 작성한다.
 
 - `${ACTIVE_WORKSPACE}/00_input/request-summary.md`
 - `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`
+- `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md`
+- `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`
+- `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`
+- `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`
 - `${ACTIVE_WORKSPACE}/01_financial/findings.md`
 - `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`
 - `${ACTIVE_WORKSPACE}/03_valuation/findings.md`
@@ -328,9 +361,9 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 
 초안은 `invest_prompt_v2.md`의 최종 출력 템플릿 18개 섹션 순서를 따른다.
 
-### 6. QA
+### 7. QA
 
-`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`와 원천 findings 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
+`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`, 원천 findings 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
 
 QA 판정:
 
@@ -340,7 +373,7 @@ QA 판정:
 | 수정 후 승인 | 제한적 결함 있음 | 오케스트레이터가 수정 후 최종본 확정 |
 | 재검토 필요 | 출처, 구조, 결론 정합성에 치명적 결함 있음 | 관련 역할 보강 후 초안 재작성 |
 
-### 7. 최종본 확정
+### 8. 최종본 확정
 
 1. QA 지적을 반영한다.
 2. 최종 보고서를 `${ACTIVE_WORKSPACE}/08_final/report.md`에 저장한다.
@@ -420,6 +453,14 @@ korea-stock-mcp MCP 서버가 설치되어 있으면 한국 상장기업 분석 
 | 00d | `${ACTIVE_WORKSPACE}/00_input/earnings-update.md` | earnings-update | 최신 또는 지정 분기 실적, 컨센서스 대비, 가이던스, Rating/Price Target 영향 |
 | 00e | `${ACTIVE_WORKSPACE}/00_input/earnings-preview.md` | earnings-preview | 예정 실적 핵심 지표, 기대치, Beat/Miss 시나리오, 발표 후 업데이트 항목 |
 | 00u | `${ACTIVE_WORKSPACE}/00_input/update-plan.md` | report-updater | 기존 리포트 갱신 범위, 재실행 command/skill, Rating/Price Target 재검증 필요 여부 |
+| 00ev1 | `${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md` | evidence-planner | 원문 요청, entities, open-ended subjects, geographies, time horizon, claim types |
+| 00ev2 | `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` | evidence-planner | required evidence types, source capability needs, signal primitives, validation gates |
+| 00ev3 | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` | source-router | evidence type별 candidate source, reason, parameters, fallback, expected output |
+| 00ev4 | `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md` | source-router / analyst roles | evidence id, source, period, metric, value, unit, used by, claim boundary, caveat |
+| 00ev5 | `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md` | signal-analyst / analyst roles | signal primitive, subject, geography, inputs, calculations, confidence, caveats |
+| 00ev6 | `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md` | source-router / qa-reviewer | validation status, source conflicts, relative vs absolute checks, forbidden claim checks |
+| 00ev7 | `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md` | source-owning roles | source, endpoint/tool, parameters, timestamp, response summary, error |
+| 00ev8 | `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` | source-router / qa-reviewer | missing evidence, affected claim, attempted sources, impact, next step |
 | 00s1 | `${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md` | idea-screener | 스크리닝 원문, 포함/제외 기준, 데이터 소스 계획 |
 | 00s2 | `${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md` | idea-screener | 후보군, 식별자, 포함/제외 사유 |
 | 00s3 | `${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md` | idea-screener | 후보별 점수표, 예비 Rating, 주요 리스크 |
@@ -450,6 +491,7 @@ korea-stock-mcp MCP 서버가 설치되어 있으면 한국 상장기업 분석 
 - 특정 전문가 산출물이 누락되면 1회 보강을 요청한다.
 - 보강 후에도 부족하면 최종 리포트의 한계 섹션에 미완료 범위와 영향도를 명시한다.
 - 출처 충돌은 임의 평균이나 임의 선택으로 해결하지 않는다.
+- source/claim boundary 위반은 최종 리포트 확정 전에 수정한다.
 - QA에서 치명적 결함이 나오면 `${ACTIVE_WORKSPACE}/08_final/report.md`를 확정하지 않는다.
 
 ## Validation
