@@ -83,6 +83,24 @@ SMOKE_COMMANDS = [
         "report-updater",
         "${ACTIVE_WORKSPACE}/00_input/update-plan.md",
     ),
+    (
+        "/evidence AAPL supply chain risk",
+        "evidence",
+        "evidence-planner",
+        "${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md",
+    ),
+    (
+        "/market-intel nickel export restrictions",
+        "market-intel",
+        "evidence-planner",
+        "${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md",
+    ),
+    (
+        "/source-audit report.md",
+        "source-audit",
+        "qa-reviewer",
+        "${ACTIVE_WORKSPACE}/00_evidence/source-validation.md",
+    ),
 ]
 
 

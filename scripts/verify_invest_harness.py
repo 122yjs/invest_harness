@@ -15,6 +15,12 @@ COMMANDS = [
     ("Check workspace safety", [sys.executable, "scripts/test_workspace_safety.py"]),
     ("Check command runtime smoke tests", [sys.executable, "scripts/test_command_runtime.py"]),
     ("Check harness structure", [sys.executable, "scripts/test_harness_structure.py"]),
+    ("Check evidence layer structure", [sys.executable, "scripts/test_evidence_layer_structure.py"]),
+    ("Check no fixed product taxonomy", [sys.executable, "scripts/test_no_fixed_product_taxonomy.py"]),
+    ("Check signal primitives", [sys.executable, "scripts/test_signal_primitives.py"]),
+    ("Check source capability registry", [sys.executable, "scripts/test_source_capability_registry.py"]),
+    ("Check claim boundary policy", [sys.executable, "scripts/test_claim_boundary_policy.py"]),
+    ("Check workspace evidence contracts", [sys.executable, "scripts/test_workspace_evidence_contracts.py"]),
 ]
 
 
