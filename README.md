@@ -4,6 +4,8 @@
 
 이 레포의 결과물은 정보 제공용 분석입니다. 개인화된 투자 자문이나 매매 권유로 사용하지 않습니다.
 
+Evidence Planning / Source Routing / Signal Primitive 레이어는 기존 analyst fan-out 전에 실행되는 근거 계획 계층입니다. 소스 선택은 고정 유즈케이스가 아니라 evidence type, source capability, claim boundary를 기준으로 하며, 예시 시나리오는 비포괄 eval fixture로만 둡니다. 자세한 계약은 `docs/harness/invest/research-layer/`를 참조합니다.
+
 ## 빠른 시작
 
 <!-- BEGIN INPUT_GATE_USAGE_EXAMPLE_INTEGRATED -->
@@ -124,6 +126,7 @@ AGENTS.md와 docs/harness/invest/runbook.md를 따른다.
 | `.agents/skills/*/SKILL.md` | 재무, 정성, 밸류에이션, 기술적 분석, 매크로, 리스크, 합성, QA 역할 |
 | `docs/harness/invest/team-spec.md` | 역할 분담, 산출물 계약, 실패 정책 |
 | `docs/harness/invest/runbook.md` | 실제 실행 순서 |
+| `docs/harness/invest/research-layer/` | Evidence planning, source capability, signal primitive, validation, claim boundary 계약 |
 | `docs/harness/invest/templates/` | 반복 실행용 산출물 템플릿 |
 | `scripts/Test-HarnessStructure.ps1` | Harness 구조 검증 스크립트 |
 | `docs/harness/invest/cross-tool-usage.md` | Codex, opencode, Antigravity 등 도구별 사용 방식 |
@@ -138,7 +141,12 @@ AGENTS.md와 docs/harness/invest/runbook.md를 따른다.
    - 산출물: `_workspace/00_input/request-summary.md`
    - 담당: `invest-orchestrator`
 
-2. 전문가 분석을 작성합니다.
+2. Evidence layer를 실행합니다.
+   - 산출물: `_workspace/00_evidence/evidence-plan.md`, `_workspace/00_evidence/source-call-plan.md`, `_workspace/00_evidence/evidence-ledger.md`, `_workspace/00_evidence/signal-cards.md`
+   - 담당: `evidence-planner`, `source-router`, `signal-analyst`
+   - 원칙: source capability 기반 선택, claim boundary 보존
+
+3. 전문가 분석을 작성합니다.
    - 재무: `_workspace/01_financial/findings.md`
    - 산업/경쟁/해자/제품: `_workspace/02_fundamental/findings.md`
    - 밸류에이션: `_workspace/03_valuation/findings.md`
@@ -146,19 +154,20 @@ AGENTS.md와 docs/harness/invest/runbook.md를 따른다.
    - 뉴스/센티먼트/거시: `_workspace/05_macro_sentiment/findings.md`
    - 리스크/시나리오: `_workspace/06_risk_scenario/findings.md`
 
-3. 충돌을 기록합니다.
+4. 충돌을 기록합니다.
    - 산출물: `_workspace/06_risk_scenario/conflicts.md`
    - 수치, 출처, 기준일, 회계기간이 충돌할 때만 작성합니다.
 
-4. 초안을 합성합니다.
+5. 초안을 합성합니다.
    - 산출물: `_workspace/07_draft/report.md`
    - 담당: `report-synthesizer`
 
-5. QA를 수행합니다.
+6. QA를 수행합니다.
    - 산출물: `_workspace/09_qa/review.md`
    - 담당: `qa-reviewer`
+   - source/claim audit에서 relative search interest, trade data, procurement, market context가 과잉 주장되지 않았는지 확인합니다.
 
-6. 최종본을 확정합니다.
+7. 최종본을 확정합니다.
    - 산출물: `_workspace/08_final/report.md`
    - 선택 요약본: `_workspace/08_final/executive-summary.md`
 

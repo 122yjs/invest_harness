@@ -208,7 +208,40 @@
 - 진행 방식이 `순차 단계별 생성`이면 각 파트 종료 후 다음 단계 진행 여부를 묻는다.
 - 진행 방식이 `전체 일괄 생성`이면 PART 전체를 한 번에 실행한다.
 
-## 2. 병렬 분석 산출물 생성
+## 2. Evidence planning
+
+입력 요약 후, 기존 analyst fan-out 전에 범용 evidence layer를 실행한다. 이 레이어는 분석 역할을 대체하지 않고 필요한 증거, 소스, 시그널, 검증 경계를 먼저 정리한다.
+
+필수 산출물:
+
+| 산출물 | 템플릿 | 소유 역할 |
+|---|---|---|
+| `${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md` | `docs/harness/invest/templates/evidence-plan.md`의 decomposition 섹션 | `evidence-planner` |
+| `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` | `docs/harness/invest/templates/evidence-plan.md` | `evidence-planner` |
+| `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` | `docs/harness/invest/templates/source-call-plan.md` | `source-router` |
+| `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md` | `docs/harness/invest/templates/evidence-ledger.md` | source-owning roles |
+| `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md` | `docs/harness/invest/templates/signal-card.md` | `signal-analyst` or analyst roles |
+| `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md` | `docs/harness/invest/templates/source-validation.md` | `source-router`, `qa-reviewer` |
+| `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md` | `docs/harness/invest/templates/api-call-log.md` | source-owning roles |
+| `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` | `docs/harness/invest/templates/unresolved-data-gaps.md` | `source-router`, `qa-reviewer` |
+
+Evidence layer 순서:
+
+1. 사용자 요청을 open-ended `subjects`, entities, geographies, time horizon, claim types로 분해한다.
+2. 필요한 evidence type과 validation gate를 정한다.
+3. source capability registry를 기준으로 후보 소스와 fallback을 고른다.
+4. 수집된 근거를 evidence ledger에 남긴다.
+5. 필요한 경우 signal primitive로 signal card를 만든다.
+6. source/claim boundary를 검증하고 unresolved gap을 기록한다.
+
+금지:
+
+- 고정 상품 taxonomy 또는 hardcoded use-case classifier로 라우팅하지 않는다.
+- Google Trends, Naver DataLab 등 relative index를 시장 규모나 매출로 해석하지 않는다.
+- customs trade, procurement, KOTRA context, macro series를 기업 매출이나 투자 결론으로 과잉 전환하지 않는다.
+- API key, database, runtime client 구현은 이 단계의 필수 조건이 아니다.
+
+## 6. 병렬 분석 산출물 생성
 
 아래 전문가 스킬을 사용해 산출물을 만든다.
 
@@ -226,8 +259,9 @@
 - 모든 핵심 수치에는 출처, 기준일, 회계기간, 통화, 산식을 붙인다.
 - 데이터 부족 시 추정하지 않고 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`로 표기한다.
 - 충돌이 있으면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 남긴다.
+- `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`와 signal cards가 있으면 analyst findings의 출처/한계 입력으로 사용한다.
 
-## 3. 초안 합성
+## 7. 초안 합성
 
 `report-synthesizer`를 사용해 `${ACTIVE_WORKSPACE}/07_draft/report.md`를 작성한다.
 
@@ -252,15 +286,16 @@
 17. 모니터링 체크리스트
 18. 한계 및 추가 확인 필요 사항
 
-## 4. QA 및 최종본
+## 8. QA 및 최종본
 
 1. `qa-reviewer`로 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
 2. QA 판정이 `승인` 또는 `수정 후 승인`인지 확인한다.
-3. 치명적 결함이 있으면 `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`를 기준으로 관련 findings를 보강하고 초안 합성을 다시 실행한다.
-4. 최종본은 `${ACTIVE_WORKSPACE}/08_final/report.md`에 저장한다.
-5. 사용자 전달용 짧은 요약이 필요하면 `${ACTIVE_WORKSPACE}/08_final/executive-summary.md`를 작성한다.
+3. `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`를 대조해 source/claim audit을 수행한다.
+4. 치명적 결함이 있으면 `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`를 기준으로 관련 evidence plan, findings, 초안을 보강하고 합성을 다시 실행한다.
+5. 최종본은 `${ACTIVE_WORKSPACE}/08_final/report.md`에 저장한다.
+6. 사용자 전달용 짧은 요약이 필요하면 `${ACTIVE_WORKSPACE}/08_final/executive-summary.md`를 작성한다.
 
-## 5. Command runtime smoke
+## 9. Command runtime smoke
 
 Slash command 런타임은 command stub을 실행 로직으로 확장하지 않는다. 역할은 입력 파싱, thin wrapper 메타데이터 검증, `${ACTIVE_WORKSPACE}` 생성, mapped skill로 넘길 dispatch handoff 기록까지다.
 
@@ -274,7 +309,7 @@ python3 scripts/invest_command_runtime.py "/dcf AAPL base"
 
 각 실행은 `${ACTIVE_WORKSPACE}/00_input/command-dispatch.json`을 만들고, 실제 분석 산출물은 mapped skill이 작성해야 할 `expected_outputs`로만 기록한다.
 
-## 6. 구조 검증
+## 10. 구조 검증
 
 macOS/Linux에서는 Python 검증 경로를 기본으로 사용한다. 이 경로는 전역 PowerShell 설치가 없어도 동작해야 한다.
 
@@ -294,7 +329,7 @@ pwsh ./scripts/Test-HarnessStructure.ps1
 
 검증이 실패하면 메시지에 나온 경로, frontmatter, sync drift, 또는 workspace safety 위반을 수정한 뒤 다시 실행한다.
 
-## 7. 운영 원칙
+## 11. 운영 원칙
 
 - 최신 데이터가 필요한 실제 종목 분석에서는 반드시 현재 기준으로 웹 또는 공식 공시를 확인한다.
 - 기술적 분석과 소셜 센티먼트는 보조 신호로만 사용한다.

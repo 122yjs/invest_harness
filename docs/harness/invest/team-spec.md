@@ -89,16 +89,23 @@
 |---|---|---|---|
 | 0 | invest-orchestrator | 입력 수집 게이트, 기업명/티커 기반 자동 식별, 선택 옵션 확인 | `${ACTIVE_WORKSPACE}/00_input/input-intake.md` |
 | 1 | invest-orchestrator | 사용자 입력 정규화, 가정 명시, 작업 범위 확정, 기준 주가 snapshot 작성 | `${ACTIVE_WORKSPACE}/00_input/request-summary.md`, `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` |
-| 2 | 분석 역할 6종 | 파트별 병렬 조사 및 근거 표준화 | `01`~`06` findings, 필요 시 `06a` conflicts |
-| 3 | report-synthesizer | 병렬 결과를 리포트 구조에 맞춰 초안 조립 | `${ACTIVE_WORKSPACE}/07_draft/report.md` |
-| 4 | qa-reviewer | 출처, 수치, 일관성, 누락, 문체 검토 | `${ACTIVE_WORKSPACE}/09_qa/review.md` |
-| 5 | invest-orchestrator | QA 반영 후 최종본 확정 | `${ACTIVE_WORKSPACE}/08_final/report.md`
+| 2 | evidence-planner | open-ended question decomposition, required evidence type, signal primitive 계획 | `${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md`, `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` |
+| 3 | source-router | source capability 기반 source-call plan과 fallback/limit 정리 | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` |
+| 4 | source-router / signal-analyst | evidence ledger, signal cards, validation gates 작성 또는 수집 지시 | `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`, `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md` |
+| 5 | source-router / qa-reviewer | unresolved gaps와 claim boundary 검토 | `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md`, `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` |
+| 6 | 분석 역할 6종 | evidence ledger와 signal cards를 입력으로 파트별 병렬 조사 및 근거 표준화 | `01`~`06` findings, 필요 시 `06a` conflicts |
+| 7 | report-synthesizer | 병렬 결과를 리포트 구조에 맞춰 초안 조립 | `${ACTIVE_WORKSPACE}/07_draft/report.md` |
+| 8 | qa-reviewer | 출처, 수치, source/claim boundary, 누락, 문체 검토 | `${ACTIVE_WORKSPACE}/09_qa/review.md` |
+| 9 | invest-orchestrator | QA 반영 후 최종본 확정 | `${ACTIVE_WORKSPACE}/08_final/report.md`
 
 ## 4. 역할 정의 및 입출력 계약
 
 | 역할 | 담당 파트 | 입력 | 출력 | 완료 기준 |
 |---|---|---|---|---|
 | invest-orchestrator | 전체 조율 | 사용자 요청, `invest_prompt_v2.md` | 요청 요약, 작업 지시, 최종 리포트 | 필수 입력·가정·분석 기준일·투자 기간이 정리되고 최종본이 QA 반영 상태임 |
+| evidence-planner | Evidence Planning | 사용자 요청, input gate, request summary | `${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md`, `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` | subjects가 open-ended로 보존되고 required evidence types, signal primitives, validation gates가 정의됨 |
+| source-router | Source Routing | evidence plan, source capability registry | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`, `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` | source selection이 evidence need와 capability에 기반하고 fallback, limitation, forbidden claims가 명시됨 |
+| signal-analyst | Signal Primitives | evidence ledger, signal primitive docs | `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md` | reusable primitive별 signal, confidence, caveat, downstream usage가 작성됨 |
 | financial-analyst | Part II, III | 요청 요약, 기업 식별 정보 | `${ACTIVE_WORKSPACE}/01_financial/findings.md` | 기업 개요, 사업 구조, 최근 이벤트, 재무제표·비율·종합평가가 출처와 기준일과 함께 정리됨 |
 | fundamental-analyst | Part IV, V, VI, VII | 요청 요약, 기업 식별 정보 | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` | 산업/경쟁, 경영진/거버넌스, 해자, 제품·서비스가 표와 서술로 정리됨 |
 | valuation-analyst | Part VIII | 요청 요약, market-price snapshot, 재무 결과, 비교기업 가정 | `${ACTIVE_WORKSPACE}/03_valuation/findings.md`, `${ACTIVE_WORKSPACE}/03_valuation/comps.md`, `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` | 상대가치와 DCF 또는 대체 평가, Bear/Base/Bull 가치 범위, Rating/Price Target 입력값이 명시됨 |
@@ -128,6 +135,14 @@
 | 00d | `${ACTIVE_WORKSPACE}/00_input/earnings-update.md` | earnings-update | 최신 또는 지정 분기 실적, 컨센서스 대비, 가이던스, Rating/Price Target 영향 |
 | 00e | `${ACTIVE_WORKSPACE}/00_input/earnings-preview.md` | earnings-preview | 예정 실적 핵심 지표, 기대치, Beat/Miss 시나리오, 발표 후 업데이트 항목 |
 | 00u | `${ACTIVE_WORKSPACE}/00_input/update-plan.md` | report-updater | 기존 리포트 갱신 범위, 재실행 command/skill, Rating/Price Target 재검증 필요 여부 |
+| 00e1 | `${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md` | evidence-planner | 원문 요청, entities, open-ended subjects, geography, time horizon, claim types |
+| 00e2 | `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` | evidence-planner | required evidence types, source capability needs, signal primitives, validation gates, unresolved ambiguities |
+| 00e3 | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` | source-router | evidence type별 candidate source, reason, required parameters, fallback, expected output, validation checks |
+| 00e4 | `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md` | source-router / analyst roles | Evidence ID, source, period, metric, value, unit, transformation, used by, claim boundary, caveat |
+| 00e5 | `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md` | signal-analyst / analyst roles | signal primitive, subject, geography, period, inputs, calculations, confidence, caveats |
+| 00e6 | `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md` | source-router / qa-reviewer | validation status, missing data, unit/date checks, source conflicts, forbidden claim checks |
+| 00e7 | `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md` | source-owning roles | source, endpoint/tool, parameters, timestamp, success/failure, response summary, cache path, error |
+| 00e8 | `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` | source-router / qa-reviewer | missing evidence, affected claim, attempted sources, impact, next step |
 | 00s1 | `${ACTIVE_WORKSPACE}/00_screen/screen-criteria.md` | idea-screener | 스크리닝 원문, 포함/제외 기준, 데이터 소스 계획 |
 | 00s2 | `${ACTIVE_WORKSPACE}/00_screen/candidate-universe.md` | idea-screener | 후보군, 식별자, 포함/제외 사유 |
 | 00s3 | `${ACTIVE_WORKSPACE}/00_screen/idea-scorecard.md` | idea-screener | 후보별 점수표, 예비 Rating, 주요 리스크 |
@@ -181,6 +196,13 @@
 | `docs/harness/invest/templates/html-report.md` | `${ACTIVE_WORKSPACE}/08_final/report.html` 작성 기준 |
 | `docs/harness/invest/templates/morning-note.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/morning-note.md` 작성 기준 |
 | `docs/harness/invest/templates/update-plan.md` | `${ACTIVE_WORKSPACE}/00_input/update-plan.md` 작성 기준 |
+| `docs/harness/invest/templates/evidence-plan.md` | `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` 작성 기준 |
+| `docs/harness/invest/templates/source-call-plan.md` | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` 작성 기준 |
+| `docs/harness/invest/templates/evidence-ledger.md` | `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md` 작성 기준 |
+| `docs/harness/invest/templates/signal-card.md` | `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md` 작성 기준 |
+| `docs/harness/invest/templates/source-validation.md` | `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md` 작성 기준 |
+| `docs/harness/invest/templates/api-call-log.md` | `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md` 작성 기준 |
+| `docs/harness/invest/templates/unresolved-data-gaps.md` | `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` 작성 기준 |
 
 ## 8. 실패 및 재시도 정책
 
@@ -195,9 +217,11 @@
 
 ## 9. 최종 승인 기준
 - `${ACTIVE_WORKSPACE}/00`~`09`의 필수 파일이 모두 존재한다.
+- `${ACTIVE_WORKSPACE}/00_evidence/`의 evidence plan, source call plan, evidence ledger, signal cards, validation, unresolved gaps가 claim boundary를 보존한다.
 - 초안과 최종본의 섹션 순서가 `invest_prompt_v2.md` 요구 구조와 일치한다.
 - 핵심 수치에는 출처와 기준일이 붙어 있다.
 - 최종 의견은 점수, 시나리오, 리스크, 모니터링 체크리스트와 상호 일관된다.
 - Rating, Price Target, Implied Upside / Downside는 `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` 기준 주가와 재계산 가능하다.
+- relative search interest, trade data, procurement, market context, macro data가 source capability와 claim boundary를 넘어 과잉 주장되지 않는다.
 - `qa-reviewer`가 치명적 누락 없음으로 마감했을 때만 `${ACTIVE_WORKSPACE}/08_final/report.md`를 확정한다.
 - Windows PowerShell에서 `.\scripts\Test-HarnessStructure.ps1` 검증이 통과한다.
