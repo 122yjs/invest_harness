@@ -1,4 +1,4 @@
-# Evidence Layer 구현 체크리스트
+# Evidence Layer 구현 체크리스트 (진행 중)
 
 > **Goal:** invest_harness에 **Evidence Planning / Source Routing / Signal Primitive** 레이어를 추가한다.
 > 기존 fan-out/fan-in 분석 워크플로우를 보존하면서, 분석 전 단계에 범용 증거 계획 계층을 삽입한다.
@@ -8,9 +8,8 @@
 > 화장품, 반도체, 방산 등 특정 상품/유즈케이스를 라우터 카테고리나 enum으로 하드코딩하지 않는다.
 > 코어는 오픈엔디드 질문 분해 + 소스 능력 레지스트리 + 증거 유형 + 시그널 프리미티브 + 검증 게이트 + 클레임 경계 정책으로 구성한다.
 
-- **원본 문서:** [2nd checklist.md](file:///e:/invest_harness/docs/harness/invest/planning/2nd%20checklist.md)
 - **관련 저장소:** `https://github.com/122yjs/invest_harness`
-- **선행 작업:** [1차 체크리스트](file:///e:/invest_harness/docs/harness/invest/planning/invest_harness_improvement_checklist.md) — 모든 항목 완료됨
+- **선행 작업:** [01_mvp_improvement_archive.md](01_mvp_improvement_archive.md) — 모든 항목 완료됨
 
 ---
 

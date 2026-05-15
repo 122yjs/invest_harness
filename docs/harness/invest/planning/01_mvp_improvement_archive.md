@@ -1,4 +1,8 @@
-# Invest Harness 개선 체크리스트
+# Invest Harness 개선 체크리스트 (MVP 완료)
+
+> [!NOTE]
+> ✅ **ARCHIVED**: 이 체크리스트는 MVP 단계(2026-05-13)에서 모두 완료되어 보존(Archive) 처리되었습니다.
+> 다음 단계는 `02_evidence_layer_implementation.md`를 참고하세요.
 
 > **최종 Goal:** invest_harness를 "단일 종목 리포트 생성기"에서 "아이디어 발굴 → Rating/Price Target 산출 → 실적 업데이트 → 밸류에이션 검증 → QA → HTML 출력까지 가능한 **개인용 투자 리서치 프레임워크**"로 확장한다.
 
