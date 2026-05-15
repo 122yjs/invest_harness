@@ -20,6 +20,12 @@
 | valuation_gate | pass / fail / review |  |  |
 | source_conflict_gate | pass / fail / review |  |  |
 
+## Source Availability Checks
+
+| Source ID | Connection Status | Configured In | Available Tools/Endpoints | Missing Tool/Data Gap | Fallback |
+|---|---|---|---|---|---|
+|  | connected / documented_only / planned / external_manual |  |  |  |  |
+
 ## Missing Data
 
 | Missing Item | Impact | Follow-up |

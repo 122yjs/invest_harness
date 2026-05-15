@@ -34,16 +34,21 @@ description: evidence-plan을 읽고 source capability 기반 source-call-plan, 
 - Include fallback sources and source limitations.
 - Include validation checks before analyst fan-out.
 - Treat FRED, Alpha Vantage, FMP, EDGAR, DART-KRX, yfinance, KOSIS, customs trade, Google Trends, Naver DataLab, KOTRA, G2B, and ECOS as capabilities, not mandatory sources.
+- Read each registry source's `connection_status` as repo-evidence status only, not live runtime proof.
+- Valid `connection_status` values are `connected`, `documented_only`, `planned`, and `external_manual`.
+- If a needed source is `documented_only`, `planned`, or `external_manual`, record the missing callable tool/endpoint in `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` instead of inventing a retrieval path.
+- Reuse existing yfinance and DART-KRX/korea-stock tool contracts when applicable; represent FRED, SEC EDGAR, and Alpha Vantage as source capability contracts unless concrete callable repo evidence exists.
 - Keep API execution outside this thin planning contract unless another skill explicitly owns retrieval.
 
 ## Workflow
 
 1. Read evidence plan requirements.
-2. For each evidence type, select candidate source, reason selected, required parameters, fallback sources, expected output, validation checks, and source limitations.
+2. For each evidence type, select candidate source, `source_id`, `connection_status`, reason selected, required parameters, fallback sources, expected output, validation checks, and source limitations.
 3. Write claim boundaries for each source.
 4. If required inputs are missing, write unresolved data gaps.
-5. If retrieval was performed by another role, summarize evidence IDs and validation status.
-6. Write outputs under `${ACTIVE_WORKSPACE}/00_evidence/`.
+5. If the selected source is not `connected`, write the unavailable tool/endpoint and fallback path as a data gap before analyst fan-out.
+6. If retrieval was performed by another role, summarize evidence IDs and validation status.
+7. Write outputs under `${ACTIVE_WORKSPACE}/00_evidence/`.
 
 ## Prohibited
 

@@ -68,6 +68,24 @@ Use personally accessible sources first:
 | Company IR | Official company disclosures | None |
 | Web search | Source discovery and context | None |
 
+## Source Capability Status
+
+Source availability in the registry is repo-evidence status only, not live
+runtime proof.
+
+| Status | Meaning |
+|---|---|
+| `connected` | Repo evidence documents concrete callable tool names or a configured callable surface. |
+| `documented_only` | Repo docs mention the source, but no callable repo tool contract is present. |
+| `planned` | The source is contract-described for a future integration pass. |
+| `external_manual` | The source can support manual research but is not callable by the harness. |
+
+Use existing yfinance and DART/KRX through `korea-stock` tool contracts when
+they apply. Represent FRED, SEC EDGAR, Alpha Vantage, FMP, ECOS, and planned
+market-intelligence sources as capability contracts unless callable repo
+evidence proves otherwise. Missing tool availability must be recorded as an
+unresolved data gap, not silently converted into a new runtime dependency.
+
 ## Source Recording
 
 Each finding must separate:

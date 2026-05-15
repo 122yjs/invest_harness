@@ -21,3 +21,16 @@ Institutional data can supplement:
 - private-market or ownership context
 
 It must not remove the requirement to cite public or official source trails in findings and QA.
+
+## Capability Status Routing
+
+`connection_status` in the source capability registry is repo-evidence status
+only, not live runtime proof.
+
+- `connected`: route to the documented tool contract when the evidence need matches.
+- `documented_only`: record the source as known but unavailable to the harness unless a callable tool is later added.
+- `planned`: treat as a docs-only contract for future integration.
+- `external_manual`: allow manual evidence collection, but record the gap for automated runs.
+
+Source routing must preserve FMP and ECOS as existing capability contracts and
+must not require optional institutional servers for default validation.

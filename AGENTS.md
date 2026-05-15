@@ -104,8 +104,9 @@
 
 사용 전략:
 - **한국 기업**: korea-stock 1순위 + yfinance 보조
-- **미국/글로벌 기업**: yfinance 1순위 (유일 MCP 데이터 소스)
-- 두 서버 모두 웹 검색보다 우선 순위가 높다
+- **미국/글로벌 기업**: 현재 repo에서 callable tool contract가 확인되는 공개 MCP는 yfinance이며, SEC EDGAR/FRED/Alpha Vantage 같은 추가 source는 `source-capability-registry.md`의 `connection_status`와 실제 callable repo evidence를 먼저 확인한다
+- repo에서 callable 설정이나 구체 tool contract가 확인되지 않은 source는 connected로 간주하지 않고 `documented_only`, `planned`, 또는 `external_manual` data gap으로 기록한다
+- 연결된 MCP 서버는 웹 검색보다 우선 순위가 높다
 
 각 역할별 상세 MCP 도구 사용법은 해당 SKILL.md의 `사용 가능한 MCP 도구` 섹션을 참조한다.
 <!-- END MCP_SERVERS_LIST -->
@@ -115,7 +116,7 @@
 
 - MCP 서버명: `korea-stock`
 - 제공 도구: `get_corp_code`, `get_disclosure_list`, `get_disclosure`, `get_financial_statement`, `get_stock_base_info`, `get_stock_trade_info`, `get_market_type`, `get_today_date`
-- 사용 조건: 한국 상장기업 한정, 해외 기업은 웹 검색 사용
+- 사용 조건: 한국 상장기업 한정. 해외 기업은 yfinance와 source capability registry를 우선 확인하고, callable source가 없을 때만 웹 검색을 source discovery 보조로 사용
 - 사용 방식: 각 SKILL.md의 MCP 도구 사용 규칙 참조
 
 전체 도구 명세와 사용 순서는 각 역할별 SKILL.md에 정의되어 있다.
