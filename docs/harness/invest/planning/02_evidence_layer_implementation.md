@@ -74,17 +74,23 @@
 
 - [x] 파일 생성: `docs/harness/invest/research-layer/source-capability-registry.md` — *d02b7cb*
 - [x] 아래 소스에 대해 각각 계약 정의:
-  - [x] opendart / DART-KRX
+  - [x] Group A: repo evidence 기준 connected 또는 문서화된 source
+  - [x] DART-KRX / korea-stock
   - [x] yfinance
-  - [x] kosis
+  - [x] FRED
+  - [x] SEC EDGAR
+  - [x] Alpha Vantage
+  - [x] Group B: 신규 시장 인텔리전스/docs-only 후보
+  - [x] KOSIS
   - [x] customs_trade_api
-  - [x] google_trends
-  - [x] naver_datalab
-  - [x] kotra
-  - [x] g2b_procurement
-  - [x] ecos / macro official statistics
+  - [x] Google Trends
+  - [x] Naver DataLab
+  - [x] KOTRA
+  - [x] G2B / public procurement
+  - [x] 보존 source: FMP, ECOS / macro official statistics
 - [x] 각 소스에 포함할 항목:
-  - `provides` / `good_for` / `not_good_for` / `required_inputs` / `outputs` / `validation_rules` / `forbidden_claims`
+  - `source_id` / `provider` / `connection_status` / `configured_in` / `available_tools_or_endpoints` / `evidence_types_supported`
+  - `good_for` / `not_good_for` / `required_inputs` / `outputs` / `validation_rules` / `forbidden_claims` / `fallback_sources` / `notes`
 - [x] 예시 계약 포함:
   - Google Trends: `provides` = relative_search_interest 등, `not_good_for` = absolute_market_size 등
   - Customs Trade: `provides` = item/country export-import value 등, `not_good_for` = company_specific_sales 등
@@ -431,6 +437,44 @@ ${ACTIVE_WORKSPACE}/00_evidence/
 - [ ] 새 흐름을 5~8개 bullet으로 설명
 - [ ] 검증 명령어 출력 확인
 - [ ] 실행 불가 테스트가 있으면 사유와 미검증 항목 설명
+
+---
+
+## 추가 구현 패스: Source Capability Connection Status
+
+> 목적: 기존/문서화/예정/수동 source를 같은 registry 계약으로 표현하고, source-router가 callable 여부를 과대해석하지 않도록 검증한다.
+
+### Non-goals
+
+- [x] 이미 MCP/API/config로 제공되는 source에 중복 API client를 구현하지 않는다.
+- [x] 새 credentials를 추가하지 않는다.
+- [x] `.mcp.institutional.json`은 기본적으로 수정하지 않으며, 이번 패스에서는 `enabled: false`와 빈 `mcpServers`를 유지한다.
+- [x] 기존 FRED / SEC EDGAR / Alpha Vantage / yfinance / DART-KRX 연결 또는 문서화 상태를 대체하지 않는다.
+- [x] KOSIS, customs_trade_api, Google Trends, Naver DataLab, KOTRA, G2B의 runtime API client는 이번 패스에서 만들지 않는다.
+- [x] 이번 패스는 documentation, contracts, templates, validation tests first로 제한한다.
+
+- [x] 기존 또는 repo-evidence source를 Group A로 정리: FRED, SEC EDGAR, Alpha Vantage, yfinance, DART-KRX/korea-stock
+- [x] 신규 시장 인텔리전스 후보를 docs-only Group B로 정리: KOSIS, customs, Google Trends, Naver DataLab, KOTRA, G2B
+- [x] FMP와 ECOS 기존 계약을 보존
+- [x] `connection_status` enum 정의: `connected`, `documented_only`, `planned`, `external_manual`
+- [x] `connection_status`가 repo-evidence status이며 live runtime proof가 아님을 명시
+- [x] 각 source section에 `source_id`, `provider`, `connection_status`, `configured_in`, `available_tools_or_endpoints`, `evidence_types_supported`, `fallback_sources`, `notes` 등을 추가
+- [x] source-router가 unavailable source를 data gap으로 기록하도록 지침 업데이트
+- [x] source-call-plan, source-validation, api-call-log 템플릿에 source status/tool/gap 필드 추가
+- [x] `scripts/test_source_capability_registry.py`를 per-source section validator로 강화
+- [x] RED 확인: 강화된 validator가 기존 registry의 누락 필드와 status semantic 누락을 실패로 보고함
+- [x] GREEN 확인: registry/templates/router 업데이트 후 `python3 scripts/test_source_capability_registry.py` 통과
+
+### Web Search + Web Fetch 보강
+
+- [x] Web Search를 evidence source가 아니라 candidate URL discovery 단계로 정의
+- [x] Search snippet만 있는 경우 Web Fetch/browser/PDF reader로 URL 본문을 읽도록 source-router 규칙 추가
+- [x] 기사, 문서, PDF 본문을 fetch/read한 경우에만 evidence로 사용할 수 있도록 validation template 추가
+- [x] body fetch 실패 시 snippet으로 대체하지 않고 unresolved data gap으로 기록
+- [x] 별도 scraping infrastructure를 이번 패스의 non-goal로 유지
+- [x] `Web Search + Web Fetch` source capability contract 추가
+- [x] RED 확인: registry validator가 Web Search + Web Fetch source와 routing rule 누락을 실패로 보고함
+- [x] GREEN 확인: registry/router/template 업데이트 후 `python3 scripts/test_source_capability_registry.py` 통과
 
 ---
 

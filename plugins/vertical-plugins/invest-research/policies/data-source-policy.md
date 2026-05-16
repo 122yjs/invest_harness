@@ -26,6 +26,22 @@ For global listed companies:
 2. Company IR, local exchange filings, and regulator filings.
 3. Web search only for source discovery and context.
 
+## Web Search And Fetch Policy
+
+Use Web Search for link discovery, not as primary evidence. If search results
+only provide summary snippets, use Web Fetch, browser open, or PDF/document
+reading on the candidate URL before citing, summarizing, or validating the
+claim.
+
+Search finds candidate URLs; Fetch reads the full article, document, or PDF
+body. Record the URL, title, publisher, publication date, retrieval timestamp,
+and whether the body was successfully fetched. If the body cannot be fetched,
+record an unresolved data gap and do not rely on the snippet.
+
+This search-plus-fetch pattern is the default public-web retrieval path for
+ordinary articles, documents, and PDFs. Do not add a separate scraping
+infrastructure unless a later implementation pass explicitly approves it.
+
 ## Optional Institutional Layer
 
 Institutional MCPs and paid datasets are optional. Their absence must not make the basic workflow fail. When present, they are supporting sources rather than replacements for the run's primary public source trail.
@@ -59,7 +75,25 @@ Use personally accessible sources first:
 | Alpha Vantage | Market/fundamental data | `ALPHA_VANTAGE_API_KEY` |
 | Financial Modeling Prep | Financial data and estimates | `FMP_API_KEY` |
 | Company IR | Official company disclosures | None |
-| Web search | Source discovery and context | None |
+| Web Search + Web Fetch | Link discovery plus article/document/PDF body retrieval | None |
+
+## Source Capability Status
+
+Source availability in the registry is repo-evidence status only, not live
+runtime proof.
+
+| Status | Meaning |
+|---|---|
+| `connected` | Repo evidence documents concrete callable tool names or a configured callable surface. |
+| `documented_only` | Repo docs mention the source, but no callable repo tool contract is present. |
+| `planned` | The source is contract-described for a future integration pass. |
+| `external_manual` | The source can support manual research but is not callable by the harness. |
+
+Use existing yfinance and DART/KRX through `korea-stock` tool contracts when
+they apply. Represent FRED, SEC EDGAR, Alpha Vantage, FMP, ECOS, and planned
+market-intelligence sources as capability contracts unless callable repo
+evidence proves otherwise. Missing tool availability must be recorded as an
+unresolved data gap, not silently converted into a new runtime dependency.
 
 ## Source Recording
 
