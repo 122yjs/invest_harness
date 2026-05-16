@@ -1,14 +1,30 @@
-# Planning Checklists
+# Planning
 
-이 디렉토리는 `invest_harness` 프로젝트의 목표, 마일스톤, 구현 체크리스트를 관리합니다. 
-진행 흐름에 따라 번호가 매겨진 파일을 참조하세요.
+이 디렉터리는 `invest_harness` 프로젝트의 구현 계획과 마일스톤을 관리합니다. 파일 이름은 `[번호]_[상태]_[주제]` 형식을 따릅니다.
 
 ## 문서 목록
 
 | 파일명 | 상태 | 설명 |
 |---|---|---|
-| [`01_mvp_improvement_archive.md`](01_mvp_improvement_archive.md) | ✅ **ARCHIVED** | 1차 MVP 마일스톤 (Skill 계층 분리, Workspace 변경, 밸류에이션 추가 등) 완료 기록 |
-| [`02_evidence_layer_implementation.md`](02_evidence_layer_implementation.md) | 🔲 **진행 중** | 2차 마일스톤: Evidence Planning, Source Routing, Signal Primitive 범용 레이어 도입 |
+| [`01_archive_mvp_milestone.md`](01_archive_mvp_milestone.md) | ✅ **ARCHIVED** | 1차 MVP 마일스톤 (프레임워크 기초 및 밸류에이션 등) 완료 기록 |
+| [`02_archive_evidence_layer_draft.md`](02_archive_evidence_layer_draft.md) | ✅ **ARCHIVED** | 2차 증거 레이어 구현 초안 (03번 문서에 의해 대체됨) |
+| [`03_core_evidence_layer_implementation.md`](03_core_evidence_layer_implementation.md) | ✅ **90% 완료** | **현재 기준 문서**: 증거 레이어(Evidence Layer) 최종 구현 계획 |
+| [`04_plan_ux_feedback_and_residuals.md`](04_plan_ux_feedback_and_residuals.md) | 🔲 **진행 예정** | **다음 계획**: 실제 리서치 UX 피드백 반영 및 03번 잔여 항목 통합 구현 계획 |
 
----
-*참고: 기존의 영어 원문 프롬프트(`2nd checklist.md`) 및 외부 폴더에 흩어져 있던 체크리스트를 현재의 01, 02 체계로 통합하였습니다.*
+## 계보 (Lineage)
+
+```text
+01_archive (MVP)
+ └─ 02_archive (Evidence Layer v1)
+     └─ 03_core (Evidence Layer v2 - ACTIVE)
+         └─ 04_plan (UX Refinement - NEXT)
+```
+
+## 규칙
+
+- **파일명 규칙**: `[순번]_[상태]_[주제].md` (예: `03_core_evidence_layer.md`)
+- **상태 구분**:
+  - `archive`: 완료되어 보존된 문서
+  - `core`: 현재 진행 중인 핵심 기준 문서
+  - `plan`: 다음 단계로 예정된 구체적인 계획서
+- 완료된 계획은 `✅ ARCHIVED`로 상태를 변경하고 이력 보존을 위해 삭제하지 않습니다.

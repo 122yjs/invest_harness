@@ -120,6 +120,7 @@ def test_smoke_commands() -> None:
             )
             workspace = Path(str(payload["active_workspace"]))
             dispatch_file = workspace / "00_input" / "command-dispatch.json"
+            running_marker = workspace / ".running"
 
             assert_true(payload["command"] == command_name, f"command mismatch: {raw_command}")
             assert_true(
@@ -129,6 +130,7 @@ def test_smoke_commands() -> None:
             assert_true(payload["thin_wrapper"] is True, f"not thin wrapper: {raw_command}")
             assert_true(workspace.is_dir(), f"workspace missing: {workspace}")
             assert_true(dispatch_file.is_file(), f"dispatch file missing: {dispatch_file}")
+            assert_true(running_marker.is_file(), f"running marker missing: {running_marker}")
             assert_true(
                 required_output in payload["expected_outputs"],
                 f"required output missing from payload: {required_output}",
@@ -162,9 +164,77 @@ def test_workspace_collision_suffix() -> None:
         )
 
 
+def test_locked_explicit_workspace_falls_back_to_dynamic_workspace() -> None:
+    with tempfile.TemporaryDirectory(prefix="invest-command-runtime-") as temp_dir:
+        workspace_base = Path(temp_dir)
+        legacy_workspace = workspace_base / "_workspace"
+        legacy_workspace.mkdir()
+        (legacy_workspace / ".running").write_text("existing session\n", encoding="utf-8")
+
+        payload = dispatch_command(
+            "/analyze AAPL",
+            workspace_base=workspace_base,
+            explicit_workspace=legacy_workspace,
+            run_date="20260513",
+        )
+
+        active_workspace = Path(str(payload["active_workspace"]))
+        assert_true(
+            payload["workspace_lock_detected"] is True,
+            "explicit workspace lock should be detected",
+        )
+        assert_true(
+            active_workspace != legacy_workspace.resolve(),
+            "locked legacy workspace should not be reused",
+        )
+        assert_true(
+            active_workspace.name.startswith("_workspace_AAPL_20260513"),
+            f"fallback workspace should be dynamic: {active_workspace}",
+        )
+        assert_true(active_workspace.is_dir(), f"fallback workspace missing: {active_workspace}")
+
+
+def test_explicit_workspace_marker_blocks_second_session() -> None:
+    with tempfile.TemporaryDirectory(prefix="invest-command-runtime-") as temp_dir:
+        workspace_base = Path(temp_dir)
+        explicit_workspace = workspace_base / "_workspace"
+
+        first = dispatch_command(
+            "/analyze MSFT",
+            workspace_base=workspace_base,
+            explicit_workspace=explicit_workspace,
+            run_date="20260513",
+        )
+        second = dispatch_command(
+            "/analyze MSFT",
+            workspace_base=workspace_base,
+            explicit_workspace=explicit_workspace,
+            run_date="20260513",
+        )
+
+        assert_true(
+            Path(str(first["active_workspace"])) == explicit_workspace.resolve(),
+            "first explicit session should use the requested workspace",
+        )
+        assert_true(
+            Path(str(first["running_marker"])).is_file(),
+            "first explicit session should write a running marker",
+        )
+        assert_true(
+            second["workspace_lock_detected"] is True,
+            "second explicit session should detect the first session marker",
+        )
+        assert_true(
+            Path(str(second["active_workspace"])) != explicit_workspace.resolve(),
+            "second explicit session should fall back to a dynamic workspace",
+        )
+
+
 def main() -> int:
     test_smoke_commands()
     test_workspace_collision_suffix()
+    test_locked_explicit_workspace_falls_back_to_dynamic_workspace()
+    test_explicit_workspace_marker_blocks_second_session()
     print(
         "Command runtime smoke tests passed: parser, skill dispatch, "
         "ACTIVE_WORKSPACE creation, and collision suffixing are valid."

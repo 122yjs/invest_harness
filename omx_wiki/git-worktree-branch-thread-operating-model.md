@@ -2,15 +2,17 @@
 title: "Git Worktree Branch Thread Operating Model"
 tags: ["git", "worktree", "branch", "codex-thread", "session", "goal-api", "workflow"]
 created: 2026-05-13T22:40:12.132Z
-updated: 2026-05-13T22:40:12.132Z
+updated: 2026-05-16T12:18:00.000Z
 sources: []
-links: []
+links: ["wiki-worktree-sync-policy.md"]
 category: reference
 confidence: medium
 schemaVersion: 1
 ---
 
 # Git Worktree Branch Thread Operating Model
+
+Related convention: [[wiki-worktree-sync-policy.md]] explains how `omx_wiki/` knowledge files and worktree-local command logs should be compared across Git worktrees.
 
 ## Concepts
 
@@ -37,11 +39,12 @@ This prevents three common failures:
 ## Project Convention
 
 - Keep the root checkout on `main` for comparison and merge checks.
-- Create new development lanes under `.worktrees/`.
+- Create new development lanes as **outside sibling folders** (e.g., `../project-branch`) relative to the main checkout. Do NOT use nested `.worktrees/` folders.
+- *Why sibling?* Nested structures often confuse IDEs, search tools, backup systems, formatters, and AI agent sessions (sandbox permission boundaries).
 - Keep the worktree folder name and branch name aligned whenever possible.
-- Good local lane example: `.worktrees/dev2` with branch `dev2`.
-- Good namespaced lane example: `.worktrees/refactor-invest-harness-20260514` with branch `codex/refactor-invest-harness-20260514`.
-- Avoid misleading states such as `.worktrees/main-session-dev-env` checked out on `codex/refactor-invest-harness-next-20260514`.
+- Good sibling lane example: `../invest_harness-clean-dev2` with branch `dev2`.
+- Good namespaced lane example: `../invest_harness-clean-refactor-20260514` with branch `codex/refactor-invest-harness-20260514`.
+- Avoid misleading states such as `../invest_harness-clean-main-session` checked out on `codex/refactor-invest-harness-next-20260514`.
 
 ## Start Checklist
 

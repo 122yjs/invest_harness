@@ -19,6 +19,7 @@ from pathlib import Path
 from sync_invest_skills import REPO_ROOT, repo_relative
 
 SOURCE_COMMAND_ROOT = REPO_ROOT / "plugins" / "vertical-plugins" / "invest-research" / "commands"
+RUNNING_MARKER = ".running"
 
 OUTPUT_CONTRACTS = {
     "analyze": [
@@ -169,6 +170,23 @@ def workspace_slug(command_name: str, arguments: str) -> str:
     return cleaned[:48]
 
 
+def workspace_has_running_marker(path: Path) -> bool:
+    return (path / RUNNING_MARKER).exists()
+
+
+def dynamic_workspace_candidates(
+    command_name: str,
+    arguments: str,
+    run_date: str,
+    workspace_base: Path,
+) -> list[Path]:
+    slug = workspace_slug(command_name, arguments)
+    first = workspace_base / f"_workspace_{slug}_{run_date}"
+    time_suffix = datetime.now().strftime("%H%M%S")
+    second = workspace_base / f"_workspace_{slug}_{run_date}_{time_suffix}"
+    return [first, second]
+
+
 def resolve_workspace(
     command_name: str,
     arguments: str,
@@ -177,24 +195,55 @@ def resolve_workspace(
     explicit_workspace: Path | None = None,
 ) -> Path:
     if explicit_workspace is not None:
-        return explicit_workspace.expanduser().resolve()
+        requested = explicit_workspace.expanduser().resolve()
+        if workspace_has_running_marker(requested):
+            for candidate in dynamic_workspace_candidates(
+                command_name,
+                arguments,
+                run_date,
+                workspace_base,
+            ):
+                if not candidate.exists():
+                    return candidate.resolve()
+        return requested
 
-    slug = workspace_slug(command_name, arguments)
-    candidate = workspace_base / f"_workspace_{slug}_{run_date}"
-    if not candidate.exists():
-        return candidate.resolve()
-
-    time_suffix = datetime.now().strftime("%H%M%S")
-    candidate = workspace_base / f"_workspace_{slug}_{run_date}_{time_suffix}"
-    if not candidate.exists():
-        return candidate.resolve()
+    candidates = dynamic_workspace_candidates(command_name, arguments, run_date, workspace_base)
+    for candidate in candidates:
+        if not candidate.exists():
+            return candidate.resolve()
 
     index = 2
+    suffix_base = candidates[-1]
     while True:
-        indexed = workspace_base / f"_workspace_{slug}_{run_date}_{time_suffix}-{index}"
+        indexed = suffix_base.with_name(f"{suffix_base.name}-{index}")
         if not indexed.exists():
             return indexed.resolve()
         index += 1
+
+
+def reserve_dynamic_workspace(
+    command_name: str,
+    arguments: str,
+    run_date: str,
+    workspace_base: Path,
+) -> Path:
+    candidates = dynamic_workspace_candidates(command_name, arguments, run_date, workspace_base)
+    for candidate in candidates:
+        try:
+            candidate.mkdir(parents=True, exist_ok=False)
+            return candidate.resolve()
+        except FileExistsError:
+            continue
+
+    index = 2
+    suffix_base = candidates[-1]
+    while True:
+        candidate = suffix_base.with_name(f"{suffix_base.name}-{index}")
+        try:
+            candidate.mkdir(parents=True, exist_ok=False)
+            return candidate.resolve()
+        except FileExistsError:
+            index += 1
 
 
 def logical_to_absolute(logical_path: str, active_workspace: Path) -> str:
@@ -208,6 +257,24 @@ def ensure_dispatch_workspace(active_workspace: Path, expected_outputs: list[str
     for logical_path in expected_outputs:
         output_path = Path(logical_to_absolute(logical_path, active_workspace))
         output_path.parent.mkdir(parents=True, exist_ok=True)
+
+
+def write_running_marker(active_workspace: Path, payload: dict[str, object]) -> Path:
+    marker_path = active_workspace / RUNNING_MARKER
+    marker_payload = {
+        "status": "running",
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "active_workspace": payload["active_workspace"],
+        "raw_command": payload["raw_command"],
+        "command": payload["command"],
+        "run_date": payload["run_date"],
+    }
+    marker_path.write_text(
+        json.dumps(marker_payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    return marker_path
 
 
 def dispatch_command(
@@ -224,14 +291,30 @@ def dispatch_command(
     definition = load_command_definition(command_name, command_root)
     normalized_date = normalize_run_date(run_date)
     base = (workspace_base or repo_root).expanduser().resolve()
-    active_workspace = resolve_workspace(
-        command_name,
-        arguments,
-        normalized_date,
-        base,
-        explicit_workspace,
-    )
     expected_outputs = sorted(set(definition.logical_paths))
+    requested_workspace = explicit_workspace.expanduser().resolve() if explicit_workspace else None
+    workspace_lock_detected = bool(
+        requested_workspace is not None and workspace_has_running_marker(requested_workspace)
+    )
+
+    if create_workspace:
+        if requested_workspace is None or workspace_lock_detected:
+            active_workspace = reserve_dynamic_workspace(
+                command_name,
+                arguments,
+                normalized_date,
+                base,
+            )
+        else:
+            active_workspace = requested_workspace
+    else:
+        active_workspace = resolve_workspace(
+            command_name,
+            arguments,
+            normalized_date,
+            base,
+            explicit_workspace,
+        )
 
     if create_workspace:
         ensure_dispatch_workspace(active_workspace, expected_outputs)
@@ -245,6 +328,8 @@ def dispatch_command(
         "source_command": repo_relative(definition.source_path),
         "active_workspace": active_workspace.as_posix(),
         "active_workspace_env": "ACTIVE_WORKSPACE",
+        "requested_workspace": requested_workspace.as_posix() if requested_workspace else None,
+        "workspace_lock_detected": workspace_lock_detected,
         "run_date": normalized_date,
         "expected_outputs": expected_outputs,
         "absolute_expected_outputs": [
@@ -254,6 +339,8 @@ def dispatch_command(
     }
 
     if create_workspace:
+        marker_path = write_running_marker(active_workspace, payload)
+        payload["running_marker"] = marker_path.as_posix()
         dispatch_path = active_workspace / "00_input" / "command-dispatch.json"
         dispatch_path.write_text(
             json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
