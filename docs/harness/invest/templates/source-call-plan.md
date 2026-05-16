@@ -12,6 +12,15 @@
 |---|---|---|---|---|---|---|
 |  |  |  | connected / documented_only / planned / external_manual |  |  |  |
 
+## Web Search + Fetch Plan
+
+| Evidence Type | Search Query | Candidate URL | Fetch/Reader Tool | Body Retrieved | Body Type | Snippet-Only? | Validation Checks | Data Gap If Fetch Fails |
+|---|---|---|---|---|---|---|---|---|
+|  |  |  | web_fetch / browser / PDF reader | yes / no / pending | article / document / PDF / page | yes / no |  |  |
+
+Rule: Search finds links; Fetch reads article, document, or PDF body. Do not use
+summary snippets as primary evidence.
+
 ## Claim Boundaries
 
 | Source | Allowed Claims | Forbidden Claims | Required Caveats |

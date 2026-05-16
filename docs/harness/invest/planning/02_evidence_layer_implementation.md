@@ -465,6 +465,17 @@ ${ACTIVE_WORKSPACE}/00_evidence/
 - [x] RED 확인: 강화된 validator가 기존 registry의 누락 필드와 status semantic 누락을 실패로 보고함
 - [x] GREEN 확인: registry/templates/router 업데이트 후 `python3 scripts/test_source_capability_registry.py` 통과
 
+### Web Search + Web Fetch 보강
+
+- [x] Web Search를 evidence source가 아니라 candidate URL discovery 단계로 정의
+- [x] Search snippet만 있는 경우 Web Fetch/browser/PDF reader로 URL 본문을 읽도록 source-router 규칙 추가
+- [x] 기사, 문서, PDF 본문을 fetch/read한 경우에만 evidence로 사용할 수 있도록 validation template 추가
+- [x] body fetch 실패 시 snippet으로 대체하지 않고 unresolved data gap으로 기록
+- [x] 별도 scraping infrastructure를 이번 패스의 non-goal로 유지
+- [x] `Web Search + Web Fetch` source capability contract 추가
+- [x] RED 확인: registry validator가 Web Search + Web Fetch source와 routing rule 누락을 실패로 보고함
+- [x] GREEN 확인: registry/router/template 업데이트 후 `python3 scripts/test_source_capability_registry.py` 통과
+
 ---
 
 > **범례:** `- [ ]` = 미착수 · `- [x]` = 완료

@@ -46,6 +46,9 @@ description: evidence-plan을 읽고 source capability 기반 source-call-plan, 
 - Valid `connection_status` values are `connected`, `documented_only`, `planned`, and `external_manual`.
 - If a needed source is `documented_only`, `planned`, or `external_manual`, record the missing callable tool/endpoint in `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md` instead of inventing a retrieval path.
 - Reuse existing yfinance and DART-KRX/korea-stock tool contracts when applicable; represent FRED, SEC EDGAR, and Alpha Vantage as source capability contracts unless concrete callable repo evidence exists.
+- For public web evidence, use Web Search only to discover candidate URLs. If search returns only summary snippets, require Web Fetch/browser/PDF reading of the candidate URL body before using the source as evidence.
+- Search finds links; Fetch reads the article, document, or PDF body. Do not cite or validate claims from search snippets alone.
+- Web Search + Web Fetch does not require a separate scraping infrastructure for ordinary public articles, documents, or PDFs, but body retrieval failures must be recorded as data gaps.
 - Keep API execution outside this thin planning contract unless another skill explicitly owns retrieval.
 
 ## Workflow
@@ -55,8 +58,9 @@ description: evidence-plan을 읽고 source capability 기반 source-call-plan, 
 3. Write claim boundaries for each source.
 4. If required inputs are missing, write unresolved data gaps.
 5. If the selected source is not `connected`, write the unavailable tool/endpoint and fallback path as a data gap before analyst fan-out.
-6. If retrieval was performed by another role, summarize evidence IDs and validation status.
-7. Write outputs under `${ACTIVE_WORKSPACE}/00_evidence/`.
+6. For web sources, include both the search query/link-discovery step and the fetch/body-read step in the source-call plan.
+7. If retrieval was performed by another role, summarize evidence IDs, fetched URL/body status, and validation status.
+8. Write outputs under `${ACTIVE_WORKSPACE}/00_evidence/`.
 
 ## Prohibited
 

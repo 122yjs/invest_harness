@@ -26,6 +26,15 @@
 |---|---|---|---|---|---|
 |  | connected / documented_only / planned / external_manual |  |  |  |  |
 
+## Web Body Retrieval Checks
+
+| Evidence ID | Candidate URL | Search Snippet Used? | Full Body Retrieved? | Body Type | Publication Date Check | Retrieval Timestamp | Status |
+|---|---|---|---|---|---|---|---|
+|  |  | no / yes | yes / no | article / document / PDF / page | pass / fail / review |  | pass / fail / review |
+
+Snippet-only evidence fails validation. If the article, document, or PDF body
+cannot be fetched or read, record an unresolved data gap before analyst fan-out.
+
 ## Missing Data
 
 | Missing Item | Impact | Follow-up |

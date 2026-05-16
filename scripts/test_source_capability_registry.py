@@ -20,6 +20,7 @@ EXPECTED_SOURCES = [
     "Naver DataLab",
     "KOTRA",
     "G2B / public procurement",
+    "Web Search + Web Fetch",
     "Financial Modeling Prep",
     "ECOS or macro official statistics",
 ]
@@ -109,6 +110,10 @@ def main() -> int:
     required_status_note = "repo-evidence only, not live runtime proof"
     if required_status_note not in text:
         failures.append(f"missing status semantics note: {required_status_note!r}")
+
+    web_fetch_rule = "Search finds candidate URLs; Fetch reads full article, document, or PDF body"
+    if web_fetch_rule not in text:
+        failures.append(f"missing web search/fetch routing rule: {web_fetch_rule!r}")
 
     lowered_text = text.lower()
     for phrase in BANNED_DUPLICATE_CONNECTOR_PHRASES:

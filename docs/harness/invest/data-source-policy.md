@@ -10,6 +10,22 @@ This document mirrors the source policy at `plugins/vertical-plugins/invest-rese
 | US | SEC EDGAR and company IR | yfinance market data, financial snapshots, news | Exchange pages, official press releases, web search for missing context |
 | Global | yfinance where coverage exists | Company IR, local exchange and regulator filings | Web search for source discovery and context |
 
+## Web Search And Fetch Policy
+
+Use Web Search for link discovery, not as primary evidence. If search results
+only provide summary snippets, use Web Fetch, browser open, or PDF/document
+reading on the candidate URL before citing, summarizing, or validating the
+claim.
+
+Search finds candidate URLs; Fetch reads the full article, document, or PDF
+body. Record the URL, title, publisher, publication date, retrieval timestamp,
+and whether the body was successfully fetched. If the body cannot be fetched,
+record an unresolved data gap and do not rely on the snippet.
+
+This search-plus-fetch pattern is the default public-web retrieval path for
+ordinary articles, documents, and PDFs. Do not add a separate scraping
+infrastructure unless a later implementation pass explicitly approves it.
+
 ## Free And Low-Cost Layer
 
 | Source | Access | Credential |
@@ -21,7 +37,7 @@ This document mirrors the source policy at `plugins/vertical-plugins/invest-rese
 | Alpha Vantage | Market and fundamental data | `ALPHA_VANTAGE_API_KEY` |
 | Financial Modeling Prep | Financial data and estimates | `FMP_API_KEY` |
 | Company IR | Official investor relations pages | None |
-| Web search | Source discovery and context only | None |
+| Web Search + Web Fetch | Link discovery plus article/document/PDF body retrieval | None |
 
 ## Optional Institutional Layer
 

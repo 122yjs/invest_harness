@@ -220,6 +220,23 @@ Each source contract must include:
 - fallback_sources: company disclosures for award materiality, public agency releases, market statistics for broader demand
 - notes: Docs-only market-intelligence contract for this pass.
 
+## Web Search + Web Fetch
+
+- source_id: `web_search_fetch`
+- provider: Search engine result discovery plus URL fetch/browser body retrieval
+- connection_status: external_manual
+- configured_in: `docs/harness/invest/research-layer/source-capability-registry.md`, `docs/harness/invest/mcp-routing.md`, source-router guidance
+- available_tools_or_endpoints: search query result pages, URL fetch/open tools, browser/PDF/document readers when available in the execution environment
+- evidence_types_supported: `source_discovery`, `news_event`, `market_context`, `company_disclosure_context`, `policy_context`, `document_body`, `pdf_document`
+- good_for: finding candidate URLs, retrieving article or document body text, reading public PDFs, checking source dates, and filling context gaps when structured sources are insufficient
+- not_good_for: replacing official filings for audited facts, bypassing paywalls or access controls, treating search snippets as evidence, or creating a standalone scraping infrastructure
+- required_inputs: search query, entity or subject, geography, date range, preferred source type, candidate URL, retrieval timestamp
+- outputs: candidate URL list, fetched article/document/PDF body, title, publisher, publication date, retrieval date, quoted or paraphrased evidence excerpts, fetch failure notes
+- validation_rules: Search finds candidate URLs; Fetch reads full article, document, or PDF body; do not rely on summary snippets alone; record URL, title, publisher, publication date, retrieval timestamp, and whether the body was fully fetched
+- forbidden_claims: do not cite search snippets as primary evidence; do not infer facts from result ranking; do not summarize an article, filing, document, or PDF unless the fetched body was read
+- fallback_sources: official source pages, company IR, regulator pages, exchange pages, MCP/API sources when structured data is required
+- notes: Use search plus fetch as the default public-web retrieval pair. This avoids a separate scraping layer for ordinary articles, documents, and PDFs while preserving citation and body-read validation.
+
 ## Financial Modeling Prep
 
 - source_id: `financial_modeling_prep`

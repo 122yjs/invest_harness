@@ -9,6 +9,21 @@
 | Global listed companies | yfinance | company IR / local exchange / regulator | Label coverage gaps explicitly. |
 | Macro indicators | FRED or official central-bank/statistical sources | web search for source discovery | Keep series IDs and dates. |
 
+## Web Search + Web Fetch Routing
+
+Web Search is a discovery step. Use it to find candidate URLs, source titles,
+publishers, and date hints. Do not treat search result snippets as primary
+evidence.
+
+When a search result is relevant, route the candidate URL to Web Fetch, browser
+open, or PDF/document reading before using it in the evidence ledger. Fetch must
+read the full article, document, or PDF body, not just the snippet. Record body
+retrieval status in the source-call plan and source-validation output.
+
+If Web Fetch cannot retrieve the body, record the URL as an unresolved data gap
+or use an official fallback source. Do not add separate scraping infrastructure
+for ordinary public articles, documents, or PDFs in this pass.
+
 ## Optional Institutional Routing
 
 `.mcp.institutional.json` is a disabled optional catalog. Enabling an institutional server is an environment-specific operation and should not be required by this repository's default tests.

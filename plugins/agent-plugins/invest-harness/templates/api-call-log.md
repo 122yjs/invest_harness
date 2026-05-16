@@ -20,3 +20,4 @@ harness to implement API clients.
 - Record official source IDs, MCP tool names, endpoint names, or filing accessions.
 - If a source is not `connected`, record the missing tool/endpoint as a data gap rather than treating the call as completed.
 - For manual web retrieval, use the URL or source document title in `Endpoint/Tool`.
+- For Web Search + Web Fetch retrieval, log the search query separately from the fetched URL. Search snippets are discovery metadata only; evidence requires the fetched article, document, or PDF body.
