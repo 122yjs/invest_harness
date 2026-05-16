@@ -79,12 +79,16 @@
 ## 반복 실행 workspace 보존
 
 1. 현재 실행의 작업 디렉터리를 `ACTIVE_WORKSPACE`로 정한다. 기본값은 `_workspace_{TICKER_OR_SLUG}_{YYYYMMDD}/` 형식의 동적 workspace 절대 경로다.
-2. 새 리서치를 시작하기 전에 `ACTIVE_WORKSPACE`에 기존 산출물이 있는지 확인한다.
-3. 기존 산출물이 있으면 삭제하거나 덮어쓰지 말고 `_workspace_runs/<YYYY-MM-DD>-<ticker-or-slug>/`로 먼저 이동한다.
-4. 같은 archive 경로가 이미 있으면 `-HHMMSS` 또는 `-2`처럼 충돌 없는 suffix를 붙인다.
-5. 기본 동작은 move다. 권한 또는 런타임 제약 때문에 move가 불가능할 때만 copy를 사용하고, copy 결과를 확인하기 전에는 기존 파일을 비우지 않는다.
-6. archive가 끝난 뒤 새 `${ACTIVE_WORKSPACE}/`를 만들고, 모든 하위 역할에 같은 `ACTIVE_WORKSPACE` 절대 경로를 전달한다.
-7. `${ACTIVE_WORKSPACE}/`는 현재 실행 전용이고, `_workspace_runs/`는 이전 실행의 감사/재현 archive다.
+2. 여러 세션(OpenClaw, Hermes, Codex 등)이 동시에 실행될 수 있으므로 legacy `_workspace` 디렉터리를 공유 출력 경로로 사용하지 않는다.
+3. 명시적으로 전달된 workspace에 `.running` marker가 있으면 같은 경로를 재사용하지 말고 `_workspace_{TICKER_OR_SLUG}_{YYYYMMDD}_{HHMMSS}/` 형식의 새 workspace를 만든다.
+4. 런타임은 선택된 `ACTIVE_WORKSPACE`에 `.running` marker를 남겨 후속 세션이 같은 경로를 재사용하지 않게 한다.
+5. 새 리서치를 시작하기 전에 `ACTIVE_WORKSPACE`에 기존 산출물이 있는지 확인한다.
+6. 기존 산출물이 있으면 삭제하거나 덮어쓰지 말고 `_workspace_runs/<YYYY-MM-DD>-<ticker-or-slug>/`로 먼저 이동한다.
+7. 같은 archive 경로가 이미 있으면 `-HHMMSS` 또는 `-2`처럼 충돌 없는 suffix를 붙인다.
+8. 기본 동작은 move다. 권한 또는 런타임 제약 때문에 move가 불가능할 때만 copy를 사용하고, copy 결과를 확인하기 전에는 기존 파일을 비우지 않는다.
+9. archive가 끝난 뒤 새 `${ACTIVE_WORKSPACE}/`를 만들고, 모든 하위 역할에 같은 `ACTIVE_WORKSPACE` 절대 경로를 전달한다.
+10. `${ACTIVE_WORKSPACE}/`는 현재 실행 전용이고, `_workspace_runs/`는 이전 실행의 감사/재현 archive다.
+11. `docs/harness/invest/templates/*.md`는 읽기 전용 source template이며, 실행 산출물은 반드시 `${ACTIVE_WORKSPACE}/...`에 작성한다.
 
 ## 0. 진입 입력 수집 게이트
 

@@ -1,6 +1,6 @@
 # Invest Harness
 
-개별 상장기업 투자 리서치 리포트를 반복적으로 생성하기 위한 AI agent Harness입니다. `invest_prompt_v2.md`의 분석 요구사항을 여러 전문가 역할로 나누고, `_workspace/` 파일 핸드오프를 통해 초안, QA, 최종본까지 재현 가능하게 조립합니다.
+개별 상장기업 투자 리서치 리포트를 반복적으로 생성하기 위한 AI agent Harness입니다. `invest_prompt_v2.md`의 분석 요구사항을 여러 전문가 역할로 나누고, `${ACTIVE_WORKSPACE}/` 파일 핸드오프를 통해 초안, QA, 최종본까지 재현 가능하게 조립합니다.
 
 이 레포의 결과물은 정보 제공용 분석입니다. 개인화된 투자 자문이나 매매 권유로 사용하지 않습니다.
 
@@ -137,39 +137,41 @@ AGENTS.md와 docs/harness/invest/runbook.md를 따른다.
 
 ## 리포트 생성 흐름
 
+각 실행은 먼저 동적 `ACTIVE_WORKSPACE`를 확정한다. 기본 형식은 `_workspace_{TICKER_OR_SLUG}_{YYYYMMDD}/`이고, 같은 경로가 이미 있거나 legacy `_workspace` 디렉터리에 `.running` marker가 있으면 시각 suffix가 붙은 새 workspace를 사용한다. 런타임은 선택된 workspace에 `.running` marker를 남겨 후속 세션이 같은 경로를 재사용하지 않게 한다. OpenClaw, Hermes 등 여러 세션을 동시에 쓸 때도 같은 `${ACTIVE_WORKSPACE}/`를 공유하지 않는다.
+
 1. 입력을 정리합니다.
-   - 산출물: `_workspace/00_input/request-summary.md`
+   - 산출물: `${ACTIVE_WORKSPACE}/00_input/request-summary.md`
    - 담당: `invest-orchestrator`
 
 2. Evidence layer를 실행합니다.
-   - 산출물: `_workspace/00_evidence/evidence-plan.md`, `_workspace/00_evidence/source-call-plan.md`, `_workspace/00_evidence/evidence-ledger.md`, `_workspace/00_evidence/signal-cards.md`
+   - 산출물: `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`, `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`, `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`
    - 담당: `evidence-planner`, `source-router`, `signal-analyst`
    - 원칙: source capability 기반 선택, claim boundary 보존
 
 3. 전문가 분석을 작성합니다.
-   - 재무: `_workspace/01_financial/findings.md`
-   - 산업/경쟁/해자/제품: `_workspace/02_fundamental/findings.md`
-   - 밸류에이션: `_workspace/03_valuation/findings.md`
-   - 기술적 분석: `_workspace/04_technical/findings.md`
-   - 뉴스/센티먼트/거시: `_workspace/05_macro_sentiment/findings.md`
-   - 리스크/시나리오: `_workspace/06_risk_scenario/findings.md`
+   - 재무: `${ACTIVE_WORKSPACE}/01_financial/findings.md`
+   - 산업/경쟁/해자/제품: `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`
+   - 밸류에이션: `${ACTIVE_WORKSPACE}/03_valuation/findings.md`
+   - 기술적 분석: `${ACTIVE_WORKSPACE}/04_technical/findings.md`
+   - 뉴스/센티먼트/거시: `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md`
+   - 리스크/시나리오: `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`
 
 4. 충돌을 기록합니다.
-   - 산출물: `_workspace/06_risk_scenario/conflicts.md`
+   - 산출물: `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`
    - 수치, 출처, 기준일, 회계기간이 충돌할 때만 작성합니다.
 
 5. 초안을 합성합니다.
-   - 산출물: `_workspace/07_draft/report.md`
+   - 산출물: `${ACTIVE_WORKSPACE}/07_draft/report.md`
    - 담당: `report-synthesizer`
 
 6. QA를 수행합니다.
-   - 산출물: `_workspace/09_qa/review.md`
+   - 산출물: `${ACTIVE_WORKSPACE}/09_qa/review.md`
    - 담당: `qa-reviewer`
    - source/claim audit에서 relative search interest, trade data, procurement, market context가 과잉 주장되지 않았는지 확인합니다.
 
 7. 최종본을 확정합니다.
-   - 산출물: `_workspace/08_final/report.md`
-   - 선택 요약본: `_workspace/08_final/executive-summary.md`
+   - 산출물: `${ACTIVE_WORKSPACE}/08_final/report.md`
+   - 선택 요약본: `${ACTIVE_WORKSPACE}/08_final/executive-summary.md`
 
 ## 역할별 스킬
 
@@ -256,7 +258,7 @@ git switch -c feat/<작업-이름>
 
 ## 도구 호환성
 
-이 Harness는 특정 에이전트 런타임에 의존하지 않도록 설계되어 있습니다. 핵심 계약은 모두 Markdown 파일과 `_workspace/` 산출물 경로로 표현됩니다.
+이 Harness는 특정 에이전트 런타임에 의존하지 않도록 설계되어 있습니다. 핵심 계약은 모두 Markdown 파일과 `${ACTIVE_WORKSPACE}/` 산출물 경로로 표현됩니다.
 
 | 도구 | 사용 가능 여부 | 사용 방식 |
 |---|---|---|

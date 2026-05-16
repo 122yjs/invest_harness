@@ -9,6 +9,8 @@ from pathlib import Path
 from sync_invest_skills import REPO_ROOT, repo_relative
 
 SCAN_ROOTS = [
+    "AGENTS.md",
+    "README.md",
     "docs/harness/invest",
     "plugins/vertical-plugins/invest-research",
     "plugins/agent-plugins/invest-harness",
@@ -28,6 +30,9 @@ def scannable_files() -> list[Path]:
     for root in SCAN_ROOTS:
         absolute_root = REPO_ROOT / root
         if not absolute_root.exists():
+            continue
+        if absolute_root.is_file():
+            files.append(absolute_root)
             continue
         for path in absolute_root.rglob("*"):
             if not path.is_file() or path.name == ".DS_Store":

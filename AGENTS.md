@@ -86,7 +86,7 @@
 - 기존 analyst fan-out 전에 Evidence Planning / Source Routing / Signal Primitive 레이어를 실행한다.
 - 소스 선택은 고정 유즈케이스나 상품 enum이 아니라 evidence type, source capability, validation gate, claim boundary를 기준으로 한다.
 - 예시 시나리오는 `docs/harness/invest/evals/golden-scenarios/` 같은 eval fixture에만 두며 core router category로 승격하지 않는다.
-- 파트별 분석 결과는 `_workspace/`에 표준 파일명으로 저장하고, 최종 리포트는 조립 후 QA를 거친다.
+- 파트별 분석 결과는 실행별 `${ACTIVE_WORKSPACE}/`에 표준 파일명으로 저장하고, 최종 리포트는 조립 후 QA를 거친다.
 - 확인되지 않은 수치, 출처 없는 주장, 과도한 확신 표현은 금지한다.
 - 최신 연간/분기/TTM 데이터를 구분하고, 충돌 수치는 차이와 원인을 함께 적는다.
 - 기술적 분석과 소셜 센티먼트는 보조 신호로만 사용한다.
@@ -123,7 +123,7 @@
 <!-- END MCP_ENTRY -->
 - 핵심 프롬프트: `invest_prompt_v2.md`
 - 팀 명세: `docs/harness/invest/team-spec.md`
-- 작업 산출물: `_workspace/`
+- 작업 산출물: `${ACTIVE_WORKSPACE}/` (기본 생성 형식: `_workspace_{TICKER_OR_SLUG}_{YYYYMMDD}/`)
 - Evidence layer 산출물: `${ACTIVE_WORKSPACE}/00_evidence/`
 - Evidence layer 계약: `docs/harness/invest/research-layer/`
 - 역할 확장 경로: `docs/harness/invest/roles/`
