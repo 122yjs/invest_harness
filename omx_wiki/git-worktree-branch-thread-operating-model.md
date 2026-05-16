@@ -4,13 +4,15 @@ tags: ["git", "worktree", "branch", "codex-thread", "session", "goal-api", "work
 created: 2026-05-13T22:40:12.132Z
 updated: 2026-05-16T12:18:00.000Z
 sources: []
-links: []
+links: ["wiki-worktree-sync-policy.md"]
 category: reference
 confidence: medium
 schemaVersion: 1
 ---
 
 # Git Worktree Branch Thread Operating Model
+
+Related convention: [[wiki-worktree-sync-policy.md]] explains how `omx_wiki/` knowledge files and worktree-local command logs should be compared across Git worktrees.
 
 ## Concepts
 
