@@ -1,5 +1,9 @@
 # Evidence Layer 구현 체크리스트 (완료)
 
+> [!NOTE]
+> ✅ **ARCHIVED**: 이 체크리스트는 [03.md](03.md)에서 정제·확장되어 보존 처리되었습니다.
+> 03.md가 최종 구현계획이며, 이 파일은 이력 기록용으로만 유지합니다.
+
 > **Goal:** invest_harness에 **Evidence Planning / Source Routing / Signal Primitive** 레이어를 추가한다.
 > 기존 fan-out/fan-in 분석 워크플로우를 보존하면서, 분석 전 단계에 범용 증거 계획 계층을 삽입한다.
 
