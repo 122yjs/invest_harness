@@ -5,6 +5,27 @@ provide, which claims it can support, and which claims it cannot support alone.
 The router should select sources from `required_evidence_types`, not from fixed
 use-case labels.
 
+## Evidence Trust Tier Semantics
+
+Use trust tiers alongside `connection_status`. Runtime availability says whether
+a source can be called in the current session; trust tier says how authoritative
+the evidence is for a claim.
+
+- T0: company official and regulator disclosure, including Company IR, earnings
+  releases, shareholder letters, SEC EDGAR, DART/KRX, and local
+  exchange/regulator filings.
+- T1: official market or statistical sources, including exchange official market
+  data, central banks, FRED, ECOS, KOSIS, and statistical agencies.
+- T2: vendor or financial data snapshots, including yfinance, FMP, Alpha
+  Vantage, and optional institutional feeds.
+- T3: Web Search + Fetch and secondary narrative sources used for discovery and
+  context.
+
+For reported company facts, financial statements, guidance, segment data, risk
+factors, share count, and issuer identity, T0 evidence has priority over T2/T3
+even when T2 is easier to call. If T0 is unavailable or stale for a current
+claim, record the data gap before using lower-tier evidence.
+
 ## Contract Fields
 
 Each source contract must include:
@@ -33,6 +54,12 @@ Each source contract must include:
 - `planned`: the source is intended for future integration and is contract-described only.
 - `external_manual`: the source can be used by a human/manual workflow, but is not callable by the harness.
 
+Analyst fan-out must use a separate live runtime check. Record that result in
+`${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` as `Runtime Availability`
+and `Live Tool Probe`. If repo evidence says `connected` but the current
+session cannot call the tool, mark the source unavailable for that run and route
+to the documented fallback.
+
 ## DART-KRX / korea-stock
 
 - source_id: `dart_krx_korea_stock`
@@ -48,7 +75,7 @@ Each source contract must include:
 - validation_rules: verify company identity, filing date, report period, accounting basis, currency, stock code, and KRX date format
 - forbidden_claims: do not infer product demand, segment revenue, or non-Korean regulatory facts unless the disclosure states them
 - fallback_sources: yfinance for market-data cross-checks, company IR, exchange pages, web search for source discovery only
-- notes: Treat DART/KRX as the primary official path for Korean listed companies; use yfinance only as a supplement.
+- notes: Trust tier T0 for Korean issuer identity, official filings, reported financials, share count, and DART/KRX facts. Treat DART/KRX and Company IR as primary official paths; use yfinance only as a T2 supplement.
 
 ## yfinance
 
@@ -64,8 +91,8 @@ Each source contract must include:
 - outputs: ticker info, financial snapshots, price history, news, holders, option chains, sector lists, timestamp
 - validation_rules: cross-check official filings for material accounting claims; record exchange, symbol, timestamp, currency, and whether values are vendor snapshots
 - forbidden_claims: do not treat unofficial financial fields as final audited facts without official corroboration
-- fallback_sources: DART-KRX for Korean official data, SEC EDGAR or company IR for US filings, local exchange/regulator pages for non-US filings
-- notes: Use for public market data and quick coverage; separate reported facts from vendor-derived fields.
+- fallback_sources: DART-KRX for Korean official data, SEC EDGAR or company IR for US filings, FMP or Alpha Vantage only when live callable, local exchange/regulator pages for non-US filings, Web Search + Fetch for public source discovery and body retrieval
+- notes: Trust tier T2. Use for public market data and quick coverage when live runtime availability is confirmed; separate reported facts from vendor-derived fields and do not override T0 company official or regulator disclosure.
 
 ## FRED
 
@@ -99,7 +126,7 @@ Each source contract must include:
 - validation_rules: report filing type, filing date, period, CIK/accession, and cite exact filing section when possible
 - forbidden_claims: do not use stale filings as current guidance; do not infer current quarter performance without newer evidence
 - fallback_sources: company IR, earnings releases, exchange pages, yfinance only for market-data context
-- notes: Treat as official disclosure evidence when manually retrieved; record missing callable tooling as a data gap for automated runs.
+- notes: Trust tier T0 for US issuer filings, reported financials, risk factors, segment disclosure, and filing metadata. Treat as official disclosure evidence when manually retrieved; record missing callable tooling as a data gap for automated runs.
 
 ## Alpha Vantage
 
@@ -116,7 +143,7 @@ Each source contract must include:
 - validation_rules: report endpoint/function, adjusted versus unadjusted prices, currency, timestamp, and rate-limit or stale-response warnings
 - forbidden_claims: do not treat vendor fundamentals as more authoritative than filings; do not use technical indicators as standalone investment conclusions
 - fallback_sources: yfinance for public market data, official filings for reported financials, company IR, exchange pages
-- notes: Keep as a documented capability until a callable repo tool/config appears.
+- notes: Trust tier T2. Keep as a documented capability until a callable repo tool/config appears; do not override T0 official filings or Company IR.
 
 ## KOSIS
 
@@ -251,7 +278,7 @@ Each source contract must include:
 - outputs: profile, quote, statements, ratios, analyst data, market lists, response metadata
 - validation_rules: record endpoint/tool, plan restrictions, timestamp, and cross-check official filings for final claims
 - forbidden_claims: do not state official company results from FMP alone when primary filings are available
-- fallback_sources: SEC EDGAR or DART-KRX for official filings, yfinance for public market data, company IR
+- fallback_sources: company IR, SEC EDGAR or DART-KRX for official filings, local regulator filings, yfinance for public market data when live callable, Web Search + Fetch
 - notes: Preserved existing/public contract; not a new runtime dependency in this pass.
 
 ## ECOS or macro official statistics

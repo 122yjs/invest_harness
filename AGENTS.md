@@ -88,7 +88,9 @@
 - 예시 시나리오는 `docs/harness/invest/evals/golden-scenarios/` 같은 eval fixture에만 두며 core router category로 승격하지 않는다.
 - 파트별 분석 결과는 실행별 `${ACTIVE_WORKSPACE}/`에 표준 파일명으로 저장하고, 최종 리포트는 조립 후 QA를 거친다.
 - 확인되지 않은 수치, 출처 없는 주장, 과도한 확신 표현은 금지한다.
+- Company IR, SEC EDGAR, DART/KRX, local regulator filing 같은 T0 official disclosure를 reported financial fact의 우선 근거로 사용한다.
 - 최신 연간/분기/TTM 데이터를 구분하고, 충돌 수치는 차이와 원인을 함께 적는다.
+- 최근 분기 재무 비교와 peer financial comparison은 가능한 경우 YoY와 QoQ를 함께 제공한다.
 - 기술적 분석과 소셜 센티먼트는 보조 신호로만 사용한다.
 
 ## CANONICAL PATHS
@@ -104,9 +106,12 @@
 
 사용 전략:
 - **한국 기업**: korea-stock 1순위 + yfinance 보조
+- **공식 공시 우선순위**: Company IR, SEC EDGAR, DART/KRX, local regulator filing 같은 T0 official disclosure를 reported financial fact, guidance, share count, issuer identity, segment data, risk factor의 우선 근거로 취급한다
 - **미국/글로벌 기업**: 현재 repo에서 callable tool contract가 확인되는 공개 MCP는 yfinance이며, SEC EDGAR/FRED/Alpha Vantage 같은 추가 source는 `source-capability-registry.md`의 `connection_status`와 실제 callable repo evidence를 먼저 확인한다
+- yfinance/FMP/Alpha Vantage 같은 vendor snapshot은 T2 cross-check 또는 T0 부재 시 보조 근거이며, T0 공식 공시를 덮어쓰지 않는다
 - repo에서 callable 설정이나 구체 tool contract가 확인되지 않은 source는 connected로 간주하지 않고 `documented_only`, `planned`, 또는 `external_manual` data gap으로 기록한다
-- 연결된 MCP 서버는 웹 검색보다 우선 순위가 높다
+- `connection_status=connected`는 repo-evidence 상태이지 live runtime proof가 아니다. analyst fan-out 전에 현재 세션의 callable source inventory를 확인하고, 미가용 source는 `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`에 unavailable로 기록한다
+- live runtime에서 연결된 MCP 서버는 웹 검색보다 우선 순위가 높다
 
 각 역할별 상세 MCP 도구 사용법은 해당 SKILL.md의 `사용 가능한 MCP 도구` 섹션을 참조한다.
 <!-- END MCP_SERVERS_LIST -->
@@ -116,7 +121,7 @@
 
 - MCP 서버명: `korea-stock`
 - 제공 도구: `get_corp_code`, `get_disclosure_list`, `get_disclosure`, `get_financial_statement`, `get_stock_base_info`, `get_stock_trade_info`, `get_market_type`, `get_today_date`
-- 사용 조건: 한국 상장기업 한정. 해외 기업은 yfinance와 source capability registry를 우선 확인하고, callable source가 없을 때만 웹 검색을 source discovery 보조로 사용
+- 사용 조건: 한국 상장기업 한정. 해외 기업은 yfinance와 source capability registry를 확인하되, reported financial fact는 company IR, SEC EDGAR, DART/KRX 또는 local regulator filing 같은 T0 fallback을 먼저 검토하고 FMP/Alpha Vantage/Web Search + Fetch는 보조 경로와 data gap으로 기록한다
 - 사용 방식: 각 SKILL.md의 MCP 도구 사용 규칙 참조
 
 전체 도구 명세와 사용 순서는 각 역할별 SKILL.md에 정의되어 있다.

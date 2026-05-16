@@ -78,7 +78,9 @@ _workspace/
 ## Quality Rules
 
 - 모든 핵심 수치에는 출처, 기준일, 회계기간, 통화, 산식을 남긴다.
+- Company IR, SEC EDGAR, DART/KRX, local regulator filing 같은 T0 official disclosure를 reported financial fact의 우선 근거로 사용한다.
 - 최신 연간, 최근 분기, TTM 데이터를 구분한다.
+- 최근 분기 재무 비교와 peer financial comparison에는 가능한 경우 YoY와 QoQ를 함께 제공한다.
 - 출처가 충돌하면 임의로 평균 내지 않고 차이와 원인을 기록한다.
 - 데이터가 부족하면 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`로 표시한다.
 - 기술적 분석과 소셜 센티먼트는 보조 신호로만 사용한다.

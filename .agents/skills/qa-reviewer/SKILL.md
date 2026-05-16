@@ -148,6 +148,7 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 4. **수치와 주장 대조**
    - 초안의 핵심 수치를 원천 findings와 대조한다.
    - 수치가 다르면 충돌로 기록하고 수정 요청을 작성한다.
+   - 최근 분기 재무 비교와 peer financial comparison에는 YoY와 QoQ가 모두 있는지 확인한다. 하나가 없으면 누락 사유와 데이터 한계가 명시되어야 한다.
 
 5. **Evidence source/claim audit**
    - `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`가 있으면 금지 claim 체크를 검토한다.
@@ -157,6 +158,8 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
    - KOTRA text/news를 export volume으로 취급하지 않았는지 확인한다.
    - public procurement를 total market demand로 취급하지 않았는지 확인한다.
    - DART/EDGAR company disclosure와 yfinance/FMP/Alpha Vantage 같은 보조 데이터의 위계를 구분했는지 확인한다.
+   - Company IR, SEC EDGAR, DART/KRX, local regulator filings 같은 T0 evidence가 reported financial fact, guidance, share count, issuer identity, segment data의 우선 근거로 쓰였는지 확인한다.
+   - T2 vendor snapshot이나 Web Search + Fetch가 T0 official disclosure를 덮어쓴 경우, stale T0 또는 unavailable T0 data gap이 명시되어 있는지 확인한다.
 
 6. **시장지표 재계산**
    - 시가총액 = 기준 주가 x 희석 주식 수

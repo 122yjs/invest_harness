@@ -30,6 +30,7 @@ Every evidence plan should select gates before analyst fan-out.
 - Applies to: DART-KRX, EDGAR, company filings, IR reports.
 - Required checks: issuer identity, filing date, period of report, form/report type, currency, accounting basis.
 - Must flag: stale report, non-comparable accounting basis, qualitative-only disclosure.
+- Trust priority: T0. This gate has priority over vendor snapshots for reported company facts, guidance, share count, risk factors, segment data, and issuer identity.
 - Prohibition: Do not infer undisclosed segment revenue or current demand beyond the filing boundary.
 
 ## procurement_gate

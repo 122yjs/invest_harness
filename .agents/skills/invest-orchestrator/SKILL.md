@@ -232,6 +232,18 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 9. archive가 끝난 뒤 새 `ACTIVE_WORKSPACE`를 만들고, 모든 하위 역할과 후속 읽기 단계에 같은 절대 경로를 전달한다.
 10. `docs/harness/invest/templates/*.md`는 읽기 전용 source template이며, 실행 산출물은 반드시 `${ACTIVE_WORKSPACE}/...`에 작성한다.
 
+### 0a. 운영 preflight 및 fallback 준비
+
+1. analyst fan-out 전에 필수 출력 디렉터리를 먼저 생성한다: `00_input`, `00_evidence`, `01_financial`, `02_fundamental`, `03_valuation`, `04_technical`, `05_macro_sentiment`, `06_risk_scenario`, `07_draft`, `08_final`, `09_qa`.
+2. 서브에이전트에는 `mkdir` 책임을 넘기지 않는다. 각 역할은 전달받은 `${ACTIVE_WORKSPACE}/.../findings.md` 파일 쓰기에 집중한다.
+3. `docs/harness/invest/templates/input-intake.md`, `request-summary.md`, `market-price-snapshot.md` 등 필요한 템플릿을 실행 초기에 읽는다.
+4. 템플릿 읽기가 `Resource deadlock avoided` 같은 파일 시스템 오류로 실패하면 inline fallback template을 사용하고, 실패 원문과 fallback 사용 사실을 `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md` 또는 `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md`에 기록한다.
+5. source capability registry의 `connected`는 repo-evidence 상태일 뿐 live runtime proof가 아니다. 현재 세션의 callable source inventory를 확인하고 `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`에 `Runtime Availability`와 `Live Tool Probe`를 남긴다.
+6. evidence trust tier를 먼저 적용한다. 회사 공식 IR, SEC EDGAR, DART/KRX, local regulator filings 같은 T0 evidence를 보고 재무, 가이던스, 세그먼트, 리스크, share count, issuer identity의 우선 근거로 사용한다.
+7. yfinance가 live runtime에서 없으면 yfinance를 주력 경로로 강제하지 않는다. reported financial fact는 SEC EDGAR, company IR, DART/KRX 또는 local regulator filing 같은 T0 fallback을 먼저 검토한다. FMP/Alpha Vantage가 실제 callable이면 보조 structured source로 사용하고, Web Search + Fetch는 source discovery와 원문 retrieval 보조로만 사용한다. 단, FMP/Alpha Vantage/yfinance는 T2 vendor snapshot이므로 T0 reported fact를 대체하지 못한다.
+8. `max_concurrent_children`가 6보다 작으면 staged delegation을 계획한다. `risk-scenario-analyst`는 `01`~`05` findings가 존재한 뒤 실행하고, `report-synthesizer`에는 원문 전체 대신 compact handoff summary와 conflicts table을 우선 전달한다.
+9. high-latency 역할(`financial-analyst`, `report-synthesizer`)은 source scope와 입력 크기를 제한한다. 타임아웃이 발생하면 한 번 재시도하고, 그래도 실패하면 오케스트레이터가 미완료 범위와 한계를 명시한 보강 findings를 작성한다.
+
 ### 1. 입력 수집 게이트
 
 1. 사용자 원문 요청을 보존한다.
@@ -317,10 +329,13 @@ Evidence layer 규칙:
 
 - 각 역할에는 자신의 출력 계약과 공통 입력 파일만 전달한다.
 - **delegate_task 사용 시 절대 경로 명시:** 서브에이전트는 자신의 기본 워크스페이스에 파일을 저장할 수 있으므로, 현재 실행의 동적 workspace 절대 경로를 `ACTIVE_WORKSPACE`로 전달한다. `write_file`과 `read_file` 경로는 `${ACTIVE_WORKSPACE}/01_financial/findings.md`처럼 통일하고, 후속 단계에서도 동일한 절대 경로를 사용한다. Hermes 기본 workspace가 있더라도 모든 실행은 명시적으로 전달된 `ACTIVE_WORKSPACE`를 사용한다.
+- 공식 회사/규제 공시 우선: material company facts에는 Company IR, SEC EDGAR, DART/KRX, local regulator filings를 T0 evidence로 전달한다. vendor snapshot은 T0 부재 시 보조로만 사용한다.
 - 핵심 수치에는 출처, 기준일, 회계기간, 통화, 산식이 필요하다고 명시한다.
 - 데이터가 부족한 경우 추정하지 않고 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`를 사용하게 한다.
 - 기술적 분석 제외 요청이 있으면 `technical-analyst`는 생략 사유와 보조 신호 부재의 한계만 기록한다.
 - `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`와 `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`가 있으면 모든 analyst에게 claim boundary와 caveat 입력으로 전달한다.
+- 모든 analyst에게 source-call-plan의 `Runtime Availability`를 전달한다. repo 문서상 connected인 source라도 live runtime에서 unavailable이면 해당 source 호출을 반복하지 말고 지정된 fallback과 data gap을 사용한다.
+- 파일 I/O 실패를 줄이기 위해 각 역할은 이미 생성된 디렉터리에 결과 파일만 저장한다. 출력 디렉터리 생성 실패는 오케스트레이터가 처리한다.
 
 > **Pitfall — Group 2 내부 순환 오류:** `technical-analyst`, `macro-sentiment-analyst`, `risk-scenario-analyst`를 동일한 `delegate_task`의 같은 `tasks` 배열에 담으면 서브에이전트 간 순환 의존성이 발생한다. `risk-scenario-analyst`가 `04_technical`과 `05_macro_sentiment`을 읽으려고 할 때 파일이 아직 생성되지 않은 채로 판단할 수 있다. `risk-scenario-analyst`는 선행 산출물(01~05)이 모두 존재하는 것을 확인한 후에 독립적으로 실행하거나, 혹은 단일 `delegate_task`에서 모든 6개 역할을 한 번에 담으면 순환을 방지할 수 있다.
 
@@ -362,6 +377,8 @@ Evidence layer 규칙:
 - 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/dcf.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/00_input/earnings-update.md`
+
+대용량 실행에서는 각 findings의 compact handoff summary를 먼저 전달하고, 원문 전체는 수치 검산과 출처 확인이 필요한 부분에 한해 참조한다. 6개 findings 전체를 한 번에 읽어 타임아웃이 반복되면 합성을 섹션 묶음별로 나눈 뒤 최종 조립한다.
 
 초안은 `invest_prompt_v2.md`의 최종 출력 템플릿 18개 섹션 순서를 따른다.
 

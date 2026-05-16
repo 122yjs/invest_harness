@@ -90,6 +90,16 @@
 10. `${ACTIVE_WORKSPACE}/`는 현재 실행 전용이고, `_workspace_runs/`는 이전 실행의 감사/재현 archive다.
 11. `docs/harness/invest/templates/*.md`는 읽기 전용 source template이며, 실행 산출물은 반드시 `${ACTIVE_WORKSPACE}/...`에 작성한다.
 
+## 운영 preflight와 fallback
+
+1. analyst fan-out 전에 `00_input`, `00_evidence`, `01_financial`, `02_fundamental`, `03_valuation`, `04_technical`, `05_macro_sentiment`, `06_risk_scenario`, `07_draft`, `08_final`, `09_qa` 디렉터리를 미리 생성한다.
+2. 템플릿은 실행 초기에 읽어 확인한다. `Resource deadlock avoided` 같은 파일 시스템 오류가 나면 inline fallback template을 사용하고 실패 원문을 `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md` 또는 `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md`에 남긴다.
+3. `source-capability-registry.md`의 `connection_status=connected`는 repo-evidence 상태이지 live runtime proof가 아니다. 현재 세션의 callable source inventory를 확인하고 `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`에 `Runtime Availability`와 `Live Tool Probe`를 기록한다.
+4. evidence trust tier를 적용한다. Company IR, SEC EDGAR, DART/KRX, local regulator filings 같은 T0 evidence를 reported financial fact, guidance, share count, issuer identity, segment data의 우선 근거로 사용한다.
+5. yfinance가 live runtime에서 unavailable이면 yfinance 호출을 반복하지 않는다. reported financial fact는 SEC EDGAR, company IR, DART/KRX 또는 local regulator filing 같은 T0 fallback을 먼저 검토한다. FMP 또는 Alpha Vantage가 실제 callable이면 보조 structured source로 쓰고, Web Search + Fetch는 source discovery와 원문 retrieval 보조로 사용한다. 단, vendor snapshot은 T0 official disclosure를 덮어쓰지 않는다.
+6. `max_concurrent_children`가 6보다 작으면 staged delegation을 사용한다. `risk-scenario-analyst`는 `01`~`05` findings가 존재한 뒤 실행하고, `report-synthesizer`에는 compact handoff summary와 conflicts table을 먼저 전달한다.
+7. `financial-analyst`와 `report-synthesizer`가 타임아웃되면 source scope 또는 합성 섹션을 줄여 한 번 재시도한다. 그래도 실패하면 오케스트레이터가 미완료 범위와 한계를 명시한 보강 파일을 작성한다.
+
 ## 0. 진입 입력 수집 게이트
 
 1. 사용자 원문 요청을 그대로 보존한다.
@@ -264,10 +274,15 @@ Evidence layer 순서:
 - 데이터 부족 시 추정하지 않고 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`로 표기한다.
 - 충돌이 있으면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 남긴다.
 - `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`와 signal cards가 있으면 analyst findings의 출처/한계 입력으로 사용한다.
+- source-call-plan의 `Runtime Availability`가 unavailable인 source는 각 analyst가 반복 호출하지 않고 지정된 fallback과 unresolved gap을 따른다.
+- 출력 디렉터리는 오케스트레이터가 미리 만들고, analyst는 자신의 `${ACTIVE_WORKSPACE}/.../findings.md` 저장만 수행한다.
+- 최근 분기 재무 비교와 peer financial comparison은 가능한 경우 YoY와 QoQ를 함께 제공한다. 한쪽이 누락되면 데이터 한계를 명시한다.
 
 ## 7. 초안 합성
 
 `report-synthesizer`를 사용해 `${ACTIVE_WORKSPACE}/07_draft/report.md`를 작성한다.
+
+대용량 findings가 6개 이상이면 compact handoff summary와 conflicts table을 먼저 합성 입력으로 사용한다. 원문 findings 전체는 수치 검산과 출처 확인이 필요한 구간에만 다시 읽는다.
 
 초안은 아래 18개 섹션을 반드시 포함한다.
 

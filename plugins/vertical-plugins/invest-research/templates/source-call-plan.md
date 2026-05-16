@@ -2,15 +2,15 @@
 
 ## Source Selection Summary
 
-| Evidence Type | Source ID | Candidate Source | Connection Status | Configured In | Available Tools/Endpoints | Reason Selected | Fallback Sources | Source Limitations | Missing Tool/Data Gap |
-|---|---|---|---|---|---|---|---|---|---|
-|  |  |  | connected / documented_only / planned / external_manual |  |  |  |  |  |  |
+| Evidence Type | Source ID | Candidate Source | Trust Tier | Connection Status | Runtime Availability | Live Tool Probe | Configured In | Available Tools/Endpoints | Reason Selected | Fallback Sources | Source Limitations | Missing Tool/Data Gap |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|  |  |  | T0 / T1 / T2 / T3 | connected / documented_only / planned / external_manual | available / unavailable / not checked | mcporter/tool inventory/check result |  |  |  |  |  |  |
 
 ## Planned Calls
 
-| Evidence Type | Source ID | Tool/Endpoint | Connection Status | Required Parameters | Expected Output | Validation Checks |
-|---|---|---|---|---|---|---|
-|  |  |  | connected / documented_only / planned / external_manual |  |  |  |
+| Evidence Type | Source ID | Tool/Endpoint | Trust Tier | Connection Status | Runtime Availability | Required Parameters | Expected Output | Validation Checks |
+|---|---|---|---|---|---|---|---|---|
+|  |  |  | T0 / T1 / T2 / T3 | connected / documented_only / planned / external_manual | available / unavailable / not checked |  |  |  |
 
 ## Web Search + Fetch Plan
 
@@ -32,3 +32,13 @@ summary snippets as primary evidence.
 | Source ID | Missing Tool/Endpoint | Affected Evidence Type | Fallback Source | Data Gap |
 |---|---|---|---|---|
 |  |  |  |  |  |
+
+Rule: `Connection Status` is repo-evidence status, not live runtime proof.
+Before analyst fan-out, record runtime source availability separately. If a
+source such as yfinance is documented but not callable in the live session,
+mark it unavailable, select a fallback, and preserve the limitation as a data
+gap.
+
+Rule: `Trust Tier` controls evidence priority. Use T0 company official and
+regulator disclosure before T2 vendor snapshots for reported financials,
+guidance, issuer identity, share count, risk factors, and segment data.

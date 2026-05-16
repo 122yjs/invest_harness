@@ -18,6 +18,7 @@ REQUIRED_TOKENS = {
     "source-call-plan.md": [
         "Evidence Type",
         "Candidate Source",
+        "Trust Tier",
         "Reason Selected",
         "Required Parameters",
         "Fallback Sources",
@@ -29,6 +30,7 @@ REQUIRED_TOKENS = {
         "Evidence ID",
         "Source",
         "Source Type",
+        "Trust Tier",
         "Retrieved At",
         "Period",
         "Metric",

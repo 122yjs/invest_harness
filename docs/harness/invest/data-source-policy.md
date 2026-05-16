@@ -6,9 +6,27 @@ This document mirrors the source policy at `plugins/vertical-plugins/invest-rese
 
 | Market | Primary | Secondary | Fallback |
 |---|---|---|---|
-| Korea | DART / KRX through `korea-stock` when available | yfinance market-data cross-checks | Company IR, exchange pages, web search for source discovery |
-| US | SEC EDGAR and company IR | yfinance market data, financial snapshots, news | Exchange pages, official press releases, web search for missing context |
-| Global | yfinance where coverage exists | Company IR, local exchange and regulator filings | Web search for source discovery and context |
+| Korea | Company IR plus DART / KRX through `korea-stock` when available | exchange pages and yfinance market-data cross-checks | Web Search + Fetch for source discovery and missing context |
+| US | Company IR plus SEC EDGAR filings and company facts | exchange pages plus yfinance/FMP/Alpha Vantage market or estimate snapshots | Web Search + Fetch for missing context |
+| Global | Company IR plus local exchange and regulator filings | yfinance/FMP/Alpha Vantage where coverage exists | Web Search + Fetch for source discovery and context |
+
+## Evidence Trust Order
+
+Runtime availability decides what can be called, but it does not decide source
+trust. For material company facts, financial statements, guidance, segment
+data, risk factors, and management commentary, use the highest-trust available
+evidence first:
+
+| Tier | Evidence | Examples | Use |
+|---|---|---|---|
+| T0 | Company official and regulator disclosure | Company IR, earnings releases, shareholder letters, SEC EDGAR, DART/KRX, local exchange/regulator filings | Source of truth for reported financials, guidance, filings, risk factors, share count, and issuer identity |
+| T1 | Official market/statistical sources | KRX trade data, exchange official pages, FRED, ECOS, KOSIS, central banks, statistical agencies | Source of truth for official market data and macro/statistical context |
+| T2 | Vendor or financial data snapshots | yfinance, FMP, Alpha Vantage, institutional feeds when available | Fast cross-checks, estimates, market snapshots, peer screening; never overrides T0 for reported company facts |
+| T3 | Web Search + Fetch and secondary narrative sources | News, trade press, market commentary, fetched web pages or PDFs | Discovery and context only unless the fetched body is an official source |
+
+If tiers conflict, T0 wins unless it is stale for the claim being made. Vendor
+or web values may be used as provisional context only when the official value is
+missing, and the report must label the gap.
 
 ## Web Search And Fetch Policy
 
@@ -31,12 +49,12 @@ infrastructure unless a later implementation pass explicitly approves it.
 | Source | Access | Credential |
 |---|---|---|
 | `korea-stock` | MCP server for DART/KRX official data | `DART_API_KEY` / `KRX_API_KEY` when required |
-| `yfinance` | MCP/server or Python package for global public market data | None |
+| Company IR | Official investor relations pages | None |
 | SEC EDGAR | Official filings and company facts | None for basic access |
+| `yfinance` | MCP/server or Python package for global public market data | None |
 | FRED | Macro indicators | Optional API key |
 | Alpha Vantage | Market and fundamental data | `ALPHA_VANTAGE_API_KEY` |
 | Financial Modeling Prep | Financial data and estimates | `FMP_API_KEY` |
-| Company IR | Official investor relations pages | None |
 | Web Search + Web Fetch | Link discovery plus article/document/PDF body retrieval | None |
 
 ## Optional Institutional Layer
@@ -48,7 +66,9 @@ When an institutional source is available, treat it as a supporting source. Do n
 ## Source Capability Status
 
 Source availability in the registry is repo-evidence status only, not live
-runtime proof.
+runtime proof. Before analyst fan-out, record the live callable source inventory
+in `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` as `Runtime
+Availability` and `Live Tool Probe`.
 
 | Status | Meaning |
 |---|---|
@@ -62,3 +82,6 @@ they apply. Represent FRED, SEC EDGAR, Alpha Vantage, FMP, ECOS, and planned
 market-intelligence sources as capability contracts unless callable repo
 evidence proves otherwise. Missing tool availability must be recorded as an
 unresolved data gap, not silently converted into a new runtime dependency.
+If yfinance is absent from the live runtime, do not keep retrying that path.
+Use actually callable FMP or Alpha Vantage when present; otherwise use SEC
+EDGAR, company IR, and Web Search + Fetch with explicit claim boundaries.

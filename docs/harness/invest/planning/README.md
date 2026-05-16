@@ -10,6 +10,7 @@
 | [`02_archive_evidence_layer_draft.md`](02_archive_evidence_layer_draft.md) | ✅ **ARCHIVED** | 2차 증거 레이어 구현 초안 (03번 문서에 의해 대체됨) |
 | [`03_core_evidence_layer_implementation.md`](03_core_evidence_layer_implementation.md) | ✅ **90% 완료** | **현재 기준 문서**: 증거 레이어(Evidence Layer) 최종 구현 계획 |
 | [`04_plan_ux_feedback_and_residuals.md`](04_plan_ux_feedback_and_residuals.md) | 🔲 **진행 예정** | **다음 계획**: 실제 리서치 UX 피드백 반영 및 03번 잔여 항목 통합 구현 계획 |
+| [`05_plan_bkng_research_operational_reliability.md`](05_plan_bkng_research_operational_reliability.md) | 🔲 **진행 예정** | BKNG 실전 리서치에서 드러난 source availability, template fallback, delegation timeout, synthesis 병목 개선 계획 |
 
 ## 계보 (Lineage)
 
@@ -18,6 +19,7 @@
  └─ 02_archive (Evidence Layer v1)
      └─ 03_core (Evidence Layer v2 - ACTIVE)
          └─ 04_plan (UX Refinement - NEXT)
+             └─ 05_plan (BKNG Operational Reliability)
 ```
 
 ## 규칙

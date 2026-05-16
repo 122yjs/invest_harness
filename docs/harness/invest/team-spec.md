@@ -89,6 +89,7 @@
 |---|---|---|---|
 | 0 | invest-orchestrator | 입력 수집 게이트, 기업명/티커 기반 자동 식별, 선택 옵션 확인 | `${ACTIVE_WORKSPACE}/00_input/input-intake.md` |
 | 1 | invest-orchestrator | 사용자 입력 정규화, 가정 명시, 작업 범위 확정, 기준 주가 snapshot 작성 | `${ACTIVE_WORKSPACE}/00_input/request-summary.md`, `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md` |
+| 1a | invest-orchestrator | runtime source availability, template fallback, output directory preflight 확인 | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`, `${ACTIVE_WORKSPACE}/00_evidence/api-call-log.md` 또는 unresolved gaps |
 | 2 | evidence-planner | open-ended question decomposition, required evidence type, signal primitive 계획 | `${ACTIVE_WORKSPACE}/00_evidence/question-decomposition.md`, `${ACTIVE_WORKSPACE}/00_evidence/evidence-plan.md` |
 | 3 | source-router | source capability 기반 source-call plan과 fallback/limit 정리 | `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` |
 | 4 | source-router / signal-analyst | evidence ledger, signal cards, validation gates 작성 또는 수집 지시 | `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`, `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md` |
@@ -122,6 +123,8 @@
 | 출처 | 모든 핵심 수치와 사실에 출처, 기준일, 회계기간, 통화 명시 |
 | 불확실성 | 데이터 부족 시 추정하지 말고 `공식 자료 미확인`, `데이터 부족`, `추가 확인 필요`로 표기 |
 | 비교 가능성 | IFRS/US GAAP 차이, 환율 기준일, TTM/연간/분기 구분 명시 |
+| Evidence 신뢰도 | Company IR, SEC EDGAR, DART/KRX, local regulator filings 같은 T0 evidence를 reported financial fact의 우선 근거로 사용 |
+| 재무 비교 | 최근 분기 및 peer financial comparison에는 YoY와 QoQ를 함께 제공하고 누락 시 한계를 명시 |
 | 문체 | 한국어, 간결한 투자 리포트 문체, 과도한 확신 표현 금지 |
 | 구조 | 표 우선, 각 섹션 말미 3~5줄 요약, Executive Summary와 최종 결론 일치 |
 
@@ -172,6 +175,8 @@
 - 수치 표에는 **단위와 통화**를 반드시 적는다.
 - 상위 역할은 하위 역할 산출물을 덮어쓰지 않고, 수정이 필요하면 QA 또는 orchestrator 메모로 지시한다.
 - `report-synthesizer`는 원본 findings를 재해석하되, 출처 없는 신규 수치를 추가하지 않는다.
+- `source-call-plan.md`의 `Connection Status`는 repo-evidence 상태이고, `Runtime Availability`와 `Live Tool Probe`가 live runtime proof다. live runtime에서 unavailable인 source는 반복 호출하지 않는다.
+- `report-synthesizer`에는 compact handoff summary와 conflicts table을 먼저 전달하고, 원문 findings 전체는 검산이 필요한 구간에만 참조한다.
 
 ### 반복 실행 workspace 규약
 - `${ACTIVE_WORKSPACE}/`는 현재 실행의 active workspace다.
@@ -208,6 +213,10 @@
 
 | 실패 유형 | 처리 원칙 | 재시도 방식 |
 |---|---|---|
+| MCP runtime 미가용 | repo 문서상 connected여도 live runtime proof가 없으면 해당 source를 강제하지 않음 | `source-call-plan.md`에 unavailable로 기록하고 reported financial fact는 company IR/SEC EDGAR/DART-KRX/local regulator filing 같은 T0 fallback을 먼저 검토한 뒤 FMP/Alpha Vantage/Web Search + Fetch를 보조로 사용 |
+| 템플릿 읽기 실패 | source template을 못 읽어도 입력 게이트를 중단하지 않음 | inline fallback template을 사용하고 `api-call-log.md` 또는 `unresolved-data-gaps.md`에 오류 기록 |
+| 서브에이전트 파일 I/O 실패 | 하위 역할에 디렉터리 생성 책임을 넘기지 않음 | 오케스트레이터가 출력 디렉터리를 사전 생성하고 findings 저장만 재시도 |
+| 서브에이전트 타임아웃 | 같은 대용량 입력을 무한 재시도하지 않음 | source scope 축소, staged delegation, compact handoff summary로 1회 재시도 후 한계 기록 |
 | 공식 출처 부재 | 비공식 수치로 대체 결론을 확정하지 않음 | 2순위·3순위 출처로 보완 후 불확실성 표기 |
 | 수치 충돌 | 하나를 임의 채택하지 않음 | 차이 표 작성, 기준일·회계 기준·산식 차이 설명 |
 | 파트 누락 | 초안 단계에서 종료하지 않음 | 누락 역할이 findings 보강 후 synthesize 재실행 |

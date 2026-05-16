@@ -63,7 +63,11 @@ BANNED_DUPLICATE_CONNECTOR_PHRASES = [
     "duplicate existing API/MCP integration",
 ]
 
-NON_SOURCE_SECTIONS = {"Contract Fields", "Connection Status Semantics"}
+NON_SOURCE_SECTIONS = {
+    "Contract Fields",
+    "Connection Status Semantics",
+    "Evidence Trust Tier Semantics",
+}
 
 
 def parse_source_sections(text: str) -> dict[str, str]:
