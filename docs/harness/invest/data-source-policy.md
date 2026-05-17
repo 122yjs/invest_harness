@@ -55,7 +55,7 @@ infrastructure unless a later implementation pass explicitly approves it.
 | FRED | Macro indicators | Optional API key | FRED economic indicators. |
 | Alpha Vantage | Market and fundamental data | `ALPHA_VANTAGE_API_KEY` | Supplementary global financials & pricing. |
 | Financial Modeling Prep | Financial data and estimates | `FMP_API_KEY` | Supplementary global analyst estimates & snapshots. |
-| KOTRA | Export market promotion agency data | None (Public data portal) | OpenAPI (`/data/15034830/openapi.do?recommendDataYn=Y#tab_layer_recommend_data`), 파일 데이터 자료실 (`/data/15083202/fileData.do?recommendDataYn=Y`). |
+| KOTRA | Export market promotion agency data | None (Public data portal) | OpenAPI (`/data/15034830/openapi.do?recommendDataYn=Y#tab_layer_recommend_data`), 파일 데이터 자료실 (`/data/15083202/fileData.do?recommendDataYn=Y`), 해외시장뉴스 및 동향 포털 (`/kotranews/cms/com/index.do?MENU_ID=70` on `https://dream.kotra.or.kr`). |
 | Web Search + Web Fetch | Link discovery plus article/document/PDF body retrieval | None | Primary web discovery, also serves as the Universal Fallback. |
 
 ## Optional Institutional Layer

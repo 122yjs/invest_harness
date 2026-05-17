@@ -227,6 +227,7 @@ to the documented fallback.
 - available_tools_or_endpoints:
   - OpenAPI 추천 자료 서비스: https://www.data.go.kr/data/15034830/openapi.do?recommendDataYn=Y#tab_layer_recommend_data
   - 파일 데이터 자료실: https://www.data.go.kr/data/15083202/fileData.do?recommendDataYn=Y
+  - 해외시장뉴스 및 동향 포털: https://dream.kotra.or.kr/kotranews/cms/com/index.do?MENU_ID=70
 - evidence_types_supported: `market_context`, `news_event`, `export_market_context`, `regulatory_context`, `qualitative_trade_context`
 - good_for: qualitative overseas market context, policy notes, market-entry issues, trade narrative, and local event context
 - not_good_for: verified export volume, company-specific sales, official transaction totals, or audited financial figures

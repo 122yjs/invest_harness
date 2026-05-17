@@ -123,6 +123,7 @@
   - **KOTRA**:
     - OpenAPI 추천 자료 서비스: `https://www.data.go.kr/data/15034830/openapi.do?recommendDataYn=Y#tab_layer_recommend_data`
     - 파일 데이터 자료실: `https://www.data.go.kr/data/15083202/fileData.do?recommendDataYn=Y`
+    - 해외시장뉴스 및 동향 포털: `https://dream.kotra.or.kr/kotranews/cms/com/index.do?MENU_ID=70`
 
 각 역할별 상세 MCP 도구 사용법은 해당 SKILL.md의 `사용 가능한 MCP 도구` 섹션을 참조한다.
 <!-- END MCP_SERVERS_LIST -->
