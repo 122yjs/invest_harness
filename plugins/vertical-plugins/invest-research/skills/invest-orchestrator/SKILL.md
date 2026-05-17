@@ -393,6 +393,24 @@ QA 판정:
 3. 사용자 전달용 핵심 요약이 필요하면 `${ACTIVE_WORKSPACE}/08_final/executive-summary.md`를 추가로 작성한다.
 4. 최종 응답에는 리포트 위치, QA 상태, 남은 한계를 짧게 알린다.
 
+### 9. 인터랙티브 HTML 대시보드 생성
+
+최종본(report.md) 확정 후, `html-report-synthesizer` 스킬을 호출하여 인터랙티브 HTML 대시보드를 생성한다.
+
+1. `html-report-synthesizer`에 아래 입력을 전달한다:
+   - `${ACTIVE_WORKSPACE}/08_final/report.md` (최종 리포트, `## 19. 대시보드 데이터 집합` 포함)
+   - `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `06_risk_scenario/findings.md`까지의 원본 findings (마크다운 전문 렌더링용)
+2. `html-report-synthesizer`는 각 findings의 `dashboard_data` / `verification_log` YAML 블록을 파싱하여:
+   - **정량 파트**: 매출/순이익/FCF 복합 차트, ROE/ROIC 비교 차트, 6대 재무지표 그리드, 풋볼 필드 밸류에이션 차트, WACC 민감도 5×5 매트릭스, RSI 게이지/MACD 경고판/SMA 이격 위젯
+   - **정성 파트**: 검증 로그 CSS 카드 (주장, 판정, 근거, 출처, 영향)
+   - **시나리오 시뮬레이터**: Bear/Base/Bull 버튼 연동 실시간 목표가·상승여력·민감도 업데이트
+3. 출력: `${ACTIVE_WORKSPACE}/08_final/report.html`
+4. HTML 파일은 로컬 `file://` 환경에서 더블클릭으로 작동해야 한다 (외부 CDN 의존 없음, CORS 우회).
+
+대시보드 데이터 블록 점검:
+- Step 5(중간 산출물 점검)에서 각 findings.md 끝에 `dashboard_data` 또는 `verification_log` YAML 블록이 존재하는지 확인한다.
+- 블록이 누락된 findings가 있으면 해당 역할에 보강을 요청한다.
+
 ## Handoff Files
 
 <!-- BEGIN YFINANCE_MCP_TOOLS -->
