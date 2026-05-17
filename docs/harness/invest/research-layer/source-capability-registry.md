@@ -74,7 +74,7 @@ to the documented fallback.
 - outputs: disclosure list, disclosure text, XBRL statements, base stock data, trade data, market type, retrieval date
 - validation_rules: verify company identity, filing date, report period, accounting basis, currency, stock code, and KRX date format
 - forbidden_claims: do not infer product demand, segment revenue, or non-Korean regulatory facts unless the disclosure states them
-- fallback_sources: yfinance for market-data cross-checks, company IR, exchange pages, web search for source discovery only
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, yfinance for market-data cross-checks, company IR, exchange pages
 - notes: Trust tier T0 for Korean issuer identity, official filings, reported financials, share count, and DART/KRX facts. Treat DART/KRX and Company IR as primary official paths; use yfinance only as a T2 supplement.
 
 ## yfinance
@@ -91,7 +91,7 @@ to the documented fallback.
 - outputs: ticker info, financial snapshots, price history, news, holders, option chains, sector lists, timestamp
 - validation_rules: cross-check official filings for material accounting claims; record exchange, symbol, timestamp, currency, and whether values are vendor snapshots
 - forbidden_claims: do not treat unofficial financial fields as final audited facts without official corroboration
-- fallback_sources: DART-KRX for Korean official data, SEC EDGAR or company IR for US filings, FMP or Alpha Vantage only when live callable, local exchange/regulator pages for non-US filings, Web Search + Fetch for public source discovery and body retrieval
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, DART-KRX for Korean official data, SEC EDGAR or company IR for US filings, FMP or Alpha Vantage only when live callable, local exchange/regulator pages for non-US filings
 - notes: Trust tier T2. Use for public market data and quick coverage when live runtime availability is confirmed; separate reported facts from vendor-derived fields and do not override T0 company official or regulator disclosure.
 
 ## FRED
@@ -108,7 +108,7 @@ to the documented fallback.
 - outputs: observations, units, frequency, latest observation date, release notes when available
 - validation_rules: report series ID, frequency, unit, latest observation date, transformation, and distinguish level versus rate of change
 - forbidden_claims: do not infer company fundamentals from macro series alone; do not treat macro correlation as causation
-- fallback_sources: ECOS or local central-bank/statistical sources for non-US macro, official central-bank releases, web search for source discovery only
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, ECOS or local central-bank/statistical sources for non-US macro, official central-bank releases
 - notes: Status is not proof of a live MCP call path; record missing callable tooling as a data gap when automation is required. Active FRED_API_KEY is registered and available in .env.
 
 ## SEC EDGAR
@@ -117,7 +117,12 @@ to the documented fallback.
 - provider: SEC EDGAR
 - connection_status: external_manual
 - configured_in: `docs/harness/invest/data-source-policy.md`, `plugins/vertical-plugins/invest-research/policies/data-source-policy.md`, earnings and QA skill guidance
-- available_tools_or_endpoints: SEC company search, submissions, company facts, filing documents, accession-based filing pages; no callable repo tool contract found in this checkout
+- available_tools_or_endpoints:
+  - SEC Submission List: https://data.sec.gov/submissions/CIK##########.json
+  - XBRL Company Concept History: https://data.sec.gov/api/xbrl/companyconcept/CIK##########/us-gaap/{ConceptName}.json (e.g. AccountsPayableCurrent)
+  - XBRL Company Facts: https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json
+  - XBRL Period/Concept Frames: https://data.sec.gov/api/xbrl/frames/us-gaap/{ConceptName}/USD/CY{YYYYQ#I}.json (e.g. CY2019Q1I)
+  - Complete XBRL Bulk Facts ZIP: http://www.sec.gov/Archives/edgar/daily-index/xbrl/companyfacts.zip
 - evidence_types_supported: `company_disclosure`, `financial_statement`, `risk_factor`, `segment_disclosure`, `filing_metadata`, `company_facts`, `ownership_if_available`
 - good_for: US issuer filings, 10-K/10-Q/8-K review, segment evidence, risk-factor evidence, and official filing metadata
 - not_good_for: real-time market price, non-US local filings unless cross-listed, consumer search interest, or normalized analyst estimates
@@ -125,8 +130,8 @@ to the documented fallback.
 - outputs: filing metadata, filing documents, company facts, form type, filing date, period of report, cited section
 - validation_rules: report filing type, filing date, period, CIK/accession, and cite exact filing section when possible
 - forbidden_claims: do not use stale filings as current guidance; do not infer current quarter performance without newer evidence
-- fallback_sources: company IR, earnings releases, exchange pages, yfinance only for market-data context
-- notes: Trust tier T0 for US issuer filings, reported financials, risk factors, segment disclosure, and filing metadata. Treat as official disclosure evidence when manually retrieved; record missing callable tooling as a data gap for automated runs.
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, company IR, earnings releases, exchange pages, yfinance only for market-data context
+- notes: Trust tier T0 for US issuer filings, reported financials, risk factors, segment disclosure, and filing metadata. Treat as official disclosure evidence when manually or programmatically retrieved through the specified routes; record missing callable tooling as a data gap for automated runs.
 
 ## Alpha Vantage
 
@@ -142,7 +147,7 @@ to the documented fallback.
 - outputs: quote, time series, company overview, technical indicator, news sentiment, timestamp, response status
 - validation_rules: report endpoint/function, adjusted versus unadjusted prices, currency, timestamp, and rate-limit or stale-response warnings
 - forbidden_claims: do not treat vendor fundamentals as more authoritative than filings; do not use technical indicators as standalone investment conclusions
-- fallback_sources: yfinance for public market data, official filings for reported financials, company IR, exchange pages
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, yfinance for public market data, official filings for reported financials, company IR, exchange pages
 - notes: Trust tier T2. Keep as a documented capability until a callable repo tool/config appears; do not override T0 official filings or Company IR. Active ALPHA_VANTAGE_API_KEY is registered and available in .env.
 
 ## KOSIS
@@ -159,7 +164,7 @@ to the documented fallback.
 - outputs: statistical table values, unit, period, source metadata, definition notes
 - validation_rules: record table ID, unit, period, update date, geography, and definition changes
 - forbidden_claims: do not convert official category totals into company revenue without share evidence
-- fallback_sources: ECOS for macro series, DART-KRX/company disclosure for company exposure, web search for source discovery only
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, ECOS for macro series, DART-KRX/company disclosure for company exposure
 - notes: Docs-only market-intelligence contract for this pass. Active KOSIS_API_KEY is registered and available in .env.
 
 ## Korea Customs Service / customs_trade_api
@@ -176,7 +181,7 @@ to the documented fallback.
 - outputs: value, weight, quantity, partner country, period, trade direction, unit, revision/update date
 - validation_rules: validate HS code mapping, latest month, FOB/CIF basis when relevant, base effect, currency, and unit
 - forbidden_claims: do not infer company-specific revenue from customs trade data alone
-- fallback_sources: DART/EDGAR segment exposure, company IR, KOTRA context, official trade publications
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, DART/EDGAR segment exposure, company IR, KOTRA context, official trade publications
 - notes: Docs-only market-intelligence contract for this pass. Active CUSTOMS_TRADE_API_KEY, format (XML), and endpoint (https://apis.data.go.kr/1220000/nitemtrade) are registered and available in .env.
 
 ## Google Trends
@@ -193,7 +198,7 @@ to the documented fallback.
 - outputs: relative index, regional index, related terms, rising terms, normalization context
 - validation_rules: report geography, timeframe, query/topic, category, relative-index caveat, and comparison normalization
 - forbidden_claims: do not infer sales, revenue, or market size from search interest alone
-- fallback_sources: Naver DataLab for Korea search context, transaction/statistics sources for market size, company disclosures for revenue exposure
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, Naver DataLab for Korea search context, transaction/statistics sources for market size, company disclosures for revenue exposure
 - notes: Docs-only market-intelligence contract for this pass.
 
 ## Naver DataLab
@@ -210,7 +215,7 @@ to the documented fallback.
 - outputs: relative index, keyword group comparison, demographic splits, period and filter metadata
 - validation_rules: record query set, period, filters, relative-index caveat, and comparison base
 - forbidden_claims: do not treat relative Naver index as transaction volume or sales
-- fallback_sources: Google Trends for global attention context, KOSIS or transaction sources for market baselines, company disclosures
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, Google Trends for global attention context, KOSIS or transaction sources for market baselines, company disclosures
 - notes: Docs-only market-intelligence contract for this pass.
 
 ## KOTRA
@@ -219,7 +224,9 @@ to the documented fallback.
 - provider: Korea Trade-Investment Promotion Agency
 - connection_status: external_manual
 - configured_in: `docs/harness/invest/research-layer/source-capability-registry.md`
-- available_tools_or_endpoints: KOTRA reports, news, and market notes through manual/public retrieval; no callable repo tool contract in this pass
+- available_tools_or_endpoints:
+  - OpenAPI 추천 자료 서비스: https://www.data.go.kr/data/15034830/openapi.do?recommendDataYn=Y#tab_layer_recommend_data
+  - 파일 데이터 자료실: https://www.data.go.kr/data/15083202/fileData.do?recommendDataYn=Y
 - evidence_types_supported: `market_context`, `news_event`, `export_market_context`, `regulatory_context`, `qualitative_trade_context`
 - good_for: qualitative overseas market context, policy notes, market-entry issues, trade narrative, and local event context
 - not_good_for: verified export volume, company-specific sales, official transaction totals, or audited financial figures
@@ -227,8 +234,8 @@ to the documented fallback.
 - outputs: report text, market notes, event summaries, qualitative caveats, cited original sources when present
 - validation_rules: record publication date, geography, authoring body, and whether quantitative claims cite original sources
 - forbidden_claims: do not treat KOTRA text or news as export volume
-- fallback_sources: customs trade data for trade totals, company disclosures for company exposure, official regulator or statistics sources
-- notes: Manual source contract; cite underlying official data when KOTRA quotes quantitative figures.
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, customs trade data for trade totals, company disclosures for company exposure, official regulator or statistics sources
+- notes: Manual source contract; use the specified OpenAPI and file download paths for manual or programmatic retrieval; cite underlying official data when KOTRA quotes quantitative figures.
 
 ## G2B / public procurement
 
@@ -244,7 +251,7 @@ to the documented fallback.
 - outputs: tender list, award list, buyer, amount, date, classification, status
 - validation_rules: distinguish tender from award, record procurement stage, buyer, amount, cancellation status, and whether awardee identity is confirmed
 - forbidden_claims: do not treat public procurement as total market demand
-- fallback_sources: company disclosures for award materiality, public agency releases, market statistics for broader demand
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, company disclosures for award materiality, public agency releases, market statistics for broader demand
 - notes: Docs-only market-intelligence contract for this pass.
 
 ## Web Search + Web Fetch
@@ -278,7 +285,7 @@ to the documented fallback.
 - outputs: profile, quote, statements, ratios, analyst data, market lists, response metadata
 - validation_rules: record endpoint/tool, plan restrictions, timestamp, and cross-check official filings for final claims
 - forbidden_claims: do not state official company results from FMP alone when primary filings are available
-- fallback_sources: company IR, SEC EDGAR or DART-KRX for official filings, local regulator filings, yfinance for public market data when live callable, Web Search + Fetch
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, company IR, SEC EDGAR or DART-KRX for official filings, local regulator filings, yfinance for public market data when live callable
 - notes: Preserved existing/public contract; not a new runtime dependency in this pass. Active FMP_API_KEY is registered and available in .env.
 
 ## ECOS or macro official statistics
@@ -295,5 +302,5 @@ to the documented fallback.
 - outputs: official macro value, unit, frequency, release date, revision notes when available
 - validation_rules: record series ID, unit, frequency, release calendar, revision risk, and seasonal adjustment
 - forbidden_claims: do not attribute company earnings changes to macro data without a stated exposure mechanism
-- fallback_sources: FRED for US macro, KOSIS for Korean official statistics, central-bank/statistical agency releases
+- fallback_sources: web_search_fetch as universal fallback if primary tools fail, FRED for US macro, KOSIS for Korean official statistics, central-bank/statistical agency releases
 - notes: Preserved macro capability; use as official context and keep company-level causal claims bounded.
