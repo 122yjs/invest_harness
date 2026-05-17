@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
-$candidateCommands = @('python3', 'python', 'py')
+$candidateCommands = @('python', 'python3', 'py')
 $pythonCommand = $null
 
 foreach ($candidate in $candidateCommands) {

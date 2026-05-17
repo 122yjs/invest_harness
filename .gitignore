@@ -8,3 +8,7 @@ _workspace_*/
 # Python validation cache
 __pycache__/
 *.py[cod]
+
+# Credentials and Local Settings
+.env
+
