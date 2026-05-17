@@ -3,6 +3,7 @@
 _workspace/
 _workspace_*/
 .worktrees/
+.plugin-cache/
 
 # Python validation cache
 __pycache__/
