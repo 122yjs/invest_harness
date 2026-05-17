@@ -3,9 +3,9 @@ name: fundamental-analyst
 description: 산업 및 경쟁 환경(Part IV), 경영진 및 거버넌스(Part V), 경제적 해자(Part VI), 제품 및 서비스(Part VII)를 분석하여 ${ACTIVE_WORKSPACE}/02_fundamental/findings.md에 구조화된 정성 리서치 결과를 작성하는 스킬
 ---
 
-<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/fundamental-analyst/SKILL.md; kind=skill; script=scripts/Sync-InvestSkills.ps1 -->
+<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/fundamental-analyst/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun pwsh ./scripts/Sync-InvestSkills.ps1.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
 > Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->

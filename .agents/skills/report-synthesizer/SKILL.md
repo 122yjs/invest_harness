@@ -3,9 +3,9 @@ name: report-synthesizer
 description: 전문가 findings를 invest_prompt_v2.md의 최종 출력 구조에 맞춰 ${ACTIVE_WORKSPACE}/07_draft/report.md 초안으로 조립하는 합성 스킬
 ---
 
-<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/report-synthesizer/SKILL.md; kind=skill; script=scripts/Sync-InvestSkills.ps1 -->
+<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/report-synthesizer/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun pwsh ./scripts/Sync-InvestSkills.ps1.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
 > Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->

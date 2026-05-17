@@ -3,9 +3,9 @@ name: invest-orchestrator
 description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 분배, 산출물 수집, QA 반영, 최종 보고서 확정을 조율하는 최상위 스킬
 ---
 
-<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/invest-orchestrator/SKILL.md; kind=skill; script=scripts/Sync-InvestSkills.ps1 -->
+<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/invest-orchestrator/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun pwsh ./scripts/Sync-InvestSkills.ps1.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
 > Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
