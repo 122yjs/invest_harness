@@ -330,13 +330,22 @@ python3 scripts/invest_command_runtime.py "/dcf AAPL base"
 
 ## 10. 구조 검증
 
-macOS/Linux에서는 Python 검증 경로를 기본으로 사용한다. 이 경로는 전역 PowerShell 설치가 없어도 동작해야 한다.
+macOS/Linux에서는 Bash 쉘 스크립트 또는 Python 검증 경로를 기본으로 사용한다. 이 경로는 전역 PowerShell 설치가 없어도 동작해야 한다.
 
 ```bash
+# Bash 쉘 스크립트를 사용한 동기화 및 검증
+./scripts/Sync-InvestSkills.sh
+./scripts/Test-SkillDrift.sh
+./scripts/Test-CommandRuntime.sh
+./scripts/Test-WorkspaceSafety.sh
+./scripts/Test-HarnessStructure.sh
+./scripts/verify_invest_harness.sh
+
+# 또는 직접 Python 스크립트 실행
 python3 scripts/verify_invest_harness.py
 ```
 
-Windows에서는 기존 PowerShell 검증 경로를 사용한다.
+Windows에서는 PowerShell 검증 경로 또는 Python 검증 경로를 사용한다.
 
 ```powershell
 pwsh ./scripts/Sync-InvestSkills.ps1

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+PYTHON_CMD="python3"
+if ! command -v python3 &> /dev/null; then
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    else
+        echo "Error: Python 3가 필요합니다." >&2
+        exit 1
+    fi
+fi
+
+"$PYTHON_CMD" "$SCRIPT_DIR/verify_invest_harness.py"

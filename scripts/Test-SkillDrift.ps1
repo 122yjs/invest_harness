@@ -20,9 +20,9 @@ function Add-GeneratedNotice {
     )
 
     $normalized = $Content -replace "`r`n", "`n"
-    $notice = "<!-- GENERATED-SYNC: source=$SourceRelativePath; kind=$Kind; script=scripts/Sync-InvestSkills.ps1 -->`n" +
+    $notice = "<!-- GENERATED-SYNC: source=$SourceRelativePath; kind=$Kind; script=scripts/sync_invest_skills.py -->`n" +
         "> [!IMPORTANT]`n" +
-        "> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `pwsh ./scripts/Sync-InvestSkills.ps1`.`n" +
+        "> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).`n" +
         "> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.`n" +
         '> Runtime output paths must use `${ACTIVE_WORKSPACE}`.' + "`n" +
         "<!-- END GENERATED-SYNC -->`n"

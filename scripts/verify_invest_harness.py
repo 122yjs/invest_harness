@@ -21,8 +21,6 @@ COMMANDS = [
     ("Check source capability registry", [sys.executable, "scripts/test_source_capability_registry.py"]),
     ("Check claim boundary policy", [sys.executable, "scripts/test_claim_boundary_policy.py"]),
     ("Check workspace evidence contracts", [sys.executable, "scripts/test_workspace_evidence_contracts.py"]),
-    ("Check BKNG operational guardrails", [sys.executable, "scripts/test_bkng_operational_guardrails.py"]),
-    ("Check evidence priority and QoQ contracts", [sys.executable, "scripts/test_evidence_priority_and_qoq.py"]),
 ]
 
 

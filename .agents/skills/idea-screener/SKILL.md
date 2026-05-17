@@ -3,9 +3,9 @@ name: idea-screener
 description: 투자 아이디어 발굴 요청을 후보군, 점수표, 예비 Rating, 리스크, 다음 단계로 정리해 ${ACTIVE_WORKSPACE}/00_screen/에 저장하는 스크리닝 스킬
 ---
 
-<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/idea-screener/SKILL.md; kind=skill; script=scripts/Sync-InvestSkills.ps1 -->
+<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/idea-screener/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun pwsh ./scripts/Sync-InvestSkills.ps1.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
 > Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->

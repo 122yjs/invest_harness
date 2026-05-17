@@ -3,9 +3,9 @@ name: thesis-tracker
 description: 기존 투자 논지를 새 데이터와 비교해 강화/약화 증거, Rating 변화 가능성, 다음 추적 지표를 ${ACTIVE_WORKSPACE}/05_macro_sentiment/thesis-update.md에 정리하는 스킬
 ---
 
-<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/thesis-tracker/SKILL.md; kind=skill; script=scripts/Sync-InvestSkills.ps1 -->
+<!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/thesis-tracker/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun pwsh ./scripts/Sync-InvestSkills.ps1.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
 > Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
