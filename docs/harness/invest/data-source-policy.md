@@ -46,16 +46,17 @@ infrastructure unless a later implementation pass explicitly approves it.
 
 ## Free And Low-Cost Layer
 
-| Source | Access | Credential |
-|---|---|---|
-| `korea-stock` | MCP server for DART/KRX official data | `DART_API_KEY` / `KRX_API_KEY` when required |
-| Company IR | Official investor relations pages | None |
-| SEC EDGAR | Official filings and company facts | None for basic access |
-| `yfinance` | MCP/server or Python package for global public market data | None |
-| FRED | Macro indicators | Optional API key |
-| Alpha Vantage | Market and fundamental data | `ALPHA_VANTAGE_API_KEY` |
-| Financial Modeling Prep | Financial data and estimates | `FMP_API_KEY` |
-| Web Search + Web Fetch | Link discovery plus article/document/PDF body retrieval | None |
+| Source | Access | Credential | Notes / Manual Routes |
+|---|---|---|---|
+| `korea-stock` | MCP server for DART/KRX official data | `DART_API_KEY` / `KRX_API_KEY` when required | Primary official path for Korean equities. |
+| Company IR | Official investor relations pages | None | Primary source for corporate presentations & earnings releases. |
+| SEC EDGAR | Official filings and company facts | None for basic access | JSON APIs: Submissions (`/submissions/CIK##########.json`), Concepts (`/api/xbrl/companyconcept/CIK##########/us-gaap/{ConceptName}.json`), Facts (`/api/xbrl/companyfacts/CIK##########.json`), Frames (`/api/xbrl/frames/us-gaap/{ConceptName}/USD/CY{YYYYQ#I}.json`), Bulk facts ZIP (`/Archives/edgar/daily-index/xbrl/companyfacts.zip`). |
+| `yfinance` | MCP/server or Python package for global public market data | None | Fast global market and valuation data snapshot. |
+| FRED | Macro indicators | Optional API key | FRED economic indicators. |
+| Alpha Vantage | Market and fundamental data | `ALPHA_VANTAGE_API_KEY` | Supplementary global financials & pricing. |
+| Financial Modeling Prep | Financial data and estimates | `FMP_API_KEY` | Supplementary global analyst estimates & snapshots. |
+| KOTRA | Export market promotion agency data | None (Public data portal) | OpenAPI (`/data/15034830/openapi.do?recommendDataYn=Y#tab_layer_recommend_data`), 파일 데이터 자료실 (`/data/15083202/fileData.do?recommendDataYn=Y`), 해외시장뉴스 및 동향 포털 (`/kotranews/cms/com/index.do?MENU_ID=70` on `https://dream.kotra.or.kr`). |
+| Web Search + Web Fetch | Link discovery plus article/document/PDF body retrieval | None | Primary web discovery, also serves as the Universal Fallback. |
 
 ## Optional Institutional Layer
 
@@ -85,3 +86,9 @@ unresolved data gap, not silently converted into a new runtime dependency.
 If yfinance is absent from the live runtime, do not keep retrying that path.
 Use actually callable FMP or Alpha Vantage when present; otherwise use SEC
 EDGAR, company IR, and Web Search + Fetch with explicit claim boundaries.
+
+## Universal Fallback & Web Search Integration
+
+If any primary, secondary, or specialized data source fails to return the required information (due to credential issues, rate limits, network failures, or API coverage gaps), the system **MUST automatically fall back to Web Search + Web Fetch**. 
+
+The universal fallback utilizes `web_search_fetch` (or browser-based retrieval when JavaScript execution is required) to discover, fetch, and validate missing facts, regulatory filings, press releases, or macro-level tables from public webs and official IR domains. This applies globally to all data fields across every single analytical phase.

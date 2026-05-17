@@ -106,12 +106,24 @@
 
 사용 전략:
 - **한국 기업**: korea-stock 1순위 + yfinance 보조
-- **공식 공시 우선순위**: Company IR, SEC EDGAR, DART/KRX, local regulator filing 같은 T0 official disclosure를 reported financial fact, guidance, share count, issuer identity, segment data, risk factor의 우선 근거로 취급한다
+- **공식 공시 우선순위**: Company IR, SEC EDGAR, DART/KRX, local regulator filing 같은 T0 official disclosure를 reported financial fact, guidance, share count, issuer identity, segment data, risk factor of the issuer의 우선 근거로 취급한다
 - **미국/글로벌 기업**: 현재 repo에서 callable tool contract가 확인되는 공개 MCP는 yfinance이며, SEC EDGAR/FRED/Alpha Vantage 같은 추가 source는 `source-capability-registry.md`의 `connection_status`와 실제 callable repo evidence를 먼저 확인한다
 - yfinance/FMP/Alpha Vantage 같은 vendor snapshot은 T2 cross-check 또는 T0 부재 시 보조 근거이며, T0 공식 공시를 덮어쓰지 않는다
 - repo에서 callable 설정이나 구체 tool contract가 확인되지 않은 source는 connected로 간주하지 않고 `documented_only`, `planned`, 또는 `external_manual` data gap으로 기록한다
 - `connection_status=connected`는 repo-evidence 상태이지 live runtime proof가 아니다. analyst fan-out 전에 현재 세션의 callable source inventory를 확인하고, 미가용 source는 `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md`에 unavailable로 기록한다
 - live runtime에서 연결된 MCP 서버는 웹 검색보다 우선 순위가 높다
+- **범용 Fallback 및 웹 검색 연동**: 특정 API나 데이터 소스, 또는 도구 호출이 실패하거나 데이터가 누락된 경우, **모든 데이터 원천의 범용 Fallback 경로**로서 `web_search_fetch` 도구를 자동 활용해 필요한 정보와 공백을 찾고 보완한다.
+- **수동 수집(external_manual) 데이터 원천 루트 지정**: 자동화 연동이 없는 T0/T1 수동 데이터 소스의 경우, 아래의 지정된 엔드포인트 및 수집 루트를 기준으로 직접 웹 탐색 및 조회를 수행한다:
+  - **SEC EDGAR**:
+    - 기업 제출 보고서 목록: `https://data.sec.gov/submissions/CIK##########.json`
+    - 특정 재무 항목 과거 데이터 (예: us-gaap/AccountsPayableCurrent): `https://data.sec.gov/api/xbrl/companyconcept/CIK##########/us-gaap/{ConceptName}.json`
+    - 기업의 전체 과거 재무 데이터: `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json`
+    - 특정 시점별 특정 재무 데이터 (예: 2019Q1): `https://data.sec.gov/api/xbrl/frames/us-gaap/{ConceptName}/USD/CY{YYYYQ#I}.json`
+    - 전체 bulk 데이터 다운로드: `http://www.sec.gov/Archives/edgar/daily-index/xbrl/companyfacts.zip`
+  - **KOTRA**:
+    - OpenAPI 추천 자료 서비스: `https://www.data.go.kr/data/15034830/openapi.do?recommendDataYn=Y#tab_layer_recommend_data`
+    - 파일 데이터 자료실: `https://www.data.go.kr/data/15083202/fileData.do?recommendDataYn=Y`
+    - 해외시장뉴스 및 동향 포털: `https://dream.kotra.or.kr/kotranews/cms/com/index.do?MENU_ID=70`
 
 각 역할별 상세 MCP 도구 사용법은 해당 SKILL.md의 `사용 가능한 MCP 도구` 섹션을 참조한다.
 <!-- END MCP_SERVERS_LIST -->
