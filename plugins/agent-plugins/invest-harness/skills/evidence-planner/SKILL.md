@@ -42,6 +42,10 @@ description: 사용자 요청을 open-ended question decomposition과 evidence p
 - If a concept is unfamiliar, keep the surface form, generate candidate search terms, and mark mapping confidence low.
 - Select evidence needs from claim type and evidence type.
 - Select signal primitives from evidence type and downstream analyst need.
+- **다모다란 3대 내러티브 필터 검증 규칙**: 비즈니스 내러티브에 대해 다음과 같은 Validation Gate인 `narrative_plausibility` 검증 규칙을 설계에 반드시 반영한다.
+  - **가능성 (Possibility)**: 제안된 스토리가 비즈니스 규칙과 물리 법칙상 가능한가? (예: 업계 총시장규모(TAM)를 초과하는 점유율 가정이 없는가?)
+  - **타당성 (Plausibility)**: 역사적 선례와 경제적 원리(해자, 마진 구조 등)에 비추어 타당한가? (예: 업계에서 전례가 없는 초고속 성장과 최고 마진이 동시에 일어나는 가정의 타당성 검증)
+  - **개연성 (Probability)**: 주가에 이미 반영된 시장 기대치 대비 현실화될 확률이 있는가? (예: 시장 컨센서스와의 비교)
 - Do not fetch data, call APIs, store API keys, or make investment conclusions.
 
 ## Workflow
@@ -50,7 +54,7 @@ description: 사용자 요청을 open-ended question decomposition과 evidence p
 2. Decompose the request into entities, open-ended subjects, geographies, time horizon, investment claim types, and required evidence types.
 3. For each required evidence type, explain why it is required, optional, or validation-only.
 4. Select signal primitives from `docs/harness/invest/research-layer/signal-primitives.md`.
-5. Add validation gates for each evidence type.
+5. Add validation gates for each evidence type (특히 비즈니스 내러티브에 대해서는 다모다란의 3대 필터인 가능성, 타당성, 개연성을 평가하기 위한 `narrative_plausibility` 게이트를 필수 설계).
 6. Record unresolved ambiguities and whether user input is needed.
 7. Write outputs to `${ACTIVE_WORKSPACE}/00_evidence/`.
 
