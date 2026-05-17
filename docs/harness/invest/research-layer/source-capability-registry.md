@@ -109,7 +109,7 @@ to the documented fallback.
 - validation_rules: report series ID, frequency, unit, latest observation date, transformation, and distinguish level versus rate of change
 - forbidden_claims: do not infer company fundamentals from macro series alone; do not treat macro correlation as causation
 - fallback_sources: ECOS or local central-bank/statistical sources for non-US macro, official central-bank releases, web search for source discovery only
-- notes: Status is not proof of a live MCP call path; record missing callable tooling as a data gap when automation is required.
+- notes: Status is not proof of a live MCP call path; record missing callable tooling as a data gap when automation is required. Active FRED_API_KEY is registered and available in .env.
 
 ## SEC EDGAR
 
@@ -143,7 +143,7 @@ to the documented fallback.
 - validation_rules: report endpoint/function, adjusted versus unadjusted prices, currency, timestamp, and rate-limit or stale-response warnings
 - forbidden_claims: do not treat vendor fundamentals as more authoritative than filings; do not use technical indicators as standalone investment conclusions
 - fallback_sources: yfinance for public market data, official filings for reported financials, company IR, exchange pages
-- notes: Trust tier T2. Keep as a documented capability until a callable repo tool/config appears; do not override T0 official filings or Company IR.
+- notes: Trust tier T2. Keep as a documented capability until a callable repo tool/config appears; do not override T0 official filings or Company IR. Active ALPHA_VANTAGE_API_KEY is registered and available in .env.
 
 ## KOSIS
 
@@ -160,7 +160,7 @@ to the documented fallback.
 - validation_rules: record table ID, unit, period, update date, geography, and definition changes
 - forbidden_claims: do not convert official category totals into company revenue without share evidence
 - fallback_sources: ECOS for macro series, DART-KRX/company disclosure for company exposure, web search for source discovery only
-- notes: Docs-only market-intelligence contract for this pass.
+- notes: Docs-only market-intelligence contract for this pass. Active KOSIS_API_KEY is registered and available in .env.
 
 ## Korea Customs Service / customs_trade_api
 
@@ -177,7 +177,7 @@ to the documented fallback.
 - validation_rules: validate HS code mapping, latest month, FOB/CIF basis when relevant, base effect, currency, and unit
 - forbidden_claims: do not infer company-specific revenue from customs trade data alone
 - fallback_sources: DART/EDGAR segment exposure, company IR, KOTRA context, official trade publications
-- notes: Docs-only market-intelligence contract for this pass.
+- notes: Docs-only market-intelligence contract for this pass. Active CUSTOMS_TRADE_API_KEY, format (XML), and endpoint (https://apis.data.go.kr/1220000/nitemtrade) are registered and available in .env.
 
 ## Google Trends
 
@@ -279,7 +279,7 @@ to the documented fallback.
 - validation_rules: record endpoint/tool, plan restrictions, timestamp, and cross-check official filings for final claims
 - forbidden_claims: do not state official company results from FMP alone when primary filings are available
 - fallback_sources: company IR, SEC EDGAR or DART-KRX for official filings, local regulator filings, yfinance for public market data when live callable, Web Search + Fetch
-- notes: Preserved existing/public contract; not a new runtime dependency in this pass.
+- notes: Preserved existing/public contract; not a new runtime dependency in this pass. Active FMP_API_KEY is registered and available in .env.
 
 ## ECOS or macro official statistics
 

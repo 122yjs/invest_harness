@@ -243,7 +243,52 @@ KOSIS, customs_trade_api, Google Trends, Naver DataLab, KOTRA, G2B는 이번 패
 - 기술적 분석과 소셜 센티먼트는 보조 신호로만 사용합니다.
 - 최종 보고서는 개인화된 투자 자문이 아니라 정보 제공용 분석임을 명시합니다.
 
+## API 자격 증명 (API Keys) 및 환경변수 설정
+
+이 Harness는 신뢰도 높은 정량 및 정성적 리서치 분석을 위해 국내/해외의 다양한 데이터 소스 API와 연동됩니다. 제공된 모든 자격 증명은 프로젝트 루트의 `.env` 파일과 Windows 사용자 환경변수에 일괄 등록되어 있으며, 각 소스의 구체적인 역할 및 사용법은 다음과 같습니다.
+
+### 1. 등록된 API 자격 증명 정보
+
+| 환경변수명 | 연동 대상 (Data Source) | 역할 및 수집 데이터 | 신뢰 등급 |
+| :--- | :--- | :--- | :--- |
+| `DART_API_KEY` | OpenDART (전자공시시스템) | 한국 상장기업의 공시 목록, 공시 원문, XBRL 재무제표 수집 | **T0** (공식 공시) |
+| `KRX_API_KEY` | KRX (한국거래소) | 한국 주식의 시장 구분, 종목 기본 정보, 일자별 거래/시세 데이터 | **T1** (공식 시장) |
+| `FRED_API_KEY` | FRED (미국 연방준비은행 경제 데이터) | 미국 및 글로벌 매크로 지표, 금리, 인플레이션, 고용 지표 시계열 | **T1** (공식 통계) |
+| `ALPHA_VANTAGE_API_KEY` | Alpha Vantage | 글로벌 시세(OHLCV), 기술 지표, 환율(FX), 원자재 등 보조 데이터 | **T2** (벤더 스냅샷) |
+| `FMP_API_KEY` | Financial Modeling Prep (FMP) | 글로벌 기업 프로필, 대차대조표/손익계산서/현금흐름표 및 컨센서스 | **T2** (벤더 스냅샷) |
+| `KOSIS_API_KEY` | KOSIS (국가통계포털) | 한국의 거시 통계 baseline, 인구 통계, 가계 동향 등 공식 지표 | **T1** (공식 통계) |
+| `CUSTOMS_TRADE_API_KEY` | 관세청 수출입무역통계 | HS 코드별 수출입 금액/중량 Momentum 수집 및 공급망 분석 프록시 | **T1** (공식 통계) |
+
+> [!NOTE]
+> `CUSTOMS_TRADE_API_KEY` 연동 시, 데이터 포맷은 `XML`로 고정되며, API Endpoint는 `https://apis.data.go.kr/1220000/nitemtrade`를 기본값으로 사용합니다.
+
+---
+
+### 2. 사용 및 로드 방법
+
+#### 방법 A: 로컬 `.env` 파일 로드 (권장)
+Harness 실행 시 루트 디렉터리의 `.env` 파일에서 API 키를 자동으로 로드하여 서브 프로세스 및 MCP 서버가 참조하도록 동작합니다. `.env` 파일은 Git 보안을 위해 `.gitignore`에 자동 추가되어 안전하게 로컬 장비에만 격리 보존됩니다.
+
+#### 방법 B: Windows 환경변수 일괄 등록 및 갱신
+제공된 모든 API 키를 Windows 사용자 환경변수에 영구적으로 자동 등록하려면, PowerShell에서 아래 스크립트를 Bypass 권한으로 실행하십시오.
+```powershell
+.\scripts\Set-Credentials.ps1
+```
+*(실행 후 변경 사항을 완벽히 적용하려면 터미널 또는 IDE를 재시작해야 합니다.)*
+
+---
+
+### 3. 소스 연동 및 Fallback 정책
+1. **DART / KRX 공식 데이터 (`korea-stock` MCP)**
+   - 한국 상장기업의 1순위 데이터 경로입니다. DART 공식 공시는 재무 사실(Reported Financial Facts), 주식 수(Share Count), 공시 원문 수집의 원천(T0)이며, KRX 시세는 T1 데이터로 신용됩니다.
+2. **yfinance 및 글로벌 벤더 API (`yfinance` MCP, `FMP`, `Alpha Vantage`)**
+   - 미국/글로벌 기업 분석의 핵심 스냅샷(T2)이며, 한국 기업 분석 시에는 보조 크로스체크 수단으로 활용됩니다.
+   - 벤더 데이터에 일시적인 데이터 왜곡(주식 분할 미반영, 가이드라인 불일치 등)이 발생할 경우, **T0 공식 공시(SEC EDGAR / DART)**를 수동 또는 브라우저 수집(`search_web` + `read_url_content`)하여 덮어쓰고 검증을 강제합니다.
+3. **미가용 시 우회 경로 (Data Gap Handling)**
+   - 만약 런타임 환경에서 MCP 서버나 특정 API 호출에 실패할 경우, 시스템은 에러를 무시하고 진행하되 **`web_search_fetch`**를 활용해 IR 사이트나 공식 거래소 페이지에서 직접 원문을 Fetch하고, 해당 데이터 갭을 `${ACTIVE_WORKSPACE}/00_evidence/source-call-plan.md` 및 최종 리포트 내에 투명하게 기록합니다.
+
 ## 브랜치 운영
+
 
 기본 브랜치는 `main`입니다. 새 Harness 개선이나 리포트 생성 자동화 작업은 별도 브랜치에서 진행한 뒤 검증 후 병합합니다.
 
