@@ -11,7 +11,8 @@ $policyNames = @(
     'market-price-anchor.md',
     'data-source-policy.md',
     'qa-recalculation-policy.md',
-    'rating-price-target-policy.md'
+    'rating-price-target-policy.md',
+    'report-writing-style-policy.md'
 )
 
 function Get-RepoRelativePath {
