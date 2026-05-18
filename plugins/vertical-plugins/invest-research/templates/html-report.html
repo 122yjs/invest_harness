@@ -55,6 +55,7 @@
             font-weight: 700;
             background: linear-gradient(135deg, #fff, var(--accent-blue));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 2.5rem;
             padding: 0 0.5rem;
@@ -447,6 +448,20 @@
             <!-- 다이내믹 비주얼 대시보드 카드 영역 -->
             <div id="visual-dashboard"></div>
 
+            <!-- PATH CONTAINER (상시 노출) -->
+            <div class="absolute-path-container" style="margin-top: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); padding: 0.8rem 1.2rem; border-radius: 12px; backdrop-filter: blur(10px);">
+                <div class="absolute-path-label" style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                    <i class="fa-solid fa-folder-open" style="color: var(--accent-blue);"></i>
+                    <span>📂 MD Source File Path</span>
+                </div>
+                <div class="absolute-path-badge" id="md-file-path" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent-blue); background: rgba(56, 189, 248, 0.08); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.2); word-break: break-all; margin: 0 1rem; flex: 1; text-align: left;">로드 중...</div>
+                <button class="btn-copy-path" id="btn-copy-md-path" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border); color: var(--text-main); padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; font-weight: 500;">
+                    <i class="fa-regular fa-copy"></i>
+                    <span>경로 복사</span>
+                </button>
+            </div>
+
+            <!-- ACCORDION FOR RAW MD -->
             <div class="doc-divider">
                 <button class="toggle-btn" id="toggle-md-btn">
                     <span>📑 원본 마크다운(MD) 보고서 전문 보기</span>
@@ -454,7 +469,9 @@
             </div>
 
             <!-- 마크다운 렌더링 컨테이너 -->
-            <div id="md-container" class="markdown-body"></div>
+            <div id="path-and-md-wrapper" style="display: none; animation: fadeIn 0.4s ease;">
+                <div id="md-container" class="markdown-body show" style="display: block;"></div>
+            </div>
             
         </div>
     </div>
@@ -462,15 +479,25 @@
     <!-- 마크다운 텍스트 및 데이터 주입 플레이스홀더 -->
     <script>
         // 이 영역은 html-report-synthesizer 가 빌드 시 JSON 데이터를 주입합니다.
-        const mdData = ${MD_DATA_JSON};
+        const mdDataRaw = `${MD_DATA_JSON}`;
+        const mdData = typeof mdDataRaw === 'string' ? JSON.parse(mdDataRaw) : mdDataRaw;
+        
+        // 원본 MD 파일의 절대 경로 매핑 정보 (윈도우 환경 이중 역슬래시 정규화 처리 포함)
+        const mdPathsRaw = `${MD_PATHS_JSON}`;
+        const mdPaths = typeof mdPathsRaw === 'string' ? JSON.parse(mdPathsRaw) : mdPathsRaw;
+
         let currentTab = '08_Final';
         let currentScen = 'base';
         let mainChart = null;
         let roicChart = null;
         let chartRecentPriceInstance = null;
 
+        // 아코디언 상태 보존을 위한 전역 상태 변수
+        let isRawMdVisible = false;
+
         // 시나리오별 시뮬레이션 원천 데이터
-        const scenarioData = ${SCENARIO_DATA_JSON};
+        const scenarioDataRaw = `${SCENARIO_DATA_JSON}`;
+        const scenarioData = typeof scenarioDataRaw === 'string' ? JSON.parse(scenarioDataRaw) : scenarioDataRaw;
 
         // 시각화 렌더러 정의
         const vizRenderers = {
@@ -903,6 +930,12 @@
         function loadMarkdown(key) {
             const rawMd = mdData[key] || "내용이 없습니다.";
             document.getElementById('md-container').innerHTML = marked.parse(rawMd);
+            
+            // 절대 경로 노출 및 이중 백슬래시 정규화 처리
+            let physicalPath = mdPaths[key] || "경로가 지정되지 않았습니다.";
+            // 자바스크립트 f-string 우회 분할-결합 연산
+            physicalPath = physicalPath.split('\\\\').filter(Boolean).join('\\');
+            document.getElementById('md-file-path').textContent = physicalPath;
         }
 
         function switchTab(targetKey) {
@@ -914,11 +947,18 @@
             // 마크다운 파싱 및 로드
             loadMarkdown(targetKey);
             
-            // 마크다운 뷰어는 탭 교체 시 우선 숨겨서 대시보드가 주인공이 되도록 설정
-            const mdContainer = document.getElementById('md-container');
-            mdContainer.classList.remove('show');
+            // 탭 교체 시 사용자가 아코디언을 열어둔 상태(isRawMdVisible === true)라면,
+            // 닫지 않고 열린 상태를 끊김 없이 유지하며 내용만 업데이트
+            const wrapper = document.getElementById('path-and-md-wrapper');
             const toggleBtn = document.getElementById('toggle-md-btn');
-            toggleBtn.innerHTML = '<span>📑 원본 마크다운(MD) 보고서 전문 보기</span>';
+            
+            if (isRawMdVisible) {
+                wrapper.style.display = 'block';
+                toggleBtn.innerHTML = '<span>🙈 마크다운 전문 숨기기</span>';
+            } else {
+                wrapper.style.display = 'none';
+                toggleBtn.innerHTML = '<span>📑 원본 마크다운(MD) 보고서 전문 보기</span>';
+            }
         }
 
         // 시나리오 버튼 바인딩
@@ -939,16 +979,51 @@
             });
         });
 
-        // 마크다운 토글 토글러
+        // 마크다운 토글 토글러 (전역 상태 isRawMdVisible 연계)
         document.getElementById('toggle-md-btn').addEventListener('click', function() {
-            const mdContainer = document.getElementById('md-container');
-            if(mdContainer.classList.contains('show')) {
-                mdContainer.classList.remove('show');
+            const wrapper = document.getElementById('path-and-md-wrapper');
+            if (isRawMdVisible) {
+                wrapper.style.display = 'none';
+                isRawMdVisible = false;
                 this.innerHTML = '<span>📑 원본 마크다운(MD) 보고서 전문 보기</span>';
             } else {
-                mdContainer.classList.add('show');
+                wrapper.style.display = 'block';
+                isRawMdVisible = true;
                 this.innerHTML = '<span>🙈 마크다운 전문 숨기기</span>';
             }
+        });
+
+        // 원클릭 경로 복사 기능 탑재
+        document.getElementById('btn-copy-md-path').addEventListener('click', function() {
+            const pathText = document.getElementById('md-file-path').textContent;
+            navigator.clipboard.writeText(pathText).then(() => {
+                // 프리미엄 토스트 팝업 알림
+                const toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '2rem';
+                toast.style.right = '2rem';
+                toast.style.background = 'rgba(52, 211, 153, 0.95)';
+                toast.style.color = '#080c14';
+                toast.style.padding = '0.8rem 1.5rem';
+                toast.style.borderRadius = '30px';
+                toast.style.boxShadow = '0 10px 30px rgba(52, 211, 153, 0.3)';
+                toast.style.fontSize = '0.85rem';
+                toast.style.fontWeight = '700';
+                toast.style.zIndex = '9999';
+                toast.style.display = 'flex';
+                toast.style.alignItems = 'center';
+                toast.style.gap = '8px';
+                toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> 절대 경로가 클립보드에 복사되었습니다!';
+                
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => toast.remove(), 500);
+                }, 2000);
+            }).catch(err => {
+                console.error('클립보드 복사 실패:', err);
+            });
         });
 
         // 초기화
