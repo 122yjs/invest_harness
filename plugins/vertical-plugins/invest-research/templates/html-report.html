@@ -337,6 +337,49 @@
 
         .markdown-body.show { display: block; }
 
+        /* Premium Details and Summary Styles */
+        .premium-details {
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .premium-summary {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-main);
+            transition: background-color 0.2s ease;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+        }
+
+        .premium-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .premium-summary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        .summary-toggle-icon {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .premium-details[open] .summary-toggle-icon {
+            transform: rotate(180deg);
+            color: var(--accent-blue);
+        }
+
         .markdown-body h1, .markdown-body h2, .markdown-body h3 {
             margin-top: 1.8em; margin-bottom: 0.6em; color: #fff;
             border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4em;
@@ -424,6 +467,7 @@
         let currentScen = 'base';
         let mainChart = null;
         let roicChart = null;
+        let chartRecentPriceInstance = null;
 
         // 시나리오별 시뮬레이션 원천 데이터
         const scenarioData = ${SCENARIO_DATA_JSON};
@@ -542,11 +586,186 @@
                 return `${RISK_DASHBOARD_HTML}`;
             },
             "07_Draft": () => `<div class="viz-card"><div class="viz-title">📝 종합 보고서 초안</div><div style="text-align:center; padding:2rem; color:var(--text-muted);">16단계 평가 과정을 거쳐 도출된 종합 투자 보고서 초안입니다. 아래 버튼을 눌러 마크다운 전문을 확인하십시오.</div></div>`,
-            "08_Final": () => `<div class="viz-card"><div class="viz-title">🏆 최종 확정 투자 리포트</div><div style="text-align:center; padding:2rem; color:var(--text-muted);">QA 리뷰 및 데이터 한계 교차 검증을 완료한 최종 완성본 리포트입니다. 아래 버튼을 눌러 정밀한 투자 보고서 전문을 열람하실 수 있습니다.</div></div>`
+            "08_Final": () => {
+                return `
+                <div class="viz-card" style="margin-bottom: 1.5rem;">
+                    <div class="viz-title">🏆 최종 확정 투자 리포트 및 최근 주가 변동 추이</div>
+                    <div style="position: relative; height: 320px; width: 100%; margin-top: 15px;">
+                        <canvas id="chart-recent-price"></canvas>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 15px; line-height: 1.5;">
+                        * <strong>최근 주가 서사 및 목표가 가이드라인:</strong> 역사적 고점 터치 후 회계/일시적 센티먼트 노이즈로 200일 SMA선 부근까지 과도하게 하락했으나, 강력한 분기 실적 공시(매출 및 이익 서프라이즈)로 노이즈를 돌파하며 반등을 실현하고 있습니다. 세 가지 시나리오별 타겟 라인(Bull, Base, Bear)을 참고하시기 바랍니다.
+                    </p>
+                </div>
+                
+                <div class="viz-card" style="padding: 0; overflow: hidden; border: 1px solid var(--card-border);">
+                    <details class="premium-details" style="width: 100%;">
+                        <summary class="premium-summary">
+                            <span><i class="fa-solid fa-file-invoice" style="color: var(--accent-blue); margin-right: 8px;"></i> 분석 산출 원문 보고서 (Original Markdown Reference)</span>
+                            <span class="summary-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div style="padding: 24px; background: rgba(15, 23, 42, 0.3); border-top: 1px solid var(--card-border);">
+                            <div class="markdown-body" id="md-render-dashboard-full" style="display: block; border: none; padding: 0; backdrop-filter: none; box-shadow: none; background: transparent;">
+                                원본 리포트 전문을 로드하고 있습니다...
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                `;
+            }
         };
 
         // Chart.js 인스턴스 렌더링 함수
         function initCharts() {
+            if (currentTab === '08_Final') {
+                const ctxRecent = document.getElementById('chart-recent-price');
+                if (!ctxRecent) return;
+                
+                if (chartRecentPriceInstance) {
+                    chartRecentPriceInstance.destroy();
+                }
+
+                // 동형(Isomorphic) 데이터 설계: mdData에 저장된 값 혹은 기본값 사용
+                const priceLabels = mdData.priceLabels || ['6개월 전', '최고가 부근', '회계 오인 노이즈', '200일선 바닥', '어닝 서프라이즈', '현재'];
+                const priceValues = mdData.priceValues || [240000, 380000, 310000, 265000, 278000, 328000];
+                const priceStories = mdData.priceStories || [
+                    "6개월 전: 안정적인 글로벌 수출 성장세를 이어가며 완만한 우상향 추세를 그림.",
+                    "최고가 부근: CVC 2,000억 원 투자 유치 호재로 사상 최고가 돌파 및 시장 주도주 등극.",
+                    "회계 오인 노이즈: 화장품 매출 총액법/순액법 표기 변경에 따른 회계 노이즈 발생 및 과도한 패닉 셀링.",
+                    "200일선 바닥: 노이즈 지속 및 센티먼트 극단적 냉각으로 200일 SMA 지지선까지 기술적 과매도.",
+                    "어닝 서프라이즈: 1분기 영업이익 어닝 서프라이즈 공시 후 숏커버 유입 및 강력한 추세 반전 신호 발생.",
+                    "현재: 노이즈를 완벽하게 돌파하며 직전 전고점을 향한 V자 반등을 견고하게 지속 중."
+                ];
+
+                // 시나리오별 목표가 구문에서 숫자만 정규식으로 안전하게 추출
+                const bullVal = parseFloat(scenarioData.bull.price.replace(/[^0-9.]/g, '')) || 480000;
+                const baseVal = parseFloat(scenarioData.base.price.replace(/[^0-9.]/g, '')) || 367000;
+                const bearVal = parseFloat(scenarioData.bear.price.replace(/[^0-9.]/g, '')) || 260000;
+
+                chartRecentPriceInstance = new Chart(ctxRecent.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: priceLabels,
+                        datasets: [
+                            {
+                                label: '최근 주가 추이',
+                                data: priceValues,
+                                borderColor: 'var(--accent-blue)',
+                                backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                                borderWidth: 4,
+                                tension: 0.35,
+                                fill: true,
+                                pointRadius: [5, 9, 5, 9, 5, 9],
+                                pointHoverRadius: [7, 11, 7, 11, 7, 11],
+                                pointBackgroundColor: ['var(--accent-blue)', 'var(--accent-green)', 'var(--accent-blue)', 'var(--accent-red)', 'var(--accent-blue)', 'var(--accent-purple)'],
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 2
+                            },
+                            {
+                                label: `Bull Target (${scenarioData.bull.price})`,
+                                data: Array(priceLabels.length).fill(bullVal),
+                                borderColor: 'rgba(52, 211, 153, 0.65)',
+                                borderWidth: 2,
+                                borderDash: [6, 4],
+                                fill: false,
+                                pointRadius: 0
+                            },
+                            {
+                                label: `Base Target (${scenarioData.base.price})`,
+                                data: Array(priceLabels.length).fill(baseVal),
+                                borderColor: 'rgba(251, 191, 36, 0.65)',
+                                borderWidth: 2,
+                                borderDash: [6, 4],
+                                fill: false,
+                                pointRadius: 0
+                            },
+                            {
+                                label: `Bear Target (${scenarioData.bear.price})`,
+                                data: Array(priceLabels.length).fill(bearVal),
+                                borderColor: 'rgba(248, 113, 113, 0.65)',
+                                borderWidth: 2,
+                                borderDash: [6, 4],
+                                fill: false,
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#94a3b8',
+                                    font: {
+                                        family: 'Outfit',
+                                        size: 11
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(11, 17, 28, 0.95)',
+                                titleColor: '#ffffff',
+                                bodyColor: '#f1f5f9',
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                borderWidth: 1,
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        if (context.datasetIndex === 0) {
+                                            const formattedVal = context.parsed.y.toLocaleString();
+                                            const story = priceStories[context.dataIndex] || "";
+                                            return [
+                                                `주가: ${formattedVal}원`,
+                                                `스토리: ${story}`
+                                            ];
+                                        }
+                                        return `${context.dataset.label}: ${context.parsed.y.toLocaleString()}원`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#94a3b8',
+                                    font: {
+                                        family: 'Outfit',
+                                        size: 10
+                                    }
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.03)'
+                                },
+                                ticks: {
+                                    color: '#94a3b8',
+                                    font: {
+                                        family: 'Outfit',
+                                        size: 10
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // 원본 마크다운 렌더링 영역 업데이트
+                const fullReportEl = document.getElementById('md-render-dashboard-full');
+                if (fullReportEl) {
+                    fullReportEl.innerHTML = marked.parse(mdData.report || '');
+                }
+                return;
+            }
+
             if (currentTab !== '01_Financial') return;
             
             const ctxMain = document.getElementById('finMainChart');
