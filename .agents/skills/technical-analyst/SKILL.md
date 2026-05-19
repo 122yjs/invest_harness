@@ -5,8 +5,8 @@ description: Part IX 기술적 분석을 수행해 가격 흐름, 이동평균, 
 
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/technical-analyst/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun python scripts/sync_invest_skills.py (or scripts/Sync-InvestSkills.ps1 / scripts/Sync-InvestSkills.sh).
-> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
+> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 
@@ -17,7 +17,7 @@ description: Part IX 기술적 분석을 수행해 가격 흐름, 이동평균, 
 - 투자 리포트의 Part IX. 기술적 분석을 작성할 때 사용한다.
 - 최근 가격 흐름, 추세, 거래량, 기술지표를 통해 단기·중기 타이밍을 보조적으로 점검할 때 사용한다.
 - 장기 투자 분석에서도 보조 신호로 지지선·저항선·추세 훼손 조건을 정리할 때 사용한다.
-- 최종 산출물은 `${ACTIVE_WORKSPACE}/04_technical/findings.md`에 저장한다.
+- 최종 산출물은 `${ACTIVE_WORKSPACE}/04_technical/findings.md`와 `${ACTIVE_WORKSPACE}/04_technical/report.md`에 저장한다.
 
 ## Required Inputs
 - 대상 기업명, 티커, 거래소

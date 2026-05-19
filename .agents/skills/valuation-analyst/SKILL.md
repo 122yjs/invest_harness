@@ -5,8 +5,8 @@ description: Part VIII 밸류에이션 분석을 수행해 상대가치, DCF/간
 
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/valuation-analyst/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun python scripts/sync_invest_skills.py (or scripts/Sync-InvestSkills.ps1 / scripts/Sync-InvestSkills.sh).
-> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
+> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 
@@ -17,7 +17,7 @@ description: Part VIII 밸류에이션 분석을 수행해 상대가치, DCF/간
 - 투자 리포트의 Part VIII. 밸류에이션 분석을 작성할 때 사용한다.
 - 현재 주가가 내재가치 대비 어느 수준인지 구조적으로 판단해야 할 때 사용한다.
 - 동종업계 멀티플 비교, DCF 또는 간이 DCF, 시나리오별 목표가 산정이 필요할 때 사용한다.
-- 최종 산출물은 `${ACTIVE_WORKSPACE}/03_valuation/findings.md`에 저장한다.
+- 최종 산출물은 `${ACTIVE_WORKSPACE}/03_valuation/findings.md`와 `${ACTIVE_WORKSPACE}/03_valuation/report.md`에 저장한다.
 - `/comps` 요청에서는 비교기업 분석을 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`에 저장한다.
 - `/dcf` 요청에서는 DCF 결과와 교차검증을 `${ACTIVE_WORKSPACE}/03_valuation/dcf.md`에 저장한다.
 

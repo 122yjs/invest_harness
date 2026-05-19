@@ -5,8 +5,8 @@ description: 기존 리포트를 새 이벤트나 실적 기준으로 갱신할 
 
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/report-updater/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun python scripts/sync_invest_skills.py (or scripts/Sync-InvestSkills.ps1 / scripts/Sync-InvestSkills.sh).
-> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
+> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 

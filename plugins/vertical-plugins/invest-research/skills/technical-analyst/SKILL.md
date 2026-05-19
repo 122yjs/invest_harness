@@ -9,7 +9,7 @@ description: Part IX 기술적 분석을 수행해 가격 흐름, 이동평균, 
 - 투자 리포트의 Part IX. 기술적 분석을 작성할 때 사용한다.
 - 최근 가격 흐름, 추세, 거래량, 기술지표를 통해 단기·중기 타이밍을 보조적으로 점검할 때 사용한다.
 - 장기 투자 분석에서도 보조 신호로 지지선·저항선·추세 훼손 조건을 정리할 때 사용한다.
-- 최종 산출물은 `${ACTIVE_WORKSPACE}/04_technical/findings.md`에 저장한다.
+- 최종 산출물은 `${ACTIVE_WORKSPACE}/04_technical/findings.md`와 `${ACTIVE_WORKSPACE}/04_technical/report.md`에 저장한다.
 
 ## Required Inputs
 - 대상 기업명, 티커, 거래소

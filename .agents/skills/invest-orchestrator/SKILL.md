@@ -5,8 +5,8 @@ description: 개별 주식 투자 리포트 Harness의 입력 정규화, 역할 
 
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/invest-orchestrator/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
-> Generated execution artifact. Do not edit directly; edit the vertical source and rerun python scripts/sync_invest_skills.py (or scripts/Sync-InvestSkills.ps1 / scripts/Sync-InvestSkills.sh).
-> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
+> Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
+> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 
@@ -318,12 +318,12 @@ Evidence layer 규칙:
 
 | 역할 | 담당 범위 | 스킬 | 산출물 |
 |---|---|---|---|
-| financial-analyst | Part II, III | `.agents/skills/financial-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/01_financial/findings.md` |
-| fundamental-analyst | Part IV, V, VI, VII | `.agents/skills/fundamental-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` |
-| valuation-analyst | Part VIII | `.agents/skills/valuation-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/03_valuation/findings.md`, 선택 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`, `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` |
-| technical-analyst | Part IX | `.agents/skills/technical-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/04_technical/findings.md` |
-| macro-sentiment-analyst | Part X, XI | `.agents/skills/macro-sentiment-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` |
-| risk-scenario-analyst | Part XII, XIII | `.agents/skills/risk-scenario-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` |
+| financial-analyst | Part II, III | `.agents/skills/financial-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/01_financial/findings.md`, `${ACTIVE_WORKSPACE}/01_financial/report.md` |
+| fundamental-analyst | Part IV, V, VI, VII | `.agents/skills/fundamental-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`, `${ACTIVE_WORKSPACE}/02_fundamental/report.md` |
+| valuation-analyst | Part VIII | `.agents/skills/valuation-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/03_valuation/findings.md`, `${ACTIVE_WORKSPACE}/03_valuation/report.md`, 선택 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`, `${ACTIVE_WORKSPACE}/03_valuation/dcf.md` |
+| technical-analyst | Part IX | `.agents/skills/technical-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/04_technical/findings.md`, `${ACTIVE_WORKSPACE}/04_technical/report.md` |
+| macro-sentiment-analyst | Part X, XI | `.agents/skills/macro-sentiment-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md`, `${ACTIVE_WORKSPACE}/05_macro_sentiment/report.md` |
+| risk-scenario-analyst | Part XII, XIII | `.agents/skills/risk-scenario-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`, `${ACTIVE_WORKSPACE}/06_risk_scenario/report.md` |
 
 분배 규칙:
 
@@ -342,7 +342,7 @@ Evidence layer 규칙:
 ### 5. 중간 산출물 점검
 
 1. `${ACTIVE_WORKSPACE}/00_evidence/`의 evidence plan, source call plan, evidence ledger, source validation 존재 여부를 확인한다.
-2. `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`까지 존재 여부를 확인한다.
+2. `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`까지, 그리고 `${ACTIVE_WORKSPACE}/01_financial/report.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/report.md`까지 존재 여부를 확인한다.
 3. `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`가 valuation과 QA의 기준 주가로 사용되는지 확인한다.
 4. 각 파일의 분석 전제, 출처 목록, 요약, 데이터 한계 섹션을 확인한다.
 5. 수치나 판단이 충돌하면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 기록한다.
