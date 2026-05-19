@@ -6,7 +6,7 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/qa-reviewer/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
 > Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
-> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
+> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 
@@ -29,12 +29,12 @@ description: 투자 리포트 초안과 원천 findings를 대조해 출처, 수
 - 선택 입력: `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`
 - 선택 입력: `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`
 - 선택 입력: `${ACTIVE_WORKSPACE}/00_evidence/unresolved-data-gaps.md`
-- `${ACTIVE_WORKSPACE}/01_financial/findings.md`
-- `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`
-- `${ACTIVE_WORKSPACE}/03_valuation/findings.md`
-- `${ACTIVE_WORKSPACE}/04_technical/findings.md`
-- `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md`
-- `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`
+- `${ACTIVE_WORKSPACE}/01_financial/findings.md` + `${ACTIVE_WORKSPACE}/01_financial/report.md`
+- `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` + `${ACTIVE_WORKSPACE}/02_fundamental/report.md`
+- `${ACTIVE_WORKSPACE}/03_valuation/findings.md` + `${ACTIVE_WORKSPACE}/03_valuation/report.md`
+- `${ACTIVE_WORKSPACE}/04_technical/findings.md` + `${ACTIVE_WORKSPACE}/04_technical/report.md`
+- `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` + `${ACTIVE_WORKSPACE}/05_macro_sentiment/report.md`
+- `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` + `${ACTIVE_WORKSPACE}/06_risk_scenario/report.md`
 - `${ACTIVE_WORKSPACE}/07_draft/report.md`
 - 선택 입력: `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`
 - 선택 입력: `${ACTIVE_WORKSPACE}/03_valuation/comps.md`

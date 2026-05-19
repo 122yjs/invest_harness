@@ -316,6 +316,7 @@ Evidence layer 규칙:
 | technical-analyst | Part IX | `.agents/skills/technical-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/04_technical/findings.md` |
 | macro-sentiment-analyst | Part X, XI | `.agents/skills/macro-sentiment-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` |
 | risk-scenario-analyst | Part XII, XIII | `.agents/skills/risk-scenario-analyst/SKILL.md` | `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` |
+| section-report-writer | 섹션별 정성 해석 | `.agents/skills/section-report-writer/SKILL.md` | `${ACTIVE_WORKSPACE}/01_financial/report.md` ~ `${ACTIVE_WORKSPACE}/06_risk_scenario/report.md` |
 
 분배 규칙:
 
@@ -331,10 +332,22 @@ Evidence layer 규칙:
 
 > **Pitfall — Group 2 내부 순환 오류:** `technical-analyst`, `macro-sentiment-analyst`, `risk-scenario-analyst`를 동일한 `delegate_task`의 같은 `tasks` 배열에 담으면 서브에이전트 간 순환 의존성이 발생한다. `risk-scenario-analyst`가 `04_technical`과 `05_macro_sentiment`을 읽으려고 할 때 파일이 아직 생성되지 않은 채로 판단할 수 있다. `risk-scenario-analyst`는 선행 산출물(01~05)이 모두 존재하는 것을 확인한 후에 독립적으로 실행하거나, 혹은 단일 `delegate_task`에서 모든 6개 역할을 한 번에 담으면 순환을 방지할 수 있다.
 
-### 5. 중간 산출물 점검
+### 5. 섹션별 report 작성
+
+`section-report-writer`가 각 findings.md를 읽고 `${ACTIVE_WORKSPACE}/{section}/report.md`를 작성한다.
+
+실행 조건:
+- 해당 섹션의 `findings.md`가 존재하고 내용이 충분할 때
+- `section-report-writer`는 findings 기반으로만 해석하며, 새로운 수치나 출처 없는 주장을 생성하지 않는다.
+
+병렬 실행:
+- 6개 섹션(01~06)의 report.md를 병렬로 작성할 수 있다.
+- 각 section-report-writer 인스턴스는 단일 findings.md만 입력으로 받는다.
+
+### 6. 중간 산출물 점검
 
 1. `${ACTIVE_WORKSPACE}/00_evidence/`의 evidence plan, source call plan, evidence ledger, source validation 존재 여부를 확인한다.
-2. `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`까지 존재 여부를 확인한다.
+2. `${ACTIVE_WORKSPACE}/01_financial/findings.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`까지, 그리고 `${ACTIVE_WORKSPACE}/01_financial/report.md`부터 `${ACTIVE_WORKSPACE}/06_risk_scenario/report.md`까지 존재 여부를 확인한다.
 3. `${ACTIVE_WORKSPACE}/00_input/market-price-snapshot.md`가 valuation과 QA의 기준 주가로 사용되는지 확인한다.
 4. 각 파일의 분석 전제, 출처 목록, 요약, 데이터 한계 섹션을 확인한다.
 5. 수치나 판단이 충돌하면 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`에 기록한다.
@@ -349,7 +362,7 @@ Evidence layer 규칙:
 | 판단 충돌 | 어떤 전제 차이가 결론 차이를 만들었는지 적는다. |
 | 데이터 신선도 충돌 | 최신 자료 우선순위를 적용하되, 오래된 자료 사용 한계를 남긴다. |
 
-### 6. 초안 합성
+### 7. 초안 합성
 
 `report-synthesizer`가 아래 입력을 읽고 `${ACTIVE_WORKSPACE}/07_draft/report.md`를 작성한다.
 
@@ -359,12 +372,12 @@ Evidence layer 규칙:
 - `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`
 - `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`
 - `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`
-- `${ACTIVE_WORKSPACE}/01_financial/findings.md`
-- `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`
-- `${ACTIVE_WORKSPACE}/03_valuation/findings.md`
-- `${ACTIVE_WORKSPACE}/04_technical/findings.md`
-- `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md`
-- `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`
+- `${ACTIVE_WORKSPACE}/01_financial/findings.md` + `${ACTIVE_WORKSPACE}/01_financial/report.md`
+- `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` + `${ACTIVE_WORKSPACE}/02_fundamental/report.md`
+- `${ACTIVE_WORKSPACE}/03_valuation/findings.md` + `${ACTIVE_WORKSPACE}/03_valuation/report.md`
+- `${ACTIVE_WORKSPACE}/04_technical/findings.md` + `${ACTIVE_WORKSPACE}/04_technical/report.md`
+- `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` + `${ACTIVE_WORKSPACE}/05_macro_sentiment/report.md`
+- `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` + `${ACTIVE_WORKSPACE}/06_risk_scenario/report.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/dcf.md`
@@ -374,9 +387,9 @@ Evidence layer 규칙:
 
 초안은 `invest_prompt_v2.md`의 최종 출력 템플릿 18개 섹션 순서를 따른다.
 
-### 7. QA
+### 8. QA
 
-`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`, 원천 findings 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
+`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`, 원천 findings와 섹션별 report 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
 
 QA 판정:
 
@@ -386,7 +399,7 @@ QA 판정:
 | 수정 후 승인 | 제한적 결함 있음 | 오케스트레이터가 수정 후 최종본 확정 |
 | 재검토 필요 | 출처, 구조, 결론 정합성에 치명적 결함 있음 | 관련 역할 보강 후 초안 재작성 |
 
-### 8. 최종본 확정
+### 9. 최종본 확정
 
 1. QA 지적을 반영한다.
 2. 최종 보고서를 `${ACTIVE_WORKSPACE}/08_final/report.md`에 저장한다.
