@@ -397,7 +397,7 @@ Evidence layer 규칙:
 
 ### 8. QA
 
-`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`, 원천 findings 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
+`qa-reviewer`가 `${ACTIVE_WORKSPACE}/07_draft/report.md`, `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`, 원천 findings와 섹션별 report 전체를 검토하고 `${ACTIVE_WORKSPACE}/09_qa/review.md`, `${ACTIVE_WORKSPACE}/09_qa/fix-list.md`, `${ACTIVE_WORKSPACE}/09_qa/final-check.md`를 작성한다.
 
 QA 판정:
 
