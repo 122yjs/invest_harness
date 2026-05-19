@@ -53,6 +53,28 @@ Institutional data can supplement:
 
 It must not remove the requirement to cite public or official source trails in findings and QA.
 
+## Portable Environment Routing
+
+API keys and local MCP executable paths are environment-specific. Keep secret
+values out of tracked files and provide them through the repository-local `.env`
+file or Windows User environment variables.
+
+Default public MCP server entrypoints should call the stable PowerShell wrappers:
+
+- `scripts\mcp\Start-KoreaStockMcp.ps1`
+- `scripts\mcp\Start-YFinanceMcp.ps1`
+
+If a machine uses a different executable name or package manager path, set only
+the corresponding command override variable:
+
+- `INVEST_HARNESS_KOREA_STOCK_MCP_COMMAND`
+- `INVEST_HARNESS_KOREA_STOCK_MCP_ARGS`
+- `INVEST_HARNESS_YFINANCE_MCP_COMMAND`
+- `INVEST_HARNESS_YFINANCE_MCP_ARGS`
+
+Do not store per-machine MCP command details in `.mcp.institutional.json`; that
+catalog remains disabled for default validation.
+
 ## Capability Status Routing
 
 `connection_status` in the source capability registry is repo-evidence status

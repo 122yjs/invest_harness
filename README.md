@@ -245,7 +245,7 @@ KOSIS, customs_trade_api, Google Trends, Naver DataLab, KOTRA, G2B는 이번 패
 
 ## API 자격 증명 (API Keys) 및 환경변수 설정
 
-이 Harness는 신뢰도 높은 정량 및 정성적 리서치 분석을 위해 국내/해외의 다양한 데이터 소스 API와 연동됩니다. 제공된 모든 자격 증명은 프로젝트 루트의 `.env` 파일과 Windows 사용자 환경변수에 일괄 등록되어 있으며, 각 소스의 구체적인 역할 및 사용법은 다음과 같습니다.
+이 Harness는 신뢰도 높은 정량 및 정성적 리서치 분석을 위해 국내/해외의 다양한 데이터 소스 API와 연동됩니다. 저장소에는 자격 증명 값 자체를 보관하지 않습니다. 각 Windows 환경은 프로젝트 루트의 `.env` 파일 또는 Windows 사용자 환경변수로 키를 제공하고, 저장소의 스크립트는 같은 변수 이름만 참조합니다.
 
 ### 1. 등록된 API 자격 증명 정보
 
@@ -267,14 +267,33 @@ KOSIS, customs_trade_api, Google Trends, Naver DataLab, KOTRA, G2B는 이번 패
 ### 2. 사용 및 로드 방법
 
 #### 방법 A: 로컬 `.env` 파일 로드 (권장)
-Harness 실행 시 루트 디렉터리의 `.env` 파일에서 API 키를 자동으로 로드하여 서브 프로세스 및 MCP 서버가 참조하도록 동작합니다. `.env` 파일은 Git 보안을 위해 `.gitignore`에 자동 추가되어 안전하게 로컬 장비에만 격리 보존됩니다.
+환경별로 `.env.example`을 복사해 `.env`를 만들고 실제 값을 채웁니다. `.env` 파일은 `.gitignore`에 포함되어 로컬 장비에만 남습니다. PowerShell 스크립트와 MCP 래퍼는 기본적으로 프로젝트 루트의 `.env`를 먼저 로드하고, 이미 설정된 Windows 사용자 환경변수도 함께 사용할 수 있습니다.
 
 #### 방법 B: Windows 환경변수 일괄 등록 및 갱신
-제공된 모든 API 키를 Windows 사용자 환경변수에 영구적으로 자동 등록하려면, PowerShell에서 아래 스크립트를 Bypass 권한으로 실행하십시오.
+현재 `.env` 값을 Windows 사용자 환경변수에 영구 등록하려면 PowerShell에서 아래 스크립트를 실행합니다. 이 스크립트는 저장소에 키를 내장하지 않고 `.env`를 읽어 등록합니다.
 ```powershell
 .\scripts\Set-Credentials.ps1
 ```
 *(실행 후 변경 사항을 완벽히 적용하려면 터미널 또는 IDE를 재시작해야 합니다.)*
+
+#### 방법 C: MCP 실행 래퍼 고정
+여러 에이전트 도구에서 MCP 설정을 반복해서 바꾸지 않도록, 각 MCP 서버는 저장소의 PowerShell 래퍼를 실행하도록 연결합니다.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File E:\invest_harness\scripts\mcp\Start-KoreaStockMcp.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File E:\invest_harness\scripts\mcp\Start-YFinanceMcp.ps1
+```
+
+실제 MCP 실행 파일명이 환경마다 다르면 `.env` 또는 Windows 사용자 환경변수에서 아래 값만 바꿉니다.
+
+```dotenv
+INVEST_HARNESS_KOREA_STOCK_MCP_COMMAND=korea-stock-mcp
+INVEST_HARNESS_KOREA_STOCK_MCP_ARGS=
+INVEST_HARNESS_YFINANCE_MCP_COMMAND=yfinance-mcp
+INVEST_HARNESS_YFINANCE_MCP_ARGS=
+```
+
+이 방식에서는 Codex, Claude, OpenCode 등 각 도구의 MCP 설정이 래퍼 경로만 바라보면 되므로, API 키 교체나 실행 파일 경로 변경이 도구별 설정 변경으로 번지지 않습니다.
 
 ---
 

@@ -1,24 +1,59 @@
-# Set-Credentials.ps1
-# This script persistently registers all data source credentials as Windows User environment variables.
-# Running this script will make these variables available across all command prompts, PowerShell windows, and tools.
+[CmdletBinding(SupportsShouldProcess = $true)]
+param(
+    [string]$EnvPath = (Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..')) '.env'),
+    [switch]$AllowPlaceholders
+)
 
-Write-Output "Setting user environment variables..."
+$ErrorActionPreference = 'Stop'
 
-$variables = @{
-    "DART_API_KEY"           = "881e0ed28247a3477bc873e373632b32772590dc"
-    "KRX_API_KEY"            = "FD8CBA2AC84D4FC69590C2BD30EDE21D2CE516ED"
-    "FRED_API_KEY"           = "9893311efe17b7ccf95bd8dc0a177c9f"
-    "ALPHA_VANTAGE_API_KEY"  = "JVCDWACTBJAEF1FZ"
-    "FMP_API_KEY"            = "6Wcc5OifTGxVTGMDP2iaAXSAobkgPRVU"
-    "KOSIS_API_KEY"          = "MDI1MTE1M2M1ODM5OGFjMTkwYzBjYTkzOTM1ZGM0NTM="
-    "CUSTOMS_TRADE_API_KEY"  = "75f45895e8888abd20b41c1342b8034c58ed64a6d6889f66a357b3e6094d003b"
-    "CUSTOMS_TRADE_FORMAT"   = "XML"
-    "CUSTOMS_TRADE_ENDPOINT" = "https://apis.data.go.kr/1220000/nitemtrade"
+$requiredVariables = @(
+    'DART_API_KEY',
+    'KRX_API_KEY',
+    'FRED_API_KEY',
+    'ALPHA_VANTAGE_API_KEY',
+    'FMP_API_KEY',
+    'KOSIS_API_KEY',
+    'CUSTOMS_TRADE_API_KEY',
+    'CUSTOMS_TRADE_FORMAT',
+    'CUSTOMS_TRADE_ENDPOINT'
+)
+
+function Test-PlaceholderValue {
+    param([string]$Value)
+
+    return [string]::IsNullOrWhiteSpace($Value) -or
+        $Value -match '^(your_|YOUR_|changeme|CHANGE_ME|placeholder|PLACEHOLDER)'
 }
 
-foreach ($var in $variables.GetEnumerator()) {
-    [Environment]::SetEnvironmentVariable($var.Key, $var.Value, "User")
-    Write-Output "Successfully set User Environment Variable: $($var.Key)"
+$importScript = Join-Path $PSScriptRoot 'env\Import-HarnessEnv.ps1'
+$loadedVariables = & $importScript -EnvPath $EnvPath -PassThru
+
+Write-Output "환경 파일 로드 완료: $EnvPath"
+
+$missingVariables = New-Object System.Collections.Generic.List[string]
+foreach ($name in $requiredVariables) {
+    $value = [Environment]::GetEnvironmentVariable($name, 'Process')
+    if ((Test-PlaceholderValue -Value $value) -and -not $AllowPlaceholders) {
+        $missingVariables.Add($name)
+    }
 }
 
-Write-Output "All credentials registered successfully! Please restart your terminal/IDE for changes to take effect."
+if ($missingVariables.Count -gt 0) {
+    $joined = $missingVariables -join ', '
+    throw "실제 값이 필요한 환경변수가 비어 있거나 placeholder입니다: $joined"
+}
+
+foreach ($name in $loadedVariables) {
+    $value = [Environment]::GetEnvironmentVariable($name, 'Process')
+    if ([string]::IsNullOrWhiteSpace($value)) {
+        Write-Output "건너뜀: $name 값이 비어 있습니다."
+        continue
+    }
+
+    if ($PSCmdlet.ShouldProcess("Windows User 환경변수 $name", '등록 또는 갱신')) {
+        [Environment]::SetEnvironmentVariable($name, $value, 'User')
+        Write-Output "등록 완료: $name"
+    }
+}
+
+Write-Output "Windows User 환경변수 등록이 완료되었습니다. 새 터미널 또는 IDE 세션에서 적용됩니다."
