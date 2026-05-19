@@ -6,7 +6,7 @@ description: evidence-plan을 읽고 source capability 기반 source-call-plan, 
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/source-router/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
 > Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
-> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
+> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 

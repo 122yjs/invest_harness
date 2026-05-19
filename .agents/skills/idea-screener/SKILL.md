@@ -6,7 +6,7 @@ description: 투자 아이디어 발굴 요청을 후보군, 점수표, 예비 R
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/idea-screener/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
 > Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
-> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
+> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 
