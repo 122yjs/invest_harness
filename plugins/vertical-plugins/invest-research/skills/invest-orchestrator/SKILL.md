@@ -359,12 +359,12 @@ Evidence layer 규칙:
 - `${ACTIVE_WORKSPACE}/00_evidence/evidence-ledger.md`
 - `${ACTIVE_WORKSPACE}/00_evidence/signal-cards.md`
 - `${ACTIVE_WORKSPACE}/00_evidence/source-validation.md`
-- `${ACTIVE_WORKSPACE}/01_financial/findings.md`
-- `${ACTIVE_WORKSPACE}/02_fundamental/findings.md`
-- `${ACTIVE_WORKSPACE}/03_valuation/findings.md`
-- `${ACTIVE_WORKSPACE}/04_technical/findings.md`
-- `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md`
-- `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md`
+- `${ACTIVE_WORKSPACE}/01_financial/findings.md` + `${ACTIVE_WORKSPACE}/01_financial/report.md`
+- `${ACTIVE_WORKSPACE}/02_fundamental/findings.md` + `${ACTIVE_WORKSPACE}/02_fundamental/report.md`
+- `${ACTIVE_WORKSPACE}/03_valuation/findings.md` + `${ACTIVE_WORKSPACE}/03_valuation/report.md`
+- `${ACTIVE_WORKSPACE}/04_technical/findings.md` + `${ACTIVE_WORKSPACE}/04_technical/report.md`
+- `${ACTIVE_WORKSPACE}/05_macro_sentiment/findings.md` + `${ACTIVE_WORKSPACE}/05_macro_sentiment/report.md`
+- `${ACTIVE_WORKSPACE}/06_risk_scenario/findings.md` + `${ACTIVE_WORKSPACE}/06_risk_scenario/report.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/06_risk_scenario/conflicts.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/comps.md`
 - 필요 시 `${ACTIVE_WORKSPACE}/03_valuation/dcf.md`
