@@ -6,7 +6,7 @@ description: evidence-ledger를 signal primitives로 변환해 ${ACTIVE_WORKSPAC
 <!-- GENERATED-SYNC: source=plugins/vertical-plugins/invest-research/skills/signal-analyst/SKILL.md; kind=skill; script=scripts/sync_invest_skills.py -->
 > [!IMPORTANT]
 > Generated execution artifact. Do not edit directly; edit the vertical source and rerun `python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).
-> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.
+> Common policies are synced from plugins/vertical-plugins/invest-research/policies/.
 > Runtime output paths must use `${ACTIVE_WORKSPACE}`.
 <!-- END GENERATED-SYNC -->
 

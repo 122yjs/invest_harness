@@ -37,7 +37,7 @@ def generated_notice(source_relative_path: str, kind: str) -> str:
         "> [!IMPORTANT]\n"
         "> Generated execution artifact. Do not edit directly; edit the vertical source and rerun "
         "`python scripts/sync_invest_skills.py` (or `scripts/Sync-InvestSkills.ps1` / `scripts/Sync-InvestSkills.sh`).\n"
-        "> Common policies are synced from ``plugins/vertical-plugins/invest-research/policies/``.\n"
+        "> Common policies are synced from `plugins/vertical-plugins/invest-research/policies/`.\n"
         "> Runtime output paths must use `${ACTIVE_WORKSPACE}`.\n"
         "<!-- END GENERATED-SYNC -->\n"
     )
